@@ -1,16 +1,240 @@
-html,
+@import url("https://fonts.googleapis.com/css2?family=Padauk:wght@700&display=swap");
+
 body {
+  margin: 0;
+  font-family: "Padauk", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*{
+  box-sizing: border-box;
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+code {
+  font-family: "Padauk", sans-serif;
 }
 
-* {
-  box-sizing: border-box;
+button{
+  font-family: 'Padauk', sans-serif;
+}
+.containerBlack{
+    background: #121212;
+    color: white;
+    width: 100vw;
+    height: 100vh;
+}
+
+.signIn{
+  width: 80vw;
+  min-width: 250px;
+  max-width: 620px;
+  background: #800040;
+  height: 40vh;
+  min-height: 420px;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  box-shadow: 0px 0px 9px 3px rgba(66, 66, 66, 0.38);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.signinBut{
+  width: calc(120px + 8vw);
+  height: calc(30px + 1vh);
+  border-radius: 40px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  transition: all 300ms ease-in-out;
+  cursor: pointer;
+  font-size: 19px;
+}
+
+.signinBut:hover{
+  background-color: white;
+  color: black;
+  transform: scale(1.05);
+}
+
+.signText{
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.imgMeta{
+  width: calc(200px + 5vw);
+  margin-bottom: 50px;
+}
+
+.setUp{
+  width: 80vw;
+  min-width: 270px;
+  max-width: 830px;
+  background: #800040;
+  height: 40vh;
+  min-height: 440px;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  box-shadow: 0px 0px 9px 3px rgba(77, 77, 77, 0.28);
+  padding: 7px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  padding-bottom: 40px;
+  padding-top: 68px;
+}
+
+.setUpInput{
+  width: calc(175px + 10vw);
+  height: calc(30px + 1vh);
+  min-width: 200;
+  min-height: 40px;
+  border-radius: 10px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  transition: all 300ms ease-in-out;
+  cursor: pointer;
+  font-size: 19px;
+  text-align: start;
+  outline: none;
+  margin-bottom: 20px;
+  max-width: 500px;
+  box-shadow: 0px 0px 9px 3px rgba(77, 77, 77, 0.28);
+  padding-left: 5px;
+  padding-right: 45px;
+}
+
+.setUpInput:focus{
+  transform: scale(1.05);
+}
+
+.setUpLogOut{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: calc(120px + 1vw);
+  height: calc(30px + 1vh);
+  border-radius: 40px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  transition: all 300ms ease-in-out;
+  cursor: pointer;
+  font-size: 19px;
+}
+
+.setUpContainer{
+  margin-top: 10px;
+}
+
+.setUpTitle{
+  font-size: 29px;
+  text-align: center;
+}
+
+.setUpBut{
+  width: calc(160px + 1vw);
+  height: calc(30px + 1vh);
+  border-radius: 40px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  transition: all 300ms ease-in-out;
+  cursor: pointer;
+  font-size: 19px;
+  box-shadow: 0px 0px 9px 3px rgba(134, 134, 134, 0.28);
+  outline: none;
+}
+
+.setUpBut:hover , .setUpLogOut:hover{
+  background-color: white;
+  color: black;
+}
+
+.checkDiv{
+  position: relative;
+}
+
+.checkBut{
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: calc(0.5vh);
+  border-radius: 30px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0px 0px 5px 2px rgba(77, 77, 77, 0.22);
+}
+
+.checkError{
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  color: rgb(255, 0, 0);
+  font-size: 18px;
+  outline: none;
+}
+
+.infoClass{
+  width: 100%;
+  padding-left: 10%;
+  padding-right: 10%;
+  margin-top: 5%;
+  margin-bottom: 8%;
+}
+
+.setUpInfoText{
+  font-size: calc(19px + 0.4vw);
+  text-align: left;
+}
+.exclamation{
+  width:calc(78px + 1vw);
+  height:calc(78px + 1vw);
+  border-radius: 200px;
+  outline: none;
+  border: 4px solid rgb(243, 92, 4);
+  background-color: transparent;
+  font-size: calc(50px + 0.4vw);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 410px) {
+  .setUp{
+    height: 84vh;
+    padding-top: 30px;
+  }
+  .signIn{
+    height: 84vh;
+  }
+}
+
+.signInError{
+  text-align: center;
+  color: rgb(255, 0, 0);
+  font-size: 18px;
+  margin-top: 7px;
 }
