@@ -5,8 +5,8 @@ function MyApp({ Component, pageProps }) {
   const name = "alex";
   return (
     <MoralisProvider
-      appId="tfxLuvik4gAvZVhsllf3XOgWUKzuUXNgm7Ozfpl5"
-      serverUrl="https://kce1p7yqjnro.usemoralis.com:2053/server"
+      appId=""
+      serverUrl=""
     >
       <Component {...pageProps} name={name} />
     </MoralisProvider>
