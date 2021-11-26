@@ -2,6 +2,7 @@ import React from "react";
 import { useMoralis } from "react-moralis";
 import metamask from "../public/metamask.png"
 import Image from "next/image"
+import Head from 'next/head'
 
 export default function SignIn() {
   const { authenticate, authError } = useMoralis();
@@ -12,6 +13,9 @@ export default function SignIn() {
 
   return (
     <div className="containerBlack">
+      <Head>
+        <title>Sign In</title>
+      </Head>
       <div className="signIn">
         <h2 className="signText">Sign In with MetaMask</h2>
         <Image src={metamask} alt="metamask" className="imgMeta" />

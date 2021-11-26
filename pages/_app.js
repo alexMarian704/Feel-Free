@@ -2,13 +2,14 @@ import "../styles/globals.css";
 import { MoralisProvider } from "react-moralis";
 
 function MyApp({ Component, pageProps }) {
-  const name = "alex";
+  const serverURL = process.env.NEXT_PUBLIC_SERVERURL;
+  const appID = process.env.NEXT_PUBLIC_APPID;
   return (
     <MoralisProvider
-      appId="tfxLuvik4gAvZVhsllf3XOgWUKzuUXNgm7Ozfpl5"
-      serverUrl="https://kce1p7yqjnro.usemoralis.com:2053/server"
+      appId={appID}
+      serverUrl={serverURL}
     >
-      <Component {...pageProps} name={name} />
+      <Component {...pageProps} />
     </MoralisProvider>
   );
 }
