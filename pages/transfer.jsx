@@ -24,6 +24,7 @@ export default function Transfer() {
     logout();
     router.push("/")
   };
+  //
 
   if (!isAuthenticated) {
     return <Reject />;
