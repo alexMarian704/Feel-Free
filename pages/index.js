@@ -5,6 +5,7 @@ import Info from "../components/Info";
 import SignIn from "../components/Signin";
 import Link from "next/link"
 import Head from 'next/head'
+import Nav from "../components/Nav";
 
 export default function Home({ name }) {
   const { isAuthenticated , user , logout  } = useMoralis();
@@ -14,15 +15,15 @@ export default function Home({ name }) {
     return <SignIn />
 
   return (
-    <div className="containerBlack">
+    <div className="container">
       <Head>
         <title>Home</title>
       </Head>
+      <Nav />
       {user.get("userNameChange") === true &&
         (info === true || user.get("info") === true) && (
           <div>
             <h1>Hi {user.get("username")}</h1>
-            <button onClick={() => logout()}>Log out</button>
           </div>
         )}
       {(user.get("userNameChange") === undefined ||
@@ -32,7 +33,6 @@ export default function Home({ name }) {
       {(user.get("info") === false || info === false) && (
         <Info setInfo={setInfo} />
       )}
-      <Link href="/transfer">Transfer</Link>
     </div>
   );
 }

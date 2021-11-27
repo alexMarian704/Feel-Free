@@ -12,7 +12,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="containerBlack">
+    <div className="container">
       <Head>
         <title>Sign In</title>
       </Head>

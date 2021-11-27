@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Padauk:wght@700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
 body {
   margin: 0;
@@ -23,8 +24,14 @@ button{
 .containerBlack{
     background: #121212;
     color: white;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
+}
+
+#container{
+  width: 100%;
+  height: 100%;
+  padding-top: 5px;
 }
 
 .signIn{
@@ -237,4 +244,53 @@ button{
   color: rgb(255, 0, 0);
   font-size: 18px;
   margin-top: 7px;
+}
+
+nav{
+  width: 100%;
+  height: 5.5vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 51px;
+  color: black;
+}
+
+nav h1 {
+  font-family: 'Lobster', cursive;
+  color: #800040;
+  font-size: calc(28px + 0.5vw);
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+nav h2 {
+  margin-left: 25px;
+  color: white;
+  margin-top: 5px;
+  cursor: pointer;
+  font-size: calc(22px + 0.5vw);
+}
+
+#nav-container{
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 70%;
+  justify-content: flex-start;
+}
+
+nav button{
+  margin-right: 20px;
+  width: calc(110px + 1vw);
+  height: calc(25px + 1vh);
+  border-radius: 40px;
+  border: 3px solid #800040;
+  background: transparent;
+  color: white;
+  transition: all 300ms ease-in-out;
+  cursor: pointer;
+  font-size: 19px;
+  box-shadow: 0px 0px 5px 3px rgba(134, 134, 134, 0.28);
+  outline: none;
 }

@@ -6,6 +6,7 @@ import Reject from "../components/Reject";
 import ConfigAccount from "../components/ConfigAccount";
 import Head from "next/head";
 import { useRouter } from "next/router"
+import Nav from "../components/Nav";
 
 export default function Transfer() {
   const [amount, setAmount] = useState("");
@@ -19,12 +20,6 @@ export default function Transfer() {
     receiver: to,
     type: "native",
   });
-
-  const logOutUser = () => {
-    logout();
-    router.push("/")
-  };
-  //
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -42,6 +37,7 @@ export default function Transfer() {
       <Head>
         <title>Transfer</title>
       </Head>
+      <Nav />
       <label>Your ETH address</label>
       <p>{userETHaddress}</p>
       <br />
@@ -59,8 +55,6 @@ export default function Transfer() {
       </button>
       {error && <h3>{error.message}</h3>}
       <br />
-      <button onClick={logOutUser}>Log out</button>
-      <Link href="/">Home</Link>
     </div>
   );
 }
