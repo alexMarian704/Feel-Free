@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Padauk:wght@700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 
 body {
   margin: 0;
@@ -8,7 +8,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-*{
+* {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
@@ -18,23 +18,23 @@ code {
   font-family: "Padauk", sans-serif;
 }
 
-button{
-  font-family: 'Padauk', sans-serif;
+button {
+  font-family: "Padauk", sans-serif;
 }
-.containerBlack{
-    background: #121212;
-    color: white;
-    width: 100%;
-    height: 100vh;
+.containerBlack {
+  background: #121212;
+  color: white;
+  width: 100%;
+  height: 100vh;
 }
 
-#container{
+#container {
   width: 100%;
   height: 100%;
   padding-top: 5px;
 }
 
-.signIn{
+.signIn {
   width: 90vw;
   min-width: 270px;
   max-width: 620px;
@@ -54,7 +54,7 @@ button{
   flex-direction: column;
 }
 
-.signinBut{
+.signinBut {
   width: calc(140px + 4vw);
   height: calc(30px + 1vh);
   border-radius: 40px;
@@ -66,23 +66,24 @@ button{
   font-size: 19px;
 }
 
-.signinBut:hover{
+.signinBut:hover {
   background-color: white;
   color: black;
   transform: scale(1.05);
 }
 
-.signText{
+.signText {
   text-align: center;
   margin-bottom: 10px;
 }
 
-.imgMeta{
+.imgMeta {
   width: calc(200px + 5vw);
   margin-bottom: 50px;
+  border-radius: 40px;
 }
 
-.setUp{
+.setUp {
   width: 80vw;
   min-width: 270px;
   max-width: 830px;
@@ -105,7 +106,7 @@ button{
   padding-top: 68px;
 }
 
-.setUpInput{
+.setUpInput {
   width: calc(175px + 10vw);
   height: calc(30px + 1vh);
   min-width: 200;
@@ -126,11 +127,11 @@ button{
   padding-right: 45px;
 }
 
-.setUpInput:focus{
+.setUpInput:focus {
   transform: scale(1.05);
 }
 
-.setUpLogOut{
+.setUpLogOut {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -145,16 +146,16 @@ button{
   font-size: 19px;
 }
 
-.setUpContainer{
+.setUpContainer {
   margin-top: 10px;
 }
 
-.setUpTitle{
+.setUpTitle {
   font-size: 29px;
   text-align: center;
 }
 
-.setUpBut{
+.setUpBut {
   width: calc(160px + 1vw);
   height: calc(30px + 1vh);
   border-radius: 40px;
@@ -168,16 +169,19 @@ button{
   outline: none;
 }
 
-.setUpBut:hover , .setUpLogOut:hover , .navBut:hover , .navButSelect:hover{
+.setUpBut:hover,
+.setUpLogOut:hover,
+.navBut:hover,
+.navButSelect:hover {
   background-color: white;
   color: black;
 }
 
-.checkDiv{
+.checkDiv {
   position: relative;
 }
 
-.checkBut{
+.checkBut {
   width: 30px;
   height: 30px;
   position: absolute;
@@ -192,7 +196,7 @@ button{
   box-shadow: 0px 0px 5px 2px rgba(77, 77, 77, 0.22);
 }
 
-.checkError{
+.checkError {
   position: absolute;
   top: 90%;
   left: 50%;
@@ -204,7 +208,7 @@ button{
   outline: none;
 }
 
-.infoClass{
+.infoClass {
   width: 100%;
   padding-left: 10%;
   padding-right: 10%;
@@ -212,13 +216,13 @@ button{
   margin-bottom: 8%;
 }
 
-.setUpInfoText{
+.setUpInfoText {
   font-size: calc(19px + 0.4vw);
   text-align: left;
 }
-.exclamation{
-  width:calc(78px + 1vw);
-  height:calc(78px + 1vw);
+.exclamation {
+  width: calc(78px + 1vw);
+  height: calc(78px + 1vw);
   border-radius: 200px;
   outline: none;
   border: 4px solid rgb(243, 92, 4);
@@ -230,23 +234,23 @@ button{
 }
 
 @media only screen and (max-width: 410px) {
-  .setUp{
+  .setUp {
     height: 84vh;
     padding-top: 30px;
   }
-  .signIn{
+  .signIn {
     height: 84vh;
   }
 }
 
-.signInError{
+.signInError {
   text-align: center;
   color: rgb(255, 0, 0);
   font-size: 18px;
   margin-top: 7px;
 }
 
-nav{
+nav {
   width: 100%;
   height: 5.5vh;
   display: flex;
@@ -257,7 +261,7 @@ nav{
 }
 
 nav h1 {
-  font-family: 'Lobster', cursive;
+  font-family: "Lobster", cursive;
   color: #800040;
   font-size: calc(28px + 0.5vw);
   margin-left: 20px;
@@ -272,7 +276,7 @@ nav h2 {
   font-size: calc(22px + 0.5vw);
 }
 
-#nav-container{
+#nav-container {
   display: flex;
   align-items: center;
   height: 100%;
@@ -280,7 +284,7 @@ nav h2 {
   justify-content: flex-start;
 }
 
-nav button{
+nav button {
   margin-right: 20px;
   width: calc(110px + 1vw);
   height: calc(25px + 1vh);
@@ -295,12 +299,12 @@ nav button{
   outline: none;
 }
 
-.imgWC{
+.imgWC {
   width: calc(200px + 5vw);
   border-radius: 40px;
 }
 
-.signInNav{
+.signInNav {
   width: 100%;
   height: 60px;
   position: absolute;
@@ -310,7 +314,7 @@ nav button{
   justify-content: space-around;
 }
 
-.navBut{
+.navBut {
   width: calc(145px + 1vw);
   height: calc(22px + 1vh);
   border-radius: 40px;
@@ -324,7 +328,7 @@ nav button{
   outline: none;
 }
 
-.navButSelect{
+.navButSelect {
   width: calc(145px + 1vw);
   height: calc(22px + 1vh);
   border-radius: 40px;
@@ -338,8 +342,110 @@ nav button{
   outline: none;
 }
 
-.navBut:hover , .navButSelect:hover{
+.navBut:hover,
+.navButSelect:hover,
+nav button:hover {
   background-color: rgb(0, 0, 0);
   color: white;
   border-color: black;
+}
+
+.transaction-container {
+  width: 70vw;
+  margin: auto;
+  background-color: red;
+  height: 60vh;
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px 3px rgba(126, 30, 30, 0.28);
+  max-width: 700px;
+  min-width: 250px;
+}
+
+.address {
+  white-space: nowrap;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media only screen and (max-width: 510px) {
+  nav {
+    height: 100vh;
+    width: 240px;
+    background-color: rgb(34, 34, 34);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    box-shadow: 3px 0px 14px -2px rgba(27, 27, 27, 0.54);
+    transition: all 200ms ease-out;
+    position: absolute;
+  }
+  .nav-out{
+    transform: translateX(0%);
+  }
+  .nav-in{
+    transform: translateX(-100%);
+  }
+  #nav-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  nav h1 {
+    font-size: calc(38px + 0.5vw);
+    text-align: center;
+    margin-left: 0;
+  }
+  nav h2 {
+    font-size: calc(28px + 0.5vw);
+    text-align: center;
+    margin-left: 0;
+  }
+  nav button {
+    margin-right: 0;
+    width: calc(130px + 1vw);
+    height: calc(28px + 1vh);
+  }
+  .marginDiv{
+    width: 100%;
+    height: 55px;
+  }
+}
+
+.close-nav {
+  position: absolute;
+  margin-bottom: 10px;
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-nav:hover , .open-nav:hover{
+    transform: rotate(180deg);
+    background-color: white;
+    border-color: white;
+}
+
+.open-nav{
+  position: absolute;
+  margin-bottom: 10px;
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  top: 12px;
+  right: -42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
