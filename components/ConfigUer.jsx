@@ -16,7 +16,7 @@ export default function ConfigUser({ setInfo }) {
     if (username !== "" && validTag === true) {
       setUserData({
         username: username,
-        userTag: tag,
+        userTag: tag.toLowerCase(),
         userNameChange: true,
         theme: "dark",
         info:false
@@ -24,7 +24,7 @@ export default function ConfigUser({ setInfo }) {
       setInfo(false)
       const Tags = Moralis.Object.extend("Tags");
       const tagU = new Tags();
-      tagU.set("userTag", tag);
+      tagU.set("userTag", tag.toLowerCase());
       tagU.save();
     } else if (username === "") {
       setError("Please enter an username");
@@ -82,9 +82,6 @@ export default function ConfigUser({ setInfo }) {
   return (
     <div className="setUp">
       <h2 className="setUpTitle">Choose your username & tag</h2>
-      <button onClick={() => logout()} className="setUpLogOut">
-        Log out
-      </button>
       <div className="setUpContainer">
         <label>Username</label>
         <br />

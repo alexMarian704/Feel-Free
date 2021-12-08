@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
 import metamask from "../public/metamask.png";
 import walletconnect from "../public/walletconnect.png";
+import WC from "../public/WC.png";
 import Image from "next/image";
 import Head from "next/head";
 import { Moralis } from "moralis";
@@ -56,7 +57,7 @@ export default function SignIn() {
             </button>
           </div>
           <h2 className="signText">Sign In with Wallet Connect</h2>
-          <Image src={walletconnect} alt="walletconnect" className="imgMeta" />
+          <Image src={WC} alt="walletconnect" className="imgMeta" />
           <br />
           <button onClick={walletConnectSignIn} className="signinBut">
             Wallet Connect

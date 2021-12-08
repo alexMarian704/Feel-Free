@@ -10,7 +10,9 @@ export default function ConfigAccount() {
       </Head>
       <div className="setUp">
         <h2 className="setUpTitle">Please config your account</h2>
-        <Link href="/">Config Page</Link>
+        <Link href="/">
+          <p className="configLink">Config Page</p>
+        </Link>
       </div>
     </div>
   );

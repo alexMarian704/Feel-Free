@@ -16,7 +16,7 @@ export default function Nav() {
     router.push("/");
   };
 
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const changeNav = ()=>{
     document.getElementById("nav").className="nav-in";
@@ -30,12 +30,12 @@ export default function Nav() {
 
   return (
     <nav className="nav-in" id="nav">
-      {width < 511 && navIn === "out" &&
+      {width < 621 && navIn === "out" &&
       <button className="close-nav" onClick={changeNav}>
         <FontAwesomeIcon icon={faTimes} color="#800040" />
       </button>}
 
-      {width < 511 && navIn === "in" &&
+      {width < 621 && navIn === "in" &&
       <button className="open-nav" onClick={changeNavOut}>
         <FontAwesomeIcon icon={faBars} color="#800040" />
       </button>}
@@ -44,6 +44,8 @@ export default function Nav() {
         <Link href="/"><h1>Feel Free</h1></Link>
         <Link href="/transfer"><h2>Transfer</h2></Link>
         <Link href="/search"><h2>Search</h2></Link>
+        <Link href="/swap"><h2>Swap</h2></Link>
+        <Link href="/profile"><h2>Profile</h2></Link>
       </div>
       <div>
         <button onClick={logOutUser}>Log out</button>

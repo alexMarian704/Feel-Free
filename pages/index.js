@@ -30,8 +30,7 @@ export default function Home({ name }) {
         <ConfigUser setInfo={setInfo} />
       )}
       {(user.get("info") === false ||
-        info === false ||
-        user.get("info") === undefined) && <Info setInfo={setInfo} />}
+        info === false) && <Info setInfo={setInfo} />}
     </div>
   );
 }

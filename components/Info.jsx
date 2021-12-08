@@ -29,6 +29,9 @@ export default function Info({ setInfo }) {
           We can't access your funds , every transaction need to be confirmed by
           you on your wallet !
         </h2>
+        <h2 className="setUpInfoText">
+          We recommend logging out when you are not using the platform !
+        </h2>
       </div>
       <button className="setUpBut" onClick={accept}>
         I understand

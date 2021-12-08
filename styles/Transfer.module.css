@@ -1,0 +1,102 @@
+.transfer {
+    width: 80vw;
+    margin: auto;
+    background-color: rgb(34, 34, 34);
+    height: 40vh;
+    border-radius: 18px;
+    box-shadow: 0px 0px 4px 3px rgba(177, 177, 177, 0.28);
+    max-width: 700px;
+    min-width: 250px;
+    margin-top: 80px;
+    padding: 60px;
+    border: 1px solid rgb(98, 98, 98);
+    position: relative;
+  }
+  
+  .address {
+    white-space: nowrap;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 335px;
+    font-size: 18px;
+  }
+
+  .addressContainer button{
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      margin-left: 5px;
+      font-size: 16px;
+  }
+
+  .addressContainer{
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+  }
+  .label{
+      font-size: 22px;
+  }
+  .align{
+      width: calc(175px + 10vw);
+      margin: auto;
+  }
+  .alignButton{
+    width: calc(175px + 10vw);
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 450px;
+    min-width: 200px;
+  }
+
+  #input{
+    border-color: #800040;
+    border-width: 3px;
+  }
+
+  #button{
+    border-color: #800040;
+    border-width: 3px;
+  }
+  #button:hover{
+    border-color: white;
+  }
+
+  .copyButton{
+    transition: all ease-in-out 200ms;
+  }
+
+  .copyButton:hover{
+    color: white;
+  }
+
+  .loader {
+    border: 15px solid white;
+    border-top: 15px solid #800040;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .loadingContainer{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(34 , 34 ,34 , 0.7);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

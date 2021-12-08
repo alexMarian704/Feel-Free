@@ -102,16 +102,16 @@ button {
   align-items: center;
   flex-direction: column;
   color: white;
-  padding-bottom: 40px;
-  padding-top: 68px;
+  padding-bottom: 50px;
+  padding-top: 10px;
 }
 
 .setUpInput {
   width: calc(175px + 10vw);
   height: calc(30px + 1vh);
-  min-width: 200;
+  min-width: 200px;
   min-height: 40px;
-  border-radius: 10px;
+  border-radius: 80px;
   border: 2px solid white;
   background: transparent;
   color: white;
@@ -121,14 +121,14 @@ button {
   text-align: start;
   outline: none;
   margin-bottom: 20px;
-  max-width: 500px;
+  max-width: 450px;
   box-shadow: 0px 0px 9px 3px rgba(77, 77, 77, 0.28);
-  padding-left: 5px;
+  padding-left: 20px;
   padding-right: 45px;
 }
 
 .setUpInput:focus {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .setUpLogOut {
@@ -212,13 +212,13 @@ button {
   width: 100%;
   padding-left: 10%;
   padding-right: 10%;
-  margin-top: 5%;
-  margin-bottom: 8%;
+  margin-top: 2%;
+  margin-bottom: 2%;
 }
 
 .setUpInfoText {
   font-size: calc(19px + 0.4vw);
-  text-align: left;
+  text-align: center;
 }
 .exclamation {
   width: calc(78px + 1vw);
@@ -258,12 +258,13 @@ nav {
   align-items: center;
   min-height: 51px;
   color: black;
+  background-color: rgb(34, 34, 34);
 }
 
 nav h1 {
   font-family: "Lobster", cursive;
   color: #800040;
-  font-size: calc(28px + 0.5vw);
+  font-size: calc(24px + 0.5vw);
   margin-left: 20px;
   cursor: pointer;
 }
@@ -273,7 +274,7 @@ nav h2 {
   color: white;
   margin-top: 5px;
   cursor: pointer;
-  font-size: calc(22px + 0.5vw);
+  font-size: calc(17px + 0.5vw);
 }
 
 #nav-container {
@@ -350,25 +351,7 @@ nav button:hover {
   border-color: black;
 }
 
-.transaction-container {
-  width: 70vw;
-  margin: auto;
-  background-color: red;
-  height: 60vh;
-  border-radius: 8px;
-  box-shadow: 0px 0px 5px 3px rgba(126, 30, 30, 0.28);
-  max-width: 700px;
-  min-width: 250px;
-}
-
-.address {
-  white-space: nowrap;
-  width: 90%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@media only screen and (max-width: 510px) {
+@media only screen and (max-width: 620px) {
   nav {
     height: 100vh;
     width: 240px;
@@ -381,6 +364,7 @@ nav button:hover {
     box-shadow: 3px 0px 14px -2px rgba(27, 27, 27, 0.54);
     transition: all 200ms ease-out;
     position: absolute;
+    z-index: 30;
   }
   .nav-out{
     transform: translateX(0%);
@@ -392,10 +376,10 @@ nav button:hover {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 200px;
+    height: 280px;
     align-items: center;
-    justify-content: center;
-    margin-top: 30px;
+    justify-content: flex-start;
+    margin-top: 45px;
   }
   nav h1 {
     font-size: calc(38px + 0.5vw);
@@ -448,4 +432,30 @@ nav button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.configLink{
+  font-size: 20px;
+  color: white;
+  margin-top: 10px;
+  cursor: pointer;
+  border: 2px solid white;
+  border-radius: 20px;
+  padding: 3px 14px 3px 14px;
+  transition: all 300ms ease-in-out;
+}
+
+.configLink:hover{
+  background-color: black;
+  border-color: black;
 }
