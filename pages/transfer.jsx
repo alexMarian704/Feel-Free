@@ -8,15 +8,17 @@ import { useRouter } from "next/router";
 import Nav from "../components/Nav";
 import style from "../styles/Transfer.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 export default function Transfer() {
   const [amount, setAmount] = useState("");
   const [to, setTo] = useState("");
-  const { user, isAuthenticated, logout } = useMoralis();
+  const { user, isAuthenticated , enableWeb3 } = useMoralis();
   const [errorSend, setErrorSend] = useState("");
-  const web3 = Moralis.enableWeb3();
+  Moralis.enableWeb3();
   const router = useRouter();
+  const [confirm, setConfirm] = useState(false);
+  const [balance , setBalance] = useState(0);
 
   const { fetch, error, isFetching } = useWeb3Transfer({
     amount: Moralis.Units.ETH(Number(amount)),
@@ -27,7 +29,9 @@ export default function Transfer() {
   useEffect(() => {
     setAmount("");
     setTo("");
-  }, [isFetching]);
+    setConfirm(false);
+    setErrorSend("");
+  }, [isFetching, error]);
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -40,12 +44,24 @@ export default function Transfer() {
 
   const userETHaddress = user.get("ethAddress");
 
-  const setAmountETH = (e) => {
-    setAmount(e.target.value);
+  let userBalance
+  const getBalance = async () => {
+    const balances = await Moralis.Web3API.account.getNativeBalance({address : userETHaddress});
+    userBalance = (balances.balance/1000000000000000000).toFixed(5);
+    setBalance(userBalance)
   };
+  getBalance();
 
   const CopyFunction = () => {
     navigator.clipboard.writeText(userETHaddress);
+  };
+
+  const validTransaction = () => {
+    if (amount > 0) {
+      setConfirm(true);
+    } else if (amount <= 0) {
+      setErrorSend("Invalid amount");
+    }
   };
 
   return (
@@ -68,6 +84,7 @@ export default function Transfer() {
               />
             </button>
           </div>
+          <p className={style.address}>Balance: {balance} ETH</p>
         </div>
         <br />
         <div className={style.align}>
@@ -76,10 +93,10 @@ export default function Transfer() {
           <input
             type="number"
             value={amount}
-            onChange={setAmountETH}
+            onChange={(e) => setAmount(e.target.value)}
             className="setUpInput"
             id={style.input}
-            placeholder="0.0"
+            placeholder="0.0 ETH"
             min="0"
             autoComplete="off"
           />
@@ -98,7 +115,7 @@ export default function Transfer() {
         </div>
         <div className={style.alignButton}>
           <button
-            onClick={fetch}
+            onClick={validTransaction}
             disabled={isFetching}
             className="setUpBut"
             id={style.button}
@@ -107,11 +124,41 @@ export default function Transfer() {
           </button>
         </div>
         {isFetching === true && (
-            <div className={style.loadingContainer}>
-              <div className={style.loader}></div>
+          <div className={style.loadingContainer}>
+            <div className={style.loader}></div>
+          </div>
+        )}
+        {confirm === true && isFetching === false && (
+          <div className={style.transferConfirm}>
+            <div className={style.alignDiv}>
+              <button
+                onClick={() => setConfirm(false)}
+                className={style.backBut}
+              >
+                <FontAwesomeIcon
+                  icon={faArrowLeft}
+                  color="#800040"
+                  className={style.copyButton}
+                />
+              </button>
+              <p className={style.text}>From: {userETHaddress}</p>
+              <p className={style.text}>To: {to}</p>
+              <p className={style.text}>Amount: {amount} ETH</p>
+              <div className={style.alignButton}>
+                <button
+                  onClick={fetch}
+                  disabled={isFetching}
+                  className="setUpBut"
+                  id={style.button}
+                >
+                  Confirm
+                </button>
+              </div>
             </div>
-          )}
-        {error && <h3>{error.message}</h3>}
+          </div>
+        )}
+        {error && <p className={style.error}>{error.message}</p>}
+        {errorSend && <p className={style.error}>{errorSend}</p>}
       </div>
     </div>
   );

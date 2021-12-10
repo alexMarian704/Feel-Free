@@ -14,28 +14,45 @@ export default function ConfigUser({ setInfo }) {
 
   const setName = () => {
     if (username !== "" && validTag === true) {
-      setUserData({
-        username: username,
-        userTag: tag.toLowerCase(),
-        userNameChange: true,
-        theme: "dark",
-        info:false
-      });
-      setInfo(false)
+      let char = username.split(" ");
+      if (char[1]) {
+        setUserData({
+          username: username,
+          userTag: tag.toLowerCase().replace(/ /g, ""),
+          userNameChange: true,
+          theme: "dark",
+          info: false,
+          searchName: username.toLowerCase(),
+          name: char[0].toLowerCase(),
+          name2: char[1].toLowerCase() ? char[1].toLowerCase() : undefined,
+        });
+      } else {
+        setUserData({
+          username: username,
+          userTag: tag.toLowerCase().replace(/ /g, ""),
+          userNameChange: true,
+          theme: "dark",
+          info: false,
+          searchName: username.toLowerCase(),
+          name: char[0].toLowerCase(),
+          name2: undefined,
+        });
+      }
+      setInfo(false);
       const Tags = Moralis.Object.extend("Tags");
       const tagU = new Tags();
       tagU.set("userTag", tag.toLowerCase());
       tagU.save();
     } else if (username === "") {
       setError("Please enter an username");
-    } else if (tag.length < 4 && tag !== '') {
+    } else if (tag.length < 4 && tag !== "") {
       setError("Tag too short");
       setValidTag(false);
-    } else if (validTag === false && tag === '') {
+    } else if (validTag === false && tag === "") {
       setError("Please enter a tag");
-    }else if (validTag === null && tag ===''){
-        setError("Please enter a tag");
-        setValidTag(false)
+    } else if (validTag === null && tag === "") {
+      setError("Please enter a tag");
+      setValidTag(false);
     }
   };
 
