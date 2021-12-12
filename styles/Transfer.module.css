@@ -147,3 +147,32 @@
     border-radius: 20px;
     transition: all ease-in-out 200ms;
   }
+  .toDiv{
+    position: relative;
+    width: calc(175px + 10vw);
+    height: calc(30px + 1vh);
+    min-width: 200px;
+    min-height: 40px;
+    margin-bottom: 14px;
+    border-radius: 20px;
+  }
+  .deleteBut{
+    height: calc(30px + 1vh);
+    position: absolute;
+    top: 0;
+    right: 20px;
+    outline: none;
+    background-color: transparent;
+    border: none;
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .deleteButHover{
+    transition: all 200ms ease-in-out;
+  }
+  .deleteButHover:hover{
+    color: #800040;
+  }

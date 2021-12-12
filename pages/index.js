@@ -7,7 +7,7 @@ import Head from "next/head";
 import Nav from "../components/Nav";
 
 export default function Home({ name }) {
-  const { isAuthenticated, user, logout } = useMoralis();
+  const { isAuthenticated, user } = useMoralis();
   const [info, setInfo] = useState(null);
   
   if (!isAuthenticated) return <SignIn />;
