@@ -1,0 +1,88 @@
+.loader {
+  border: 15px solid white;
+  border-top: 15px solid #800040;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingContainer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(34, 34, 34, 0.7);
+  border-radius: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imgProfile {
+  position: relative;
+  width: calc(170px + 6vw);
+  margin-bottom: 8px;
+  border-radius: 200px;
+  max-width: 230px;
+  margin-top: 20px;
+  box-shadow: 0px 0px 4px 3px rgba(177, 177, 177, 0.28);
+}
+.img {
+  border-radius: 200px;
+}
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+.change {
+  width: calc(50px);
+  height: calc(50px);
+  border-radius: 40px;
+  border: 3px solid #800040;
+  background: #800040;
+  color: white;
+  transition: all 300ms ease-in-out;
+  cursor: pointer;
+  font-size: 29px;
+  position: absolute;
+  bottom: 17px;
+  right: 17px;
+  padding-top: 3.5px;
+  padding-left: 2px;
+}
+.change:hover{
+    background-color: black;
+    border-color: black;
+}
+.dataUser{
+    width: 80%;
+    min-width: 250px;
+    max-width: 1000px;
+    box-shadow: 0px 0px 2px 2px rgba(177, 177, 177, 0.18);
+    margin-top: 20px;
+    padding: calc(5px + 0.4vw);
+    padding-left: 15px;
+    border: 1px solid rgb(98, 98, 98);
+    border-radius: 18px;
+}
+.address {
+    white-space: nowrap;
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: calc(18px + 0.2vw);
+  }
