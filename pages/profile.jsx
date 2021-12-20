@@ -46,11 +46,12 @@ export default function profile() {
   getBalance(userETHaddress).then((result)=>{
       setBalance(result)
   })
+  //avax chain id 0xa86a
 
   return (
     <div>
       <Head>
-        <title>Transfer</title>
+        <title>Profile</title>
       </Head>
       <Nav />
       <div className="marginDiv"></div>
