@@ -29,6 +29,7 @@ export default function swap() {
   });
   const [vSelect, setVSelect] = useState(false);
   const [amount, setAmount] = useState(0);
+  const [k , setK] = useState(0);
 
   useEffect(() => {
     async function getTokens() {
@@ -81,13 +82,21 @@ export default function swap() {
   };
 
   const selectToken = (token) => {
-    console.log(token);
+    if(k === 1){
+      setFrom(token)
+      setVSelect(false);
+    }else{
+      setTo(token)
+      setVSelect(false);
+    }
   };
 
   const changeToken = (k) => {
     setVSelect(true);
     if (k == 1) {
+      setK(1);
     } else {
+      setK(2)
     }
   };
 
@@ -98,7 +107,7 @@ export default function swap() {
       </Head>
       <Nav />
       <div className="marginDiv"></div>
-      <div className={style.swap}>
+      {vSelect === false && <div className={style.swap}>
         <h2>Swap</h2>
         <div className={style.inputContainer}>
           <input
@@ -147,7 +156,7 @@ export default function swap() {
             Swap
           </button>
         </div>
-      </div>
+      </div>}
       {vSelect === true && (
         <div className={style.tokensContainer}>
           <button className={style.closeBut} onClick={() => setVSelect(false)}>
