@@ -1,5 +1,5 @@
 .swap {
-  width: 60vw;
+  width: 70vw;
   margin: auto;
   background-color: rgb(34, 34, 34);
   height: 25vh;
@@ -70,7 +70,7 @@
   overflow: hidden;
   height: 50vh;
   min-width: 264px;
-  width: 61vw;
+  width: 71vw;
   max-width: 561px;
   overflow-x: hidden;
   border-radius: 18px;

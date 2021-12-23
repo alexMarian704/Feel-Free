@@ -15,21 +15,23 @@ export default function swap() {
   const [coins, setCoins] = useState([]);
   const [to, setTo] = useState({
     address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-    decimals: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    decimals: 6,
     logo: "https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
     name: "USD Coin",
     symbol: "USDC",
   });
   const [from, setFrom] = useState({
     address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-    decimals: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    decimals: 18,
     logo: "https://tokens.1inch.io/0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.png",
     name: "Ethereum",
     symbol: "ETH",
   });
   const [vSelect, setVSelect] = useState(false);
-  const [amount, setAmount] = useState(0);
-  const [k , setK] = useState(0);
+  const [amount, setAmount] = useState("");
+  const [amount2, setAmount2] = useState("");
+  const [k, setK] = useState(0);
+  const [gas , setGas] = useState(0);
 
   useEffect(() => {
     async function getTokens() {
@@ -43,7 +45,7 @@ export default function swap() {
       for (const address in tokens) {
         array.push({
           address: tokens[address].address,
-          decimals: tokens[address].address,
+          decimals: tokens[address].decimals,
           logo: tokens[address].logoURI,
           name: tokens[address].name,
           symbol: tokens[address].symbol,
@@ -53,6 +55,45 @@ export default function swap() {
     }
     getTokens();
   }, []);
+
+  const changeAmount = async (e) => {
+    // setAmount(e)
+    if (Number(e) !== 0) {
+      const quote = await Moralis.Plugins.oneInch.quote({
+        chain: "eth",
+        fromTokenAddress: `${from.address}`,
+        toTokenAddress: `${to.address}`,
+        amount: Moralis.Units.Token(Number(e), from.decimals).toString(),
+      });
+      console.log(quote);
+      setAmount2(
+        (quote.toTokenAmount / 10 ** quote.toToken.decimals).toFixed(7)
+      );
+      setGas(quote.estimatedGas)
+    } else {
+      setAmount2("");
+      setGas(0)
+    }
+  };
+
+  const changeAmount2 = async (e) => {
+    // setAmount2(e)
+    if (Number(e) !== 0) {
+      const quote = await Moralis.Plugins.oneInch.quote({
+        chain: "eth",
+        fromTokenAddress: `${from.address}`,
+        toTokenAddress: `${to.address}`,
+        amount: Moralis.Units.Token(1, from.decimals).toString(),
+      });
+      console.log(quote);
+      let fromToken = (quote.toTokenAmount / 10 ** quote.toToken.decimals).toFixed(7)
+      setAmount(e/fromToken);
+      setGas(quote.estimatedGas)
+    } else {
+      setAmount("");
+      setGas(0);
+    }
+  };
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -82,11 +123,11 @@ export default function swap() {
   };
 
   const selectToken = (token) => {
-    if(k === 1){
-      setFrom(token)
+    if (k === 1) {
+      setFrom(token);
       setVSelect(false);
-    }else{
-      setTo(token)
+    } else {
+      setTo(token);
       setVSelect(false);
     }
   };
@@ -96,7 +137,7 @@ export default function swap() {
     if (k == 1) {
       setK(1);
     } else {
-      setK(2)
+      setK(2);
     }
   };
 
@@ -107,60 +148,73 @@ export default function swap() {
       </Head>
       <Nav />
       <div className="marginDiv"></div>
-      {vSelect === false && <div className={style.swap}>
-        <h2>Swap</h2>
-        <div className={style.inputContainer}>
-          <input
-            type="number"
-            className={style.input}
-            placeholder="0.0"
-            min="0"
-          />
-          <button
-            className={style.selectedToken}
-            onClick={() => changeToken(1)}
-          >
-            <Image
-              src={from.logo}
-              alt={from.name}
-              width="35%"
-              height="35%"
-              className={style.tokenImage}
+      {vSelect === false && (
+        <div className={style.swap}>
+          <h2>Swap</h2>
+          <div className={style.inputContainer}>
+            <input
+              type="number"
+              className={style.input}
+              placeholder="0.0"
+              min="0"
+              value={amount}
+              onBlur={(e) => changeAmount(e.target.value)}
+              onChange={(e)=> setAmount(e.target.value)}
             />
-            <p className={style.text}>{from.symbol}</p>
-          </button>
-        </div>
-        <div className={style.inputContainer}>
-          <input
-            type="number"
-            className={style.input}
-            placeholder="0.0"
-            min="0"
-          />
-          <button
-            className={style.selectedToken}
-            onClick={() => changeToken(2)}
-          >
-            <Image
-              src={to.logo}
-              alt={to.name}
-              width="35%"
-              height="35%"
-              className={style.tokenImage}
+            <button
+              className={style.selectedToken}
+              onClick={() => changeToken(1)}
+            >
+              <Image
+                src={from.logo}
+                alt={from.name}
+                width="35%"
+                height="35%"
+                className={style.tokenImage}
+              />
+              <p className={style.text}>{from.symbol}</p>
+            </button>
+          </div>
+          <div className={style.inputContainer}>
+            <input
+              type="number"
+              className={style.input}
+              placeholder="0.0"
+              min="0"
+              value={amount2}
+              onBlur={(e) => changeAmount2(e.target.value)}
+              onChange={(e)=> setAmount2(e.target.value)}
             />
-            <p className={style.text}>{to.symbol}</p>
-          </button>
+            <button
+              className={style.selectedToken}
+              onClick={() => changeToken(2)}
+            >
+              <Image
+                src={to.logo}
+                alt={to.name}
+                width="35%"
+                height="35%"
+                className={style.tokenImage}
+              />
+              <p className={style.text}>{to.symbol}</p>
+            </button>
+          </div>
+          {gas > 0 && <p>Estimated Gas: {gas}</p>}
+          <div className={style.alignBut}>
+            <button className={style.buttonSwap} onClick={swapToken}>
+              Swap
+            </button>
+          </div>
         </div>
-        <div className={style.alignBut}>
-          <button className={style.buttonSwap} onClick={swapToken}>
-            Swap
-          </button>
-        </div>
-      </div>}
+      )}
       {vSelect === true && (
         <div className={style.tokensContainer}>
           <button className={style.closeBut} onClick={() => setVSelect(false)}>
-            <FontAwesomeIcon icon={faTimes} color="#800040" className={style.closeTime}/>
+            <FontAwesomeIcon
+              icon={faTimes}
+              color="#800040"
+              className={style.closeTime}
+            />
           </button>
           <div className={style.alignContainer}>
             {coins.length > 0 &&
