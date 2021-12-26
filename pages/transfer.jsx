@@ -51,15 +51,11 @@ export default function Transfer() {
 
   let userBalance;
   const getBalance = async () => {
-    const balances = await Moralis.Web3API.account.getTokenBalances({
-      chain:"eth",
-      address: "0x098e7f4ee518da646fe7b758da7254f72a008388",
+    const balances = await Moralis.Web3API.account.getNativeBalance({
+      chain:"mumbai",
+      address: userETHaddress,
     });
-    let i=0;
-    while(balances[i].symbol !== "MATIC"){
-      i++;
-    }
-    userBalance = (balances[i].balance / 1000000000000000000).toFixed(5);
+    userBalance = (balances.balance / 1000000000000000000).toFixed(5);
     setBalance(userBalance);
   };
   getBalance();
@@ -164,7 +160,7 @@ export default function Transfer() {
               </button>
               <p className={style.text}>From: {userETHaddress}</p>
               <p className={style.text}>To: {to}</p>
-              <p className={style.text}>Amount: {amount} ETH</p>
+              <p className={style.text}>Amount: {amount} MATIC</p>
               <div className={style.alignButton}>
                 <button
                   onClick={fetch}

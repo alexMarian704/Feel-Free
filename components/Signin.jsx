@@ -13,11 +13,15 @@ export default function SignIn() {
   const web3 = Moralis.enableWeb3();
 
   const signInFunction = () => {
-    authenticate();
+    authenticate({
+      type:"polygon",
+      signingMessage: "Welcome !",
+    });
   };
 
   const walletConnectSignIn = () => {
     const user = authenticate({
+      type:"polygon",
       provider: "walletconnect",
       signingMessage: "Welcome !",
     });

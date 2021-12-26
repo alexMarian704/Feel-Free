@@ -46,7 +46,6 @@ export default function profile() {
   getBalance(userETHaddress).then((result)=>{
       setBalance(result)
   })
-  //avax chain id 0xa86a
 
   return (
     <div>
@@ -94,7 +93,7 @@ export default function profile() {
           <h2 className={style.address}>Username: {user.get("username")}</h2>
           <h2 className={style.address}>Tag: @{user.get("userTag")}</h2>
           <h2 className={style.address}>Address: {userETHaddress}</h2>
-          <h2 className={style.address}>ETH Balance: {balance}</h2>
+          <h2 className={style.address}>MATIC Balance: {balance}</h2>
         </div>
       </div>
     </div>
