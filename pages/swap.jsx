@@ -14,7 +14,7 @@ export default function swap() {
   const { isAuthenticated, user } = useMoralis();
   const [coins, setCoins] = useState([]);
   const [to, setTo] = useState({
-    address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
     decimals: 6,
     logo: "https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
     name: "USD Coin",
@@ -23,22 +23,22 @@ export default function swap() {
   const [from, setFrom] = useState({
     address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     decimals: 18,
-    logo: "https://tokens.1inch.io/0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.png",
-    name: "Ethereum",
-    symbol: "ETH",
+    logo: "https://tokens.1inch.io/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png",
+    name: "MATIC",
+    symbol: "MATIC",
   });
   const [vSelect, setVSelect] = useState(false);
   const [amount, setAmount] = useState("");
   const [amount2, setAmount2] = useState("");
   const [k, setK] = useState(0);
-  const [gas , setGas] = useState(0);
+  const [gas, setGas] = useState(0);
 
   useEffect(() => {
     async function getTokens() {
       await Moralis.enableWeb3();
       await Moralis.initPlugins();
       const result = await Moralis.Plugins.oneInch.getSupportedTokens({
-        chain: "eth",
+        chain: "polygon",
       });
       let array = [];
       const tokens = result.tokens;
@@ -57,38 +57,37 @@ export default function swap() {
   }, []);
 
   const changeAmount = async (e) => {
-    // setAmount(e)
     if (Number(e) !== 0) {
       const quote = await Moralis.Plugins.oneInch.quote({
-        chain: "eth",
+        chain: "polygon",
         fromTokenAddress: `${from.address}`,
         toTokenAddress: `${to.address}`,
         amount: Moralis.Units.Token(Number(e), from.decimals).toString(),
       });
-      console.log(quote);
       setAmount2(
         (quote.toTokenAmount / 10 ** quote.toToken.decimals).toFixed(7)
       );
-      setGas(quote.estimatedGas)
+      setGas(quote.estimatedGas);
     } else {
       setAmount2("");
-      setGas(0)
+      setGas(0);
     }
   };
 
   const changeAmount2 = async (e) => {
-    // setAmount2(e)
     if (Number(e) !== 0) {
       const quote = await Moralis.Plugins.oneInch.quote({
-        chain: "eth",
+        chain: "polygon",
         fromTokenAddress: `${from.address}`,
         toTokenAddress: `${to.address}`,
         amount: Moralis.Units.Token(1, from.decimals).toString(),
       });
-      console.log(quote);
-      let fromToken = (quote.toTokenAmount / 10 ** quote.toToken.decimals).toFixed(7)
-      setAmount(e/fromToken);
-      setGas(quote.estimatedGas)
+      let fromToken = (
+        quote.toTokenAmount /
+        10 ** quote.toToken.decimals
+      ).toFixed(7);
+      setAmount(e / fromToken);
+      setGas(quote.estimatedGas);
     } else {
       setAmount("");
       setGas(0);
@@ -107,7 +106,7 @@ export default function swap() {
   const userETHaddress = user.get("ethAddress");
 
   const options = {
-    chain: "eth",
+    chain: "polygon",
     fromTokenAddress: `${from.address}`,
     toTokenAddress: `${to.address}`,
     amount: Moralis.Units.ETH(Number(amount)),
@@ -125,10 +124,17 @@ export default function swap() {
   const selectToken = (token) => {
     if (k === 1) {
       setFrom(token);
+      console.log(token);
       setVSelect(false);
+      setAmount("");
+      setAmount2("");
+      setGas(0);
     } else {
       setTo(token);
       setVSelect(false);
+      setAmount("");
+      setAmount2("");
+      setGas(0);
     }
   };
 
@@ -159,7 +165,7 @@ export default function swap() {
               min="0"
               value={amount}
               onBlur={(e) => changeAmount(e.target.value)}
-              onChange={(e)=> setAmount(e.target.value)}
+              onChange={(e) => setAmount(e.target.value)}
             />
             <button
               className={style.selectedToken}
@@ -183,7 +189,7 @@ export default function swap() {
               min="0"
               value={amount2}
               onBlur={(e) => changeAmount2(e.target.value)}
-              onChange={(e)=> setAmount2(e.target.value)}
+              onChange={(e) => setAmount2(e.target.value)}
             />
             <button
               className={style.selectedToken}

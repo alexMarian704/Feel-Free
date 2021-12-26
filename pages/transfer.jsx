@@ -25,9 +25,10 @@ export default function Transfer() {
   const [balance, setBalance] = useState(0);
 
   const { fetch, error, isFetching } = useWeb3Transfer({
-    amount: Moralis.Units.ETH(Number(amount)),
+    amount: Moralis.Units.Token(Number(amount) , "18"),
     receiver: to,
-    type: "native",
+    type: "erc20",
+    contractAddress:"0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"
   });
 
   useEffect(() => {
@@ -50,10 +51,15 @@ export default function Transfer() {
 
   let userBalance;
   const getBalance = async () => {
-    const balances = await Moralis.Web3API.account.getNativeBalance({
-      address: userETHaddress,
+    const balances = await Moralis.Web3API.account.getTokenBalances({
+      chain:"eth",
+      address: "0x098e7f4ee518da646fe7b758da7254f72a008388",
     });
-    userBalance = (balances.balance / 1000000000000000000).toFixed(5);
+    let i=0;
+    while(balances[i].symbol !== "MATIC"){
+      i++;
+    }
+    userBalance = (balances[i].balance / 1000000000000000000).toFixed(5);
     setBalance(userBalance);
   };
   getBalance();
@@ -82,7 +88,7 @@ export default function Transfer() {
       <div className="marginDiv"></div>
       <div className={style.transfer}>
         <div className={style.align}>
-          <p className={style.label}>Your ETH address</p>
+          <p className={style.label}>Your MATIC address</p>
           <div className={style.addressContainer}>
             <p className={style.address}>{userETHaddress}</p>
             <button onClick={CopyFunction}>
@@ -93,7 +99,7 @@ export default function Transfer() {
               />
             </button>
           </div>
-          <p className={style.address}>Balance: {balance} ETH</p>
+          <p className={style.address}>Balance: {balance} MATIC</p>
         </div>
         <br />
         <div className={style.align}>
@@ -103,9 +109,9 @@ export default function Transfer() {
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="setUpInput"
+            //className="setUpInput"
             id={style.input}
-            placeholder="0.0 ETH"
+            placeholder="0.0 MATIC"
             min="0"
             autoComplete="off"
           />
@@ -118,7 +124,8 @@ export default function Transfer() {
               type="text"
               value={to}
               onChange={(e) => setTo(e.target.value)}
-              className="setUpInput"
+              // className="setUpInput"
+              placeholder="To"
               id={style.input}
               autoComplete="off"
             />
