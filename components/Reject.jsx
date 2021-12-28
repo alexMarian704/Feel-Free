@@ -10,7 +10,7 @@ export default function Reject() {
       </Head>
       <div className="setUp">
         <h2 className="setUpTitle">You are not signed in</h2>
-        <Link href="/">Sign In</Link>
+        <Link href="/"><p className="configLink">Sign In</p></Link>
       </div>
     </div>
   );

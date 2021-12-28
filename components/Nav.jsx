@@ -5,11 +5,17 @@ import { useMoralis } from "react-moralis";
 import useWindowDimensions from "../function/width";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
+import polygon from "../public/polygon.jpg";
+import binance from "../public/binance.png";
+import ethereum from "../public/ethereum.png";
 
 export default function Nav() {
-  const { isAuthenticated, logout } = useMoralis();
+  const { isAuthenticated, logout, setUserData } = useMoralis();
   const [navIn, setNavIn] = useState("in");
   const router = useRouter();
+  const [chain, setChain] = useState("");
+  const [chainOption, setChainOption] = useState(false);
 
   const logOutUser = () => {
     logout();
@@ -30,13 +36,13 @@ export default function Nav() {
 
   return (
     <nav className="nav-in" id="nav">
-      {width < 621 && navIn === "out" && (
+      {width < 711 && navIn === "out" && (
         <button className="close-nav" onClick={changeNav}>
           <FontAwesomeIcon icon={faTimes} color="#800040" />
         </button>
       )}
 
-      {width < 621 && navIn === "in" && (
+      {width < 711 && navIn === "in" && (
         <button className="open-nav" onClick={changeNavOut}>
           <FontAwesomeIcon icon={faBars} color="#800040" />
         </button>
@@ -58,9 +64,58 @@ export default function Nav() {
         <Link href="/profile">
           <h2>Profile</h2>
         </Link>
+        <div className="dropdown">
+          <div
+            className="dropbtn"
+            onClick={() => {
+              if (chainOption === false) {
+                document.getElementsByClassName("dropdown-content")[0].id = "out-dropdown";
+                setChainOption(true)
+              } else {
+                document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
+                setChainOption(false);
+              }
+            }}
+          >
+            {" "}
+            <Image src={ethereum} width="35" height="35" />
+            Ethereum
+          </div>
+          <div className="dropdown-content" id="in-dropdown">
+            <a>
+              <Image
+                src={ethereum}
+                width="35"
+                height="35"
+                className="dropdown-image"
+              />{" "}
+              Ethereum
+            </a>
+            <a>
+              <Image
+                src={binance}
+                width="35"
+                height="35"
+                className="dropdown-image"
+              />{" "}
+              Binance
+            </a>
+            <a>
+              <Image
+                src={polygon}
+                width="35"
+                height="35"
+                className="dropdown-image"
+              />{" "}
+              Polygon
+            </a>
+          </div>
+        </div>
       </div>
       <div>
-        <button onClick={logOutUser}>Log out</button>
+        <button onClick={logOutUser} className="logOutNav">
+          Log out
+        </button>
       </div>
     </nav>
   );

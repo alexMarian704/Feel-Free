@@ -126,7 +126,7 @@ export default function Transfer() {
               autoComplete="off"
             />
             <button className={style.deleteBut} onClick={()=> setTo("")}>
-              <FontAwesomeIcon icon={faTimes} color="white"  className={style.deleteButHover}/>
+              <FontAwesomeIcon icon={faTimes} color="#800040"  className={style.deleteButHover}/>
             </button>
           </div>
         </div>

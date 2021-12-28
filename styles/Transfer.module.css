@@ -1,8 +1,8 @@
 .transfer {
-  width: 80vw;
+  width: 60vw;
   margin: auto;
   background-color: rgb(34, 34, 34);
-  height: 35vh;
+  height: 27vh;
   border-radius: 18px;
   box-shadow: 0px 0px 3px 1px rgba(177, 177, 177, 0.20);
   max-width: 700px;
@@ -12,7 +12,7 @@
   padding-top: 30px;
   border: 1px solid rgb(98, 98, 98);
   position: relative;
-  min-height: 420px;
+  min-height: 400px;
 }
 
 .address {
@@ -191,5 +191,17 @@
   transition: all 200ms ease-in-out;
 }
 .deleteButHover:hover {
-  color: #800040;
+  color: #ffffff;
+}
+
+@media only screen and (max-width: 620px) {
+  .transfer{
+    width: 95vw;
+  }
+  .align{
+    width: 70vw;
+  }
+  .toDiv{
+    width: 70vw;
+  }
 }

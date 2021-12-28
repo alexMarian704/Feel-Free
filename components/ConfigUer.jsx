@@ -25,6 +25,7 @@ export default function ConfigUser({ setInfo }) {
           searchName: username.toLowerCase(),
           name: char[0].toLowerCase(),
           name2: char[1].toLowerCase() ? char[1].toLowerCase() : undefined,
+          chain:"eth"
         });
       } else {
         setUserData({
@@ -36,6 +37,7 @@ export default function ConfigUser({ setInfo }) {
           searchName: username.toLowerCase(),
           name: char[0].toLowerCase(),
           name2: undefined,
+          chain:"eth"
         });
       }
       setInfo(false);

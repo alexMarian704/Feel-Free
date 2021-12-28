@@ -10,12 +10,13 @@ import style from "../styles/Profile.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { getBalance } from "../function/balance";
+import ProfilePicture from "../public/profile.jpg";
 
 export default function profile() {
   const { isAuthenticated, user, setUserData } = useMoralis();
   const fileRef = useRef();
   const [loading, setLoading] = useState(false);
-  const [balance , setBalance] = useState(0);
+  const [balance, setBalance] = useState(0);
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -43,9 +44,9 @@ export default function profile() {
   };
 
   const userETHaddress = user.get("ethAddress");
-  getBalance(userETHaddress).then((result)=>{
-      setBalance(result)
-  })
+  getBalance(userETHaddress).then((result) => {
+    setBalance(result);
+  });
 
   return (
     <div>
@@ -59,6 +60,17 @@ export default function profile() {
           {user.get("profilePhoto") !== undefined && (
             <Image
               src={user.get("profilePhoto")}
+              alt="profilePhoto"
+              width="90%"
+              height="90%"
+              layout="responsive"
+              objectFit="contain"
+              className={style.img}
+            />
+          )}
+          {user.get("profilePhoto") === undefined && (
+            <Image
+              src={ProfilePicture}
               alt="profilePhoto"
               width="90%"
               height="90%"
