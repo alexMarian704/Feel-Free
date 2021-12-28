@@ -14,14 +14,12 @@ export default function SignIn() {
 
   const signInFunction = () => {
     authenticate({
-      type:"polygon",
       signingMessage: "Welcome !",
     });
   };
 
   const walletConnectSignIn = () => {
     const user = authenticate({
-      type:"polygon",
       provider: "walletconnect",
       signingMessage: "Welcome !",
     });

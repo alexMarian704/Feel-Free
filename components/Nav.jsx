@@ -11,11 +11,14 @@ import binance from "../public/binance.png";
 import ethereum from "../public/ethereum.png";
 
 export default function Nav() {
-  const { isAuthenticated, logout, setUserData } = useMoralis();
+  const { isAuthenticated, logout, setUserData , user } = useMoralis();
+  const chainUser = user.get("chain")
   const [navIn, setNavIn] = useState("in");
   const router = useRouter();
   const [chain, setChain] = useState("");
   const [chainOption, setChainOption] = useState(false);
+  const [name , setName] = useState(chainUser === "eth" ?  "Ethereum" : chainUser === "bsc" ? "Binance" : "Polygon")
+  const [imageLink , setImageLink] = useState(chainUser === "eth" ?  ethereum : chainUser === "bsc" ? binance : polygon)
 
   const logOutUser = () => {
     logout();
@@ -32,6 +35,37 @@ export default function Nav() {
   const changeNavOut = () => {
     document.getElementById("nav").className = "nav-out";
     setNavIn("out");
+  };
+
+  const changeChain = (x) => {
+    if (x === "eth") {
+      setChain("eth");
+      document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
+      setChainOption(false);
+      setName("Ethereum")
+      setImageLink(ethereum)
+      setUserData({
+        chain:"eth"
+      })
+    } else if (x === "bsc") {
+      setChain("bsc");
+      document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
+      setChainOption(false);
+      setName("Binance")
+      setImageLink(binance)
+      setUserData({
+        chain:"bsc"
+      })
+    } else {
+      setChain("polygon");
+      document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
+      setChainOption(false);
+      setName("Polygon")
+      setImageLink(polygon)
+      setUserData({
+        chain:"polygon"
+      })
+    }
   };
 
   return (
@@ -69,20 +103,22 @@ export default function Nav() {
             className="dropbtn"
             onClick={() => {
               if (chainOption === false) {
-                document.getElementsByClassName("dropdown-content")[0].id = "out-dropdown";
-                setChainOption(true)
+                document.getElementsByClassName("dropdown-content")[0].id =
+                  "out-dropdown";
+                setChainOption(true);
               } else {
-                document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
+                document.getElementsByClassName("dropdown-content")[0].id =
+                  "in-dropdown";
                 setChainOption(false);
               }
             }}
           >
             {" "}
-            <Image src={ethereum} width="35" height="35" />
-            Ethereum
+            <Image src={imageLink} width="35" height="35"  className="dropdown-image"/>
+            {name}
           </div>
           <div className="dropdown-content" id="in-dropdown">
-            <a>
+            <a onClick={() => changeChain("eth")}>
               <Image
                 src={ethereum}
                 width="35"
@@ -91,7 +127,7 @@ export default function Nav() {
               />{" "}
               Ethereum
             </a>
-            <a>
+            <a onClick={() => changeChain("bsc")}>
               <Image
                 src={binance}
                 width="35"
@@ -100,7 +136,7 @@ export default function Nav() {
               />{" "}
               Binance
             </a>
-            <a>
+            <a onClick={() => changeChain("polygon")}>
               <Image
                 src={polygon}
                 width="35"
