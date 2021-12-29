@@ -65,13 +65,13 @@ export default function Transfer() {
   };
 
   const validTransaction = () => {
-    if (amount > 0 && web3.utils.isAddress(to)) {
+    if (amount > 0 && web3.utils.isAddress(to) && amount <= balance) {
       setConfirm(true);
       setErrorSend("");
-    } else if (amount <= 0) {
+    } else if (amount <= 0 || amount > balance) {
       setErrorSend("Invalid amount");
     } else if (web3.utils.isAddress(to) === false) {
-      setErrorSend("Invalid ethereum address");
+      setErrorSend("Invalid address");
     }
   };
 

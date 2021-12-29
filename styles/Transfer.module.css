@@ -9,10 +9,10 @@
   min-width: 263px;
   margin-top: 80px;
   padding: calc(20px + 1vw);
-  padding-top: 30px;
+  padding-top: 10px;
   border: 1px solid rgb(98, 98, 98);
   position: relative;
-  min-height: 400px;
+  min-height: 420px;
 }
 
 .address {
@@ -71,6 +71,7 @@
   color: white;
   font-weight: 700;
   font-size: 18px;
+  padding-right: 50px;
 }
 
 #button {
@@ -174,24 +175,26 @@
   border-radius: 20px;
 }
 .deleteBut {
-  height: calc(40px + 1vh);
+  height: calc(20px + 1vh);
+  width: calc(20px + 1vh);
   position: absolute;
-  top: 0;
-  right: 20px;
+  top: 10px;
+  right: 10px;
   outline: none;
-  background-color: transparent;
+  background-color: white;
   border: none;
   font-size: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  border-radius: 50%;
 }
 .deleteButHover {
   transition: all 200ms ease-in-out;
 }
 .deleteButHover:hover {
-  color: #ffffff;
+  color: #000000;
 }
 
 @media only screen and (max-width: 620px) {

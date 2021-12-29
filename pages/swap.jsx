@@ -9,6 +9,7 @@ import Image from "next/image";
 import style from "../styles/Swap.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import data from "../data/swapdata";
 
 export default function swap() {
   const { isAuthenticated, user } = useMoralis();
@@ -33,33 +34,60 @@ export default function swap() {
   const [k, setK] = useState(0);
   const [gas, setGas] = useState(0);
 
+  let selectedChain;
+  if (user) {
+    selectedChain = user.get("chain");
+  }
+
   useEffect(() => {
-    async function getTokens() {
-      await Moralis.enableWeb3();
-      await Moralis.initPlugins();
-      const result = await Moralis.Plugins.oneInch.getSupportedTokens({
-        chain: "polygon",
-      });
-      let array = [];
-      const tokens = result.tokens;
-      for (const address in tokens) {
-        array.push({
-          address: tokens[address].address,
-          decimals: tokens[address].decimals,
-          logo: tokens[address].logoURI,
-          name: tokens[address].name,
-          symbol: tokens[address].symbol,
-        });
+    if (user) {
+      if(selectedChain === "eth"){
+        setFrom(data[2][0]);
+        setTo(data[2][1]);
+      }else if(selectedChain === "bsc"){
+        setFrom(data[1][0]);
+        setTo(data[1][1]);
+      }else{
+        setFrom(data[0][1]);
+        setTo(data[0][0]);
       }
-      setCoins([...array]);
+      async function getTokens() {
+        await Moralis.enableWeb3();
+        await Moralis.initPlugins();
+        const result = await Moralis.Plugins.oneInch.getSupportedTokens({
+          chain:
+            selectedChain === "eth"
+              ? "eth"
+              : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        });
+        let array = [];
+        const tokens = result.tokens;
+        for (const address in tokens) {
+          array.push({
+            address: tokens[address].address,
+            decimals: tokens[address].decimals,
+            logo: tokens[address].logoURI,
+            name: tokens[address].name,
+            symbol: tokens[address].symbol,
+          });
+        }
+        setCoins([...array]);
+      }
+      getTokens();
     }
-    getTokens();
-  }, []);
+  }, [user, selectedChain]);
 
   const changeAmount = async (e) => {
     if (Number(e) !== 0) {
       const quote = await Moralis.Plugins.oneInch.quote({
-        chain: "polygon",
+        chain:
+          selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+            ? "bsc"
+            : "polygon",
         fromTokenAddress: `${from.address}`,
         toTokenAddress: `${to.address}`,
         amount: Moralis.Units.Token(Number(e), from.decimals).toString(),
@@ -77,7 +105,12 @@ export default function swap() {
   const changeAmount2 = async (e) => {
     if (Number(e) !== 0) {
       const quote = await Moralis.Plugins.oneInch.quote({
-        chain: "polygon",
+        chain:
+          selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+            ? "bsc"
+            : "polygon",
         fromTokenAddress: `${from.address}`,
         toTokenAddress: `${to.address}`,
         amount: Moralis.Units.Token(1, from.decimals).toString(),
@@ -106,7 +139,12 @@ export default function swap() {
   const userETHaddress = user.get("ethAddress");
 
   const options = {
-    chain: "polygon",
+    chain:
+      selectedChain === "eth"
+        ? "eth"
+        : selectedChain === "bsc"
+        ? "bsc"
+        : "polygon",
     fromTokenAddress: `${from.address}`,
     toTokenAddress: `${to.address}`,
     amount: Moralis.Units.ETH(Number(amount)),
@@ -124,7 +162,6 @@ export default function swap() {
   const selectToken = (token) => {
     if (k === 1) {
       setFrom(token);
-      console.log(token);
       setVSelect(false);
       setAmount("");
       setAmount2("");
