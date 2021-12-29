@@ -25,10 +25,10 @@ export default function Transfer() {
   const [balance, setBalance] = useState(0);
 
   const { fetch, error, isFetching } = useWeb3Transfer({
-    amount: Moralis.Units.Token(Number(amount) , "18"),
+    amount: Moralis.Units.Token(Number(amount), "18"),
     receiver: to,
     type: "erc20",
-    contractAddress:"0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"
+    contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
   });
 
   useEffect(() => {
@@ -48,11 +48,17 @@ export default function Transfer() {
   }
 
   const userETHaddress = user.get("ethAddress");
+  const selectedChain = user.get("chain");
 
   let userBalance;
   const getBalance = async () => {
     const balances = await Moralis.Web3API.account.getNativeBalance({
-      chain:"mumbai",
+      chain:
+        selectedChain === "eth"
+          ? "0x4"
+          : selectedChain === "bsc"
+          ? "0x61"
+          : "mumbai",
       address: userETHaddress,
     });
     userBalance = (balances.balance / 1000000000000000000).toFixed(5);
@@ -95,7 +101,11 @@ export default function Transfer() {
               />
             </button>
           </div>
-          <p className={style.address}>Balance: {balance} MATIC</p>
+          <p className={style.address}>Balance: {balance} {selectedChain === "eth"
+        ? "ETH"
+        : selectedChain === "bsc"
+        ? "BNB"
+        : "MATIC"}</p>
         </div>
         <br />
         <div className={style.align}>
@@ -105,9 +115,12 @@ export default function Transfer() {
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            //className="setUpInput"
             id={style.input}
-            placeholder="0.0 MATIC"
+            placeholder={selectedChain === "eth"
+            ? "0.0 ETH"
+            : selectedChain === "bsc"
+            ? "0.0 BNB"
+            : "0.0 MATIC"}
             min="0"
             autoComplete="off"
           />
@@ -125,8 +138,12 @@ export default function Transfer() {
               id={style.input}
               autoComplete="off"
             />
-            <button className={style.deleteBut} onClick={()=> setTo("")}>
-              <FontAwesomeIcon icon={faTimes} color="#800040"  className={style.deleteButHover}/>
+            <button className={style.deleteBut} onClick={() => setTo("")}>
+              <FontAwesomeIcon
+                icon={faTimes}
+                color="#800040"
+                className={style.deleteButHover}
+              />
             </button>
           </div>
         </div>

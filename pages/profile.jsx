@@ -44,6 +44,7 @@ export default function profile() {
   };
 
   const userETHaddress = user.get("ethAddress");
+  const selectedChain = user.get("chain")
   getBalance(userETHaddress).then((result) => {
     setBalance(result);
   });
@@ -105,7 +106,11 @@ export default function profile() {
           <h2 className={style.address}>Username: {user.get("username")}</h2>
           <h2 className={style.address}>Tag: @{user.get("userTag")}</h2>
           <h2 className={style.address}>Address: {userETHaddress}</h2>
-          <h2 className={style.address}>MATIC Balance: {balance}</h2>
+          <h2 className={style.address}>{selectedChain === "eth"
+            ? "ETH"
+            : selectedChain === "bsc"
+            ? "BNB"
+            : "MATIC"} Balance: {balance}</h2>
         </div>
       </div>
     </div>
