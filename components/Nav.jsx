@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useMoralis } from "react-moralis";
+import { useMoralis , useChain } from "react-moralis";
 import useWindowDimensions from "../function/width";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +19,7 @@ export default function Nav() {
   const [chainOption, setChainOption] = useState(false);
   const [name , setName] = useState(chainUser === "eth" ?  "Ethereum" : chainUser === "bsc" ? "Binance" : "Polygon")
   const [imageLink , setImageLink] = useState(chainUser === "eth" ?  ethereum : chainUser === "bsc" ? binance : polygon)
+  const { switchNetwork } = useChain();
 
   const logOutUser = () => {
     logout();
@@ -47,6 +48,7 @@ export default function Nav() {
       setUserData({
         chain:"eth"
       })
+      switchNetwork("0x1")
     } else if (x === "bsc") {
       setChain("bsc");
       document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
@@ -56,6 +58,7 @@ export default function Nav() {
       setUserData({
         chain:"bsc"
       })
+      switchNetwork("0x38")
     } else {
       setChain("polygon");
       document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
@@ -65,6 +68,7 @@ export default function Nav() {
       setUserData({
         chain:"polygon"
       })
+      switchNetwork("0x89")
     }
   };
 
