@@ -189,7 +189,7 @@ export default function swap() {
       <Head>
         <title>Swap</title>
       </Head>
-      <Nav />
+      <Nav balance={false}/>
       <div className="marginDiv"></div>
       {vSelect === false && (
         <div className={style.swap}>

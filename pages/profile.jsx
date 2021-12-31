@@ -17,6 +17,7 @@ export default function profile() {
   const fileRef = useRef();
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [fetchBalance, setFetchBalance] = useState(false);
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -44,17 +45,20 @@ export default function profile() {
   };
 
   const userETHaddress = user.get("ethAddress");
-  const selectedChain = user.get("chain")
-  getBalance(userETHaddress).then((result) => {
-    setBalance(result);
-  });
+  const selectedChain = user.get("chain");
+  if (fetchBalance === false) {
+    getBalance(userETHaddress).then((result) => {
+      setBalance(result);
+      setFetchBalance(true);
+    });
+  }
 
   return (
     <div>
       <Head>
         <title>Profile</title>
       </Head>
-      <Nav />
+      <Nav getBalance={getBalance} userETHaddress={userETHaddress} setBalance={setBalance} balance={true}/>
       <div className="marginDiv"></div>
       <div className={style.main}>
         <div className={style.imgProfile}>
@@ -106,11 +110,14 @@ export default function profile() {
           <h2 className={style.address}>Username: {user.get("username")}</h2>
           <h2 className={style.address}>Tag: @{user.get("userTag")}</h2>
           <h2 className={style.address}>Address: {userETHaddress}</h2>
-          <h2 className={style.address}>{selectedChain === "eth"
-            ? "ETH"
-            : selectedChain === "bsc"
-            ? "BNB"
-            : "MATIC"} Balance: {balance}</h2>
+          <h2 className={style.address}>
+            {selectedChain === "eth"
+              ? "ETH"
+              : selectedChain === "bsc"
+              ? "BNB"
+              : "MATIC"}{" "}
+            Balance: {balance}
+          </h2>
         </div>
       </div>
     </div>

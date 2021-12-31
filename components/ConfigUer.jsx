@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export default function ConfigUser({ setInfo }) {
-  const { logout, setUserData } = useMoralis();
+  const { logout, setUserData , user } = useMoralis();
   const [username, setUsername] = useState("");
   const [tag, setTag] = useState("");
   const [validTag, setValidTag] = useState(null);
@@ -43,8 +43,15 @@ export default function ConfigUser({ setInfo }) {
       setInfo(false);
       const Tags = Moralis.Object.extend("Tags");
       const tagU = new Tags();
-      tagU.set("userTag", tag.toLowerCase());
+      tagU.set("userTag", tag.toLowerCase().replace(/ /g, ""));
       tagU.save();
+      tagU.set("ethAddress", user.get("ethAddress"));
+      tagU.save();
+      tagU.set("searchName", username.toLowerCase());
+      tagU.save();
+      tagU.set("name", char[0].toLowerCase());
+      tagU.save();
+      
     } else if (username === "") {
       setError("Please enter an username");
     } else if (tag.length < 4 && tag !== "") {

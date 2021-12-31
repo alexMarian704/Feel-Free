@@ -13,6 +13,7 @@ import {
   faArrowLeft,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+import { getBalance } from "../function/balance";
 
 export default function Transfer() {
   const [amount, setAmount] = useState("");
@@ -23,12 +24,16 @@ export default function Transfer() {
   const router = useRouter();
   const [confirm, setConfirm] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [fetchBalance, setFetchBalance] = useState(false);
+  const [toTag, setToTag] = useState("");
+  let selectedChain;
+  if (user) selectedChain = user.get("chain");
 
   const { fetch, error, isFetching } = useWeb3Transfer({
-    amount: Moralis.Units.Token(Number(amount), "18"),
+    amount: Moralis.Units.ETH(Number(amount)),
     receiver: to,
-    type: "erc20",
-    contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
+    type: "native",
+    // contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
   });
 
   useEffect(() => {
@@ -48,36 +53,47 @@ export default function Transfer() {
   }
 
   const userETHaddress = user.get("ethAddress");
-  const selectedChain = user.get("chain");
-
-  let userBalance;
-  const getBalance = async () => {
-    const balances = await Moralis.Web3API.account.getNativeBalance({
-      chain:
-        selectedChain === "eth"
-          ? "0x4"
-          : selectedChain === "bsc"
-          ? "0x61"
-          : "mumbai",
-      address: userETHaddress,
+  if (fetchBalance === false) {
+    getBalance(userETHaddress).then((result) => {
+      setBalance(result);
+      setFetchBalance(true);
     });
-    userBalance = (balances.balance / 1000000000000000000).toFixed(5);
-    setBalance(userBalance);
-  };
-  getBalance();
+  }
 
   const CopyFunction = () => {
     navigator.clipboard.writeText(userETHaddress);
   };
 
   const validTransaction = () => {
-    if (amount > 0 && web3.utils.isAddress(to) && amount <= balance) {
-      setConfirm(true);
-      setErrorSend("");
-    } else if (amount <= 0 || amount > balance) {
-      setErrorSend("Invalid amount");
-    } else if (web3.utils.isAddress(to) === false) {
-      setErrorSend("Invalid address");
+    if (to[0] !== "@") {
+      if (amount > 0 && web3.utils.isAddress(to) && amount <= balance) {
+        setConfirm(true);
+        setErrorSend("");
+      } else if (amount <= 0 || amount > balance) {
+        setErrorSend("Invalid amount");
+      } else if (web3.utils.isAddress(to) === false) {
+        setErrorSend("Invalid address");
+      }
+    } else {
+      if (amount > 0 && amount <= balance) {
+        const getTag = async () => {
+          const addressToTag = Moralis.Object.extend("Tags");
+          const query = new Moralis.Query(addressToTag);
+          query.equalTo("userTag", to.replace("@", ""));
+          const results = await query.first();
+          if (results !== undefined) {
+            setTo(results.attributes.ethAddress);
+            setToTag(to);
+            setConfirm(true);
+            setErrorSend("");
+          } else {
+            setErrorSend("Invalid tag");
+          }
+        };
+        getTag();
+      } else {
+        setErrorSend("Invalid amount");
+      }
     }
   };
 
@@ -86,11 +102,24 @@ export default function Transfer() {
       <Head>
         <title>Transfer</title>
       </Head>
-      <Nav />
+      <Nav
+        getBalance={getBalance}
+        userETHaddress={userETHaddress}
+        setBalance={setBalance}
+        balance={true}
+      />
       <div className="marginDiv"></div>
       <div className={style.transfer}>
         <div className={style.align}>
-          <p className={style.label}>Your MATIC address</p>
+          <p className={style.label}>
+            Your{" "}
+            {selectedChain === "eth"
+              ? "ETH"
+              : selectedChain === "bsc"
+              ? "BNB"
+              : "MATIC"}{" "}
+            address
+          </p>
           <div className={style.addressContainer}>
             <p className={style.address}>{userETHaddress}</p>
             <button onClick={CopyFunction}>
@@ -101,11 +130,14 @@ export default function Transfer() {
               />
             </button>
           </div>
-          <p className={style.address}>Balance: {balance} {selectedChain === "eth"
-        ? "ETH"
-        : selectedChain === "bsc"
-        ? "BNB"
-        : "MATIC"}</p>
+          <p className={style.address}>
+            Balance: {balance}{" "}
+            {selectedChain === "eth"
+              ? "ETH"
+              : selectedChain === "bsc"
+              ? "BNB"
+              : "MATIC"}
+          </p>
         </div>
         <br />
         <div className={style.align}>
@@ -116,11 +148,13 @@ export default function Transfer() {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             id={style.input}
-            placeholder={selectedChain === "eth"
-            ? "0.0 ETH"
-            : selectedChain === "bsc"
-            ? "0.0 BNB"
-            : "0.0 MATIC"}
+            placeholder={
+              selectedChain === "eth"
+                ? "0.0 ETH"
+                : selectedChain === "bsc"
+                ? "0.0 BNB"
+                : "0.0 MATIC"
+            }
             min="0"
             autoComplete="off"
           />
@@ -134,7 +168,7 @@ export default function Transfer() {
               value={to}
               onChange={(e) => setTo(e.target.value)}
               // className="setUpInput"
-              placeholder="To"
+              placeholder="Address or tag"
               id={style.input}
               autoComplete="off"
             />
@@ -177,7 +211,15 @@ export default function Transfer() {
               </button>
               <p className={style.text}>From: {userETHaddress}</p>
               <p className={style.text}>To: {to}</p>
-              <p className={style.text}>Amount: {amount} MATIC</p>
+              {toTag && <p className={style.text}>Tag: {toTag}</p>}
+              <p className={style.text}>
+                Amount: {amount}{" "}
+                {selectedChain === "eth"
+                  ? "ETH"
+                  : selectedChain === "bsc"
+                  ? "BNB"
+                  : "MATIC"}
+              </p>
               <div className={style.alignButton}>
                 <button
                   onClick={fetch}

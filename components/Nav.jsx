@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useMoralis , useChain } from "react-moralis";
+import { useMoralis, useChain } from "react-moralis";
 import useWindowDimensions from "../function/width";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
@@ -10,15 +10,28 @@ import polygon from "../public/polygon.jpg";
 import binance from "../public/binance.png";
 import ethereum from "../public/ethereum.png";
 
-export default function Nav() {
-  const { isAuthenticated, logout, setUserData , user } = useMoralis();
-  const chainUser = user.get("chain")
+export default function Nav({
+  getBalance,
+  userETHaddress,
+  setBalance,
+  balance,
+}) {
+  const { isAuthenticated, logout, setUserData, user } = useMoralis();
+  const chainUser = user.get("chain");
   const [navIn, setNavIn] = useState("in");
   const router = useRouter();
   const [chain, setChain] = useState("");
   const [chainOption, setChainOption] = useState(false);
-  const [name , setName] = useState(chainUser === "eth" ?  "Ethereum" : chainUser === "bsc" ? "Binance" : "Polygon")
-  const [imageLink , setImageLink] = useState(chainUser === "eth" ?  ethereum : chainUser === "bsc" ? binance : polygon)
+  const [name, setName] = useState(
+    chainUser === "eth"
+      ? "Ethereum"
+      : chainUser === "bsc"
+      ? "Binance"
+      : "Polygon"
+  );
+  const [imageLink, setImageLink] = useState(
+    chainUser === "eth" ? ethereum : chainUser === "bsc" ? binance : polygon
+  );
   const { switchNetwork } = useChain();
 
   const logOutUser = () => {
@@ -43,32 +56,47 @@ export default function Nav() {
       setChain("eth");
       document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
       setChainOption(false);
-      setName("Ethereum")
-      setImageLink(ethereum)
+      setName("Ethereum");
+      setImageLink(ethereum);
       setUserData({
-        chain:"eth"
-      })
-      switchNetwork("0x1")
+        chain: "eth",
+      });
+      //0x1 eth mainnet
+      switchNetwork("0x4");
+      if (balance === true)
+        getBalance(userETHaddress).then((result) => {
+          setBalance(result);
+        });
     } else if (x === "bsc") {
       setChain("bsc");
       document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
       setChainOption(false);
-      setName("Binance")
-      setImageLink(binance)
+      setName("Binance");
+      setImageLink(binance);
       setUserData({
-        chain:"bsc"
-      })
-      switchNetwork("0x38")
+        chain: "bsc",
+      });
+      //0x38 bsc mainnet
+      switchNetwork("0x61");
+      if (balance === true)
+        getBalance(userETHaddress).then((result) => {
+          setBalance(result);
+        });
     } else {
       setChain("polygon");
       document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
       setChainOption(false);
-      setName("Polygon")
-      setImageLink(polygon)
+      setName("Polygon");
+      setImageLink(polygon);
       setUserData({
-        chain:"polygon"
-      })
-      switchNetwork("0x89")
+        chain: "polygon",
+      });
+      //0x89 polygon mainnet
+      switchNetwork("0x13881");
+      if (balance === true)
+        getBalance(userETHaddress).then((result) => {
+          setBalance(result);
+        });
     }
   };
 
@@ -118,7 +146,12 @@ export default function Nav() {
             }}
           >
             {" "}
-            <Image src={imageLink} width="35" height="35"  className="dropdown-image"/>
+            <Image
+              src={imageLink}
+              width="35"
+              height="35"
+              className="dropdown-image"
+            />
             {name}
           </div>
           <div className="dropdown-content" id="in-dropdown">
