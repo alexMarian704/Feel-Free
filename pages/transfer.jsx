@@ -69,6 +69,7 @@ export default function Transfer() {
       if (amount > 0 && web3.utils.isAddress(to) && amount <= balance) {
         setConfirm(true);
         setErrorSend("");
+        setToTag("");
       } else if (amount <= 0 || amount > balance) {
         setErrorSend("Invalid amount");
       } else if (web3.utils.isAddress(to) === false) {
@@ -96,6 +97,13 @@ export default function Transfer() {
       }
     }
   };
+
+  const backTag =()=>{
+    setConfirm(false)
+    if(toTag){
+      setTo(toTag)
+    }
+  }
 
   return (
     <div>
@@ -200,7 +208,7 @@ export default function Transfer() {
           <div className={style.transferConfirm}>
             <div className={style.alignDiv}>
               <button
-                onClick={() => setConfirm(false)}
+                onClick={backTag}
                 className={style.backBut}
               >
                 <FontAwesomeIcon

@@ -33,47 +33,50 @@ export default function swap() {
   const [amount2, setAmount2] = useState("");
   const [k, setK] = useState(0);
   const [gas, setGas] = useState(0);
+  const [search, setSearch] = useState("");
+  const [searchArray, setSearchArray] = useState([]);
 
   let selectedChain;
   if (user) {
     selectedChain = user.get("chain");
   }
 
+  async function getTokens() {
+    await Moralis.enableWeb3();
+    await Moralis.initPlugins();
+    const result = await Moralis.Plugins.oneInch.getSupportedTokens({
+      chain:
+        selectedChain === "eth"
+          ? "eth"
+          : selectedChain === "bsc"
+          ? "bsc"
+          : "polygon",
+    });
+    let array = [];
+    const tokens = result.tokens;
+    for (const address in tokens) {
+      array.push({
+        address: tokens[address].address,
+        decimals: tokens[address].decimals,
+        logo: tokens[address].logoURI,
+        name: tokens[address].name,
+        symbol: tokens[address].symbol,
+      });
+    }
+    setCoins([...array]);
+  }
+
   useEffect(() => {
     if (user) {
-      if(selectedChain === "eth"){
+      if (selectedChain === "eth") {
         setFrom(data[2][0]);
         setTo(data[2][1]);
-      }else if(selectedChain === "bsc"){
+      } else if (selectedChain === "bsc") {
         setFrom(data[1][0]);
         setTo(data[1][1]);
-      }else{
+      } else {
         setFrom(data[0][1]);
         setTo(data[0][0]);
-      }
-      async function getTokens() {
-        await Moralis.enableWeb3();
-        await Moralis.initPlugins();
-        const result = await Moralis.Plugins.oneInch.getSupportedTokens({
-          chain:
-            selectedChain === "eth"
-              ? "eth"
-              : selectedChain === "bsc"
-              ? "bsc"
-              : "polygon",
-        });
-        let array = [];
-        const tokens = result.tokens;
-        for (const address in tokens) {
-          array.push({
-            address: tokens[address].address,
-            decimals: tokens[address].decimals,
-            logo: tokens[address].logoURI,
-            name: tokens[address].name,
-            symbol: tokens[address].symbol,
-          });
-        }
-        setCoins([...array]);
       }
       getTokens();
     }
@@ -184,12 +187,41 @@ export default function swap() {
     }
   };
 
+  const wordSearch = (str, word) => {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+      for (let j = 0; j < word.length; j++) {
+        if (word[j] !== str[i + j]) break;
+        if (j === word.length - 1) count++;
+      }
+    }
+    return count;
+  };
+
+  const coinSearch = (text) => {
+    setSearch(text);
+    if (text !== "") {
+      let array = [];
+      coins.map((w) => {
+        if (
+          wordSearch(w.name.toLowerCase(), text.toLowerCase()) !== 0 ||
+          wordSearch(w.symbol.toLowerCase(), text.toLowerCase()) !== 0
+        ) {
+          array.push(w);
+        }
+      });
+      setSearchArray(array);
+    } else {
+      setSearchArray([]);
+    }
+  };
+
   return (
     <div>
       <Head>
         <title>Swap</title>
       </Head>
-      <Nav balance={false}/>
+      <Nav balance={false} />
       <div className="marginDiv"></div>
       {vSelect === false && (
         <div className={style.swap}>
@@ -242,12 +274,26 @@ export default function swap() {
               <p className={style.text}>{to.symbol}</p>
             </button>
           </div>
-          {gas > 0 && <p>Estimated Gas: {gas}</p>}
           <div className={style.alignBut}>
             <button className={style.buttonSwap} onClick={swapToken}>
               Swap
             </button>
           </div>
+        </div>
+      )}
+      {vSelect === false && (
+        <div className={style.swapDetails}>
+          <div className={style.oneinchContainer}>
+            <p className={style.details}>Powered by 1inch </p>
+            <Image
+              src="https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png"
+              alt="1inch"
+              width="30%"
+              height="30%"
+              className={style.tokenImage}
+            />
+          </div>
+          {gas > 0 && <p className={style.details}>Estimated Gas: {gas}</p>}
         </div>
       )}
       {vSelect === true && (
@@ -259,8 +305,18 @@ export default function swap() {
               className={style.closeTime}
             />
           </button>
+          <h3>Select a token</h3>
+          <input
+            type="text"
+            placeholder="Name"
+            className={style.searchInput}
+            value={search}
+            onChange={(e) => coinSearch(e.target.value)}
+          />
           <div className={style.alignContainer}>
             {coins.length > 0 &&
+              searchArray.length === 0 &&
+              search === "" &&
               coins.map((token, i) => {
                 return (
                   <div
@@ -282,6 +338,31 @@ export default function swap() {
                   </div>
                 );
               })}
+            {searchArray.length > 0 &&
+              searchArray.map((token, i) => {
+                return (
+                  <div
+                    key={i}
+                    className={style.token}
+                    onClick={() => selectToken(token)}
+                  >
+                    <Image
+                      src={token.logo}
+                      alt={token.name}
+                      width="50%"
+                      height="50%"
+                      className={style.tokenImage}
+                    />
+                    <div className={style.nameToken}>
+                      <p className={style.text}>{token.name}</p>
+                      <p className={style.textSymbol}>{token.symbol}</p>
+                    </div>
+                  </div>
+                );
+              })}
+              {search !== "" && searchArray.length ===0 && 
+              <p className={style.noResult}>No result found</p>
+              }
           </div>
         </div>
       )}
