@@ -71,12 +71,30 @@ export default function swap() {
       if (selectedChain === "eth") {
         setFrom(data[2][0]);
         setTo(data[2][1]);
+        setVSelect(false);
+        setAmount("")
+        setAmount2("")
+        setGas(0);
+        setSearchArray([])
+        setSearch("")
       } else if (selectedChain === "bsc") {
         setFrom(data[1][0]);
         setTo(data[1][1]);
+        setVSelect(false);
+        setAmount("")
+        setAmount2("")
+        setGas(0);
+        setSearchArray([])
+        setSearch("")
       } else {
         setFrom(data[0][1]);
         setTo(data[0][0]);
+        setVSelect(false);
+        setAmount("")
+        setAmount2("")
+        setGas(0);
+        setSearchArray([])
+        setSearch("")
       }
       getTokens();
     }
@@ -169,12 +187,16 @@ export default function swap() {
       setAmount("");
       setAmount2("");
       setGas(0);
+      setSearchArray([]);
+      setSearch("");
     } else {
       setTo(token);
       setVSelect(false);
       setAmount("");
       setAmount2("");
       setGas(0);
+      setSearchArray([]);
+      setSearch("");
     }
   };
 
@@ -360,9 +382,9 @@ export default function swap() {
                   </div>
                 );
               })}
-              {search !== "" && searchArray.length ===0 && 
+            {search !== "" && searchArray.length === 0 && (
               <p className={style.noResult}>No result found</p>
-              }
+            )}
           </div>
         </div>
       )}
