@@ -9,11 +9,17 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Search.module.css";
+import ProfilePicture from "../public/profile.jpg";
+import { useRouter } from "next/router";
 
 export default function search() {
   const { isAuthenticated, user } = useMoralis();
-  const [results , setResults] = useState([])
-  const [value , setValue] = useState("")
+  const [results, setResults] = useState([]);
+  const [value, setValue] = useState("");
+  const [tag, setTag] = useState("");
+  const [nameArray, setNameArray] = useState([]);
+  const [error , setError] = useState("");
+  const route = useRouter()
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -24,6 +30,38 @@ export default function search() {
     return <ConfigAccount />;
   }
 
+  const getUsers = async () => {
+    const UserTagData = Moralis.Object.extend("Tags");
+    const query = new Moralis.Query(UserTagData);
+    query.equalTo("userTag", value);
+    const results = await query.first();
+    if (results) {
+      // console.log(results.attributes);
+      setTag(results.attributes);
+      setError("")
+    }else{
+      setError("No result found")
+    }
+
+    const UserNameData = Moralis.Object.extend("Tags");
+    const queryName = new Moralis.Query(UserNameData);
+    queryName.equalTo("name", value);
+    const resultsName = await queryName.find();
+    if (resultsName) {
+      for (let i = 0; i < resultsName.length; i++) {
+        const object = resultsName[i];
+        // console.log(object.attributes);
+        setError("")
+      }
+    }else{
+      setError("No result found")
+    }
+  };
+
+  const goToProfile = (eth)=>{
+    route.push(`/users/${eth}`)
+  }
+
   return (
     <div>
       <Head>
@@ -31,15 +69,58 @@ export default function search() {
       </Head>
       <Nav balance={false} />
       <div className="marginDiv"></div>
-      <div className={style.searchMain} >
-          <h3>Search Users</h3>
-          <div className={style.searchInput}>
-              <input type="text" value={value} onChange={(e)=> setValue(e.target.value)}/>
-              <button><FontAwesomeIcon icon={faSearch} color="#800040" className={style.searchIcon}/></button>
-          </div>
+      <div className={style.searchMain}>
+        <h3>Search Users</h3>
+        <div className={style.searchInput}>
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="Tag or name"
+          />
+          <button onClick={getUsers}>
+            <FontAwesomeIcon
+              icon={faSearch}
+              color="#800040"
+              className={style.searchIcon}
+            />
+          </button>
+        </div>
       </div>
       <div className={style.results}>
-
+        {tag && (
+          <div className={style.resultUser} onClick={()=>  goToProfile(tag.ethAddress)}>
+            <div className={style.imgProfile}>
+              {tag.profilePhoto !== undefined && (
+                <Image
+                  src={tag.profilePhoto}
+                  alt="profilePhoto"
+                  width="50%"
+                  height="50%"
+                  layout="responsive"
+                  objectFit="contain"
+                  className={style.img}
+                />
+              )}
+              {tag.profilePhoto === undefined && (
+                <Image
+                  src={ProfilePicture}
+                  alt="profilePhoto"
+                  width="50%"
+                  height="50%"
+                  layout="responsive"
+                  objectFit="contain"
+                  className={style.img}
+                />
+              )}
+            </div>
+            <div className={style.nameCon}>
+              <p>Username: {tag.searchName}</p>
+              <p>Tag: @{tag.userTag}</p>
+            </div>
+          </div>
+        )}
+        {error && <p>{error}</p> }
       </div>
     </div>
   );

@@ -111,7 +111,7 @@ button {
   height: calc(30px + 1vh);
   min-width: 200px;
   min-height: 40px;
-  border-radius: 14px;
+  border-radius: 10px;
   border: 2px solid white;
   background: transparent;
   color: white;

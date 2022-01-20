@@ -36,6 +36,14 @@ export default function profile() {
     const profileFile = new Moralis.File(name, file);
     setLoading(true);
     await profileFile.saveIPFS();
+
+    const UserTagData = Moralis.Object.extend("Tags");
+    const query = new Moralis.Query(UserTagData);
+    query.equalTo("userTag", user.get("userTag"));
+    const results = await query.first();
+    results.set("profilePhoto" , profileFile.ipfs())
+    results.save();
+
     console.log(profileFile.ipfs());
     console.log(profileFile.hash());
     setUserData({
@@ -58,7 +66,12 @@ export default function profile() {
       <Head>
         <title>Profile</title>
       </Head>
-      <Nav getBalance={getBalance} userETHaddress={userETHaddress} setBalance={setBalance} balance={true}/>
+      <Nav
+        getBalance={getBalance}
+        userETHaddress={userETHaddress}
+        setBalance={setBalance}
+        balance={true}
+      />
       <div className="marginDiv"></div>
       <div className={style.main}>
         <div className={style.imgProfile}>

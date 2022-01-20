@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Nav from "../components/Nav";
 import Head from "next/head";
-import { useMoralis } from "react-moralis";
+import { useMoralis, useTokenPrice } from "react-moralis";
 import Reject from "../components/Reject";
 import ConfigAccount from "../components/ConfigAccount";
 import { Moralis } from "moralis";
@@ -66,35 +66,40 @@ export default function swap() {
     setCoins([...array]);
   }
 
+  // const getTokenPrice = async ()=>{
+  //   let price = await Moralis.Web3API.token.getTokenPrice({address : from.address , chain:"eth" , exchange:"uniswap-v3"})
+  //   console.log(price);
+  // }
+
   useEffect(() => {
     if (user) {
       if (selectedChain === "eth") {
         setFrom(data[2][0]);
         setTo(data[2][1]);
         setVSelect(false);
-        setAmount("")
-        setAmount2("")
+        setAmount("");
+        setAmount2("");
         setGas(0);
-        setSearchArray([])
-        setSearch("")
+        setSearchArray([]);
+        setSearch("");
       } else if (selectedChain === "bsc") {
         setFrom(data[1][0]);
         setTo(data[1][1]);
         setVSelect(false);
-        setAmount("")
-        setAmount2("")
+        setAmount("");
+        setAmount2("");
         setGas(0);
-        setSearchArray([])
-        setSearch("")
+        setSearchArray([]);
+        setSearch("");
       } else {
         setFrom(data[0][1]);
         setTo(data[0][0]);
         setVSelect(false);
-        setAmount("")
-        setAmount2("")
+        setAmount("");
+        setAmount2("");
         setGas(0);
-        setSearchArray([])
-        setSearch("")
+        setSearchArray([]);
+        setSearch("");
       }
       getTokens();
     }
