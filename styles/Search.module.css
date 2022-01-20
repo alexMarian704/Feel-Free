@@ -1,9 +1,9 @@
 .searchMain{
-    width: 50%;
+    width: 70%;
     margin: auto;
     margin-top: 50px;
-    min-width: 230px;
-    max-width: 520px;
+    min-width: 240px;
+    max-width: 700px;
     padding: 0px 10px 0px 10px;
 }
 
@@ -23,7 +23,7 @@
 }
 
 .searchInput input{
-    width: 88%;
+    width: 92%;
     height: 100%;
     background-color: transparent;
     outline: none;
@@ -35,7 +35,7 @@
 }
 
 .searchInput button{
-    width: 10%;
+    width: 6%;
     background-color: transparent;
     outline: none;
     border: none;
