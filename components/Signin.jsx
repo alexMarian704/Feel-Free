@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState  , useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import metamask from "../public/metamask.png";
 import walletconnect from "../public/walletconnect.png";
@@ -8,9 +8,14 @@ import Head from "next/head";
 import { Moralis } from "moralis";
 
 export default function SignIn() {
-  const { authenticate, authError } = useMoralis();
+  const { authenticate, authError , isWeb3EnableLoading , isWeb3Enabled , enableWeb3 } = useMoralis();
   const [navSignIn, setNavSignIn] = useState("metamask");
-  const web3 = Moralis.enableWeb3();
+  
+  useEffect(()=>{
+    if (!isWeb3Enabled && !isWeb3EnableLoading) {
+      enableWeb3()
+    }
+  },[])
 
   const signInFunction = () => {
     authenticate({

@@ -42,7 +42,7 @@ export default function swap() {
   }
 
   async function getTokens() {
-    await Moralis.enableWeb3();
+    // await Moralis.enableWeb3();
     await Moralis.initPlugins();
     const result = await Moralis.Plugins.oneInch.getSupportedTokens({
       chain:

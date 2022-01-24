@@ -14,13 +14,13 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { getBalance } from "../function/balance";
+import Web3 from 'web3'
 
 export default function Transfer() {
   const [amount, setAmount] = useState("");
   const [to, setTo] = useState("");
-  const { user, isAuthenticated, web3 } = useMoralis();
+  const { user, isAuthenticated , isWeb3EnableLoading , isWeb3Enabled , enableWeb3 } = useMoralis();
   const [errorSend, setErrorSend] = useState("");
-  Moralis.enableWeb3();
   const router = useRouter();
   const [confirm, setConfirm] = useState(false);
   const [balance, setBalance] = useState(0);
@@ -29,11 +29,16 @@ export default function Transfer() {
   let selectedChain;
   if (user) selectedChain = user.get("chain");
 
+  useEffect(()=>{
+    if (!isWeb3Enabled && !isWeb3EnableLoading) {
+      enableWeb3()
+    }
+  },[])
+
   const { fetch, error, isFetching } = useWeb3Transfer({
     amount: Moralis.Units.ETH(Number(amount)),
     receiver: to,
     type: "native",
-    // contractAddress: "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
   });
 
   useEffect(() => {
@@ -66,13 +71,13 @@ export default function Transfer() {
 
   const validTransaction = () => {
     if (to[0] !== "@") {
-      if (amount > 0 && web3.utils.isAddress(to) && amount <= balance) {
+      if (amount > 0 && Web3.utils.isAddress(to) && amount <= balance) {
         setConfirm(true);
         setErrorSend("");
         setToTag("");
       } else if (amount <= 0 || amount > balance) {
         setErrorSend("Invalid amount");
-      } else if (web3.utils.isAddress(to) === false) {
+      } else if (Web3.utils.isAddress(to) === false) {
         setErrorSend("Invalid address");
       }
     } else {

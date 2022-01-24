@@ -7,8 +7,14 @@ import Head from "next/head";
 import Nav from "../components/Nav";
 
 export default function Home({ name }) {
-  const { isAuthenticated, user } = useMoralis();
+  const { isAuthenticated, user , isWeb3EnableLoading , isWeb3Enabled , enableWeb3 } = useMoralis();
   const [info, setInfo] = useState(null);
+
+  useEffect(()=>{
+    if (!isWeb3Enabled && !isWeb3EnableLoading) {
+      enableWeb3()
+    }
+  },[])
   
   if (!isAuthenticated) return <SignIn />;
 

@@ -15,11 +15,12 @@
     "@fortawesome/react-fontawesome": "^0.1.16",
     "@walletconnect/web3-provider": "^1.6.6",
     "follow-redirects": "^1.14.7",
-    "moralis": "^1.0.4",
+    "moralis": "^1.1.0",
     "next": "^12.0.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-moralis": "^1.0.2"
+    "react-moralis": "^1.1.0",
+    "web3": "^1.7.0"
   },
   "devDependencies": {
     "eslint": "7.32.0",

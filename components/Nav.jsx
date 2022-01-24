@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMoralis, useChain } from "react-moralis";
@@ -16,7 +16,7 @@ export default function Nav({
   setBalance,
   balance,
 }) {
-  const { isAuthenticated, logout, setUserData, user } = useMoralis();
+  const { isAuthenticated, logout, setUserData, user , isWeb3EnableLoading , isWeb3Enabled , enableWeb3 } = useMoralis();
   const chainUser = user.get("chain");
   const [navIn, setNavIn] = useState("in");
   const router = useRouter();
@@ -33,6 +33,12 @@ export default function Nav({
     chainUser === "eth" ? ethereum : chainUser === "bsc" ? binance : polygon
   );
   const { switchNetwork } = useChain();
+
+  useEffect(()=>{
+    if (!isWeb3Enabled && !isWeb3EnableLoading) {
+      enableWeb3()
+    }
+  },[])
 
   const logOutUser = () => {
     logout();

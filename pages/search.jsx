@@ -40,7 +40,7 @@ export default function search() {
       setTag(results.attributes);
       setError("")
     }else{
-      setError("No result found")
+      setError("No results found")
     }
 
     const UserNameData = Moralis.Object.extend("Tags");
@@ -54,7 +54,7 @@ export default function search() {
         setError("")
       }
     }else{
-      setError("No result found")
+      setError("No results found")
     }
   };
 
@@ -120,7 +120,7 @@ export default function search() {
             </div>
           </div>
         )}
-        {error && <p>{error}</p> }
+        {error && <p className={style.errorSearch}>{error}</p> }
       </div>
     </div>
   );
