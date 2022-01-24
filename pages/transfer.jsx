@@ -122,6 +122,10 @@ export default function Transfer() {
         balance={true}
       />
       <div className="marginDiv"></div>
+      <div className={style.transferMode}>
+        <div><p>Transfer Coins</p></div>
+        <div><p>Transfer NFTs</p></div>
+      </div>
       <div className={style.transfer}>
         <div className={style.align}>
           <p className={style.label}>
