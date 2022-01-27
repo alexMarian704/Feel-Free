@@ -9,6 +9,7 @@ import Image from "next/image";
 import polygon from "../public/polygon.jpg";
 import binance from "../public/binance.png";
 import ethereum from "../public/ethereum.png";
+import { Moralis } from "moralis";
 
 export default function Nav({
   getBalance,
@@ -16,7 +17,15 @@ export default function Nav({
   setBalance,
   balance,
 }) {
-  const { isAuthenticated, logout, setUserData, user , isWeb3EnableLoading , isWeb3Enabled , enableWeb3 } = useMoralis();
+  const {
+    isAuthenticated,
+    logout,
+    setUserData,
+    user,
+    isWeb3EnableLoading,
+    isWeb3Enabled,
+    enableWeb3,
+  } = useMoralis();
   const chainUser = user.get("chain");
   const [navIn, setNavIn] = useState("in");
   const router = useRouter();
@@ -34,11 +43,11 @@ export default function Nav({
   );
   const { switchNetwork } = useChain();
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!isWeb3Enabled && !isWeb3EnableLoading) {
-      enableWeb3()
+      enableWeb3();
     }
-  },[])
+  }, []);
 
   const logOutUser = () => {
     logout();
@@ -67,8 +76,7 @@ export default function Nav({
       setUserData({
         chain: "eth",
       });
-      //0x1 eth mainnet
-      switchNetwork("0x4");
+      enableWeb3({onComplete : ()=> switchNetwork("0x4")});
       if (balance === true)
         getBalance(userETHaddress).then((result) => {
           setBalance(result);
@@ -83,7 +91,7 @@ export default function Nav({
         chain: "bsc",
       });
       //0x38 bsc mainnet
-      switchNetwork("0x61");
+      enableWeb3({onComplete : ()=> switchNetwork("0x61")});
       if (balance === true)
         getBalance(userETHaddress).then((result) => {
           setBalance(result);
@@ -98,7 +106,7 @@ export default function Nav({
         chain: "polygon",
       });
       //0x89 polygon mainnet
-      switchNetwork("0x13881");
+      enableWeb3({onComplete : ()=> switchNetwork("0x13881")});
       if (balance === true)
         getBalance(userETHaddress).then((result) => {
           setBalance(result);

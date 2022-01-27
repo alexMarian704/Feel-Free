@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { getBalance } from "../function/balance";
 import Web3 from 'web3'
+import TransferNFT from "../components/TransferNFT";
 
 export default function Transfer() {
   const [amount, setAmount] = useState("");
@@ -26,6 +27,7 @@ export default function Transfer() {
   const [balance, setBalance] = useState(0);
   const [fetchBalance, setFetchBalance] = useState(false);
   const [toTag, setToTag] = useState("");
+  const [transferMode , setTransferMode] = useState("Token")
   let selectedChain;
   if (user) selectedChain = user.get("chain");
 
@@ -123,10 +125,11 @@ export default function Transfer() {
       />
       <div className="marginDiv"></div>
       <div className={style.transferMode}>
-        <div><p>Transfer Coins</p></div>
-        <div><p>Transfer NFTs</p></div>
+        <div onClick={()=> setTransferMode("Token")}><p>Transfer Coins</p></div>
+        <div onClick={()=> setTransferMode("NFT")}><p>Transfer NFTs</p></div>
       </div>
-      <div className={style.transfer}>
+      {transferMode === "NFT" && <TransferNFT userETH={userETHaddress} selectedChain={selectedChain} style={style}/>}
+      {transferMode === "Token" && <div className={style.transfer}>
         <div className={style.align}>
           <p className={style.label}>
             Your{" "}
@@ -252,7 +255,7 @@ export default function Transfer() {
         )}
         {error && <p className={style.error}>{error.message}</p>}
         {errorSend && <p className={style.error}>{errorSend}</p>}
-      </div>
+      </div>}
     </div>
   );
 }
