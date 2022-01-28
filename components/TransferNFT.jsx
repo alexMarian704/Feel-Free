@@ -3,25 +3,14 @@ import { useNFTBalances } from "react-moralis";
 import { Moralis } from "moralis";
 
 export default function TransferNFT({ userETH, selectedChain, style }) {
-  const { getNFTBalances, data, error, isLoading, isFetching } =
-    useNFTBalances();
   const [nfts, setNFTS] = useState([]);
   const [to, setTo] = useState("");
   const [select, setSelect] = useState("");
   const [noNFT, setNoNFT] = useState("");
+  const [loading , setLoading] = useState(false);
 
   const userNFTBalance = async () => {
-      getNFTBalances({
-        params: {
-          chain:
-            selectedChain === "eth"
-              ? "eth"
-              : selectedChain === "bsc"
-              ? "bsc"
-              : "polygon",
-          address: userETH,
-        },
-      });
+    setLoading(true);
     const userNFTs = await Moralis.Web3API.account.getNFTs({
       chain:
         selectedChain === "eth"
@@ -33,14 +22,14 @@ export default function TransferNFT({ userETH, selectedChain, style }) {
     });
     if (userNFTs && userNFTs.result.length > 0) {
       setNFTS(userNFTs.result);
+      setLoading(false);
       setNoNFT("");
     } else {
       setNFTS([]);
+      setLoading(false);
       setNoNFT("You have 0 NFTs.");
     }
   };
-
-  console.log(nfts);
 
   useEffect(() => {
     userNFTBalance();
@@ -56,32 +45,51 @@ export default function TransferNFT({ userETH, selectedChain, style }) {
     let transaction = await Moralis.transfer(options);
   };
 
+  const selectNFT = (x)=>{
+    setSelect(x);
+    
+  }
+
   return (
     <div>
-      <h2 className={style.textError}>
+      {loading === false && nfts.length > 0 && <h2 className={style.textError}>
         Some NFTs can't be displayed due to metadata format.
-      </h2>
-      {noNFT !== "" && <p>{noNFT}</p>}
-      {nfts.length > 0 && (
+      </h2>}
+      {noNFT !== "" && loading === false && (
+        <p
+          className={style.textError}
+          style={{
+            fontSize: "24px",
+          }}
+        >
+          {noNFT}
+        </p>
+      )}
+      {loading === true && 
+      <div className={style.nftLoading}>
+        <div className={style.loader}></div>
+      </div> }
+      {nfts.length > 0 && loading === false && (
         <div className={style.mainNFT}>
           {nfts.map((x, i) => {
-            let obj = JSON.parse(x.metadata)
-            if (x.metadata !== null && obj.image !== null){
-              let gatewayIPFS = "https://gateway.ipfs.io/ipfs/"
+            let obj = JSON.parse(x.metadata);
+            if (x.metadata !== null && obj.image !== null) {
+              let gatewayIPFS = "https://gateway.ipfs.io/ipfs/";
               return (
                 <div
                   key={i}
-                  onClick={() => setSelect(x)}
+                  onClick={() => selectNFT(x)}
                   className={style.nftContainer}
                 >
-                  <h3>{x.name}</h3>
-                  <p>{x.contract_type}</p>
-                  <p className={style.token_address}>{x.token_address}</p>
                   <img
-                    src={obj.image.replace("ipfs://" , gatewayIPFS)}
+                    src={obj.image.replace("ipfs://", gatewayIPFS)}
                     alt={x.token_address}
                     className={style.img}
                   />
+                  <div>
+                    <h3>{x.name}</h3>
+                    <p>{x.contract_type}</p>
+                  </div>
                 </div>
               );
             }

@@ -110,17 +110,42 @@
 }
 
 .img{
-  max-width: 260px;
-  min-width: 200px;
-  border-radius: 10px;
-  width: 35vw;
+  max-width: 280px;
+  min-width: 240px;
+  width: 38vw;
+  border-radius: 6px;
 }
 
 .nftContainer{
+  max-width: 280px;
+  min-width: 240px;
   width: 38vw;
-  min-width: 220px;
-  max-width: 300px;
   cursor: pointer;
+  background-color: rgb(31, 30, 30);
+  border-radius: 7px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  transition: all 100ms ease-in-out;
+}
+
+.nftContainer:hover{
+  transform: scale(1.018);
+}
+
+.nftLoading{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 70px;
+}
+
+.nftContainer div{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90%;
+  margin: auto;
 }
 
 .textError{
@@ -133,13 +158,15 @@
 }
 
 .mainNFT{
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-around;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: auto auto;
+  grid-row-gap: 26px;
+  grid-column-gap: 15px;
   width: 100vw;
   min-height: 240px;
-  max-width: 600;
+  max-width: 700px;
+  margin: auto;
 }
 
 .token_address{
@@ -286,5 +313,14 @@
   }
   .transferMode{
     width: 95vw;
+  }
+}
+
+@media only screen and (max-width: 494px) {
+  .mainNFT{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
   }
 }
