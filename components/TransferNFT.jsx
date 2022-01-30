@@ -70,7 +70,7 @@ export default function TransferNFT({ userETH, selectedChain, style }) {
         >
           {noNFT}
         </p>
-      )}
+      )} 
       {loading === true && (
         <div className={style.nftLoading}>
           <div className={style.loader}></div>
