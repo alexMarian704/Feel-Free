@@ -140,12 +140,35 @@
   margin-top: 70px;
 }
 
+.selectContainer{
+  max-width: 380px;
+  min-width: 260px;
+  width: 76vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: auto;
+}
+
 .nftContainer div{
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 90%;
   margin: auto;
+}
+
+.backButNFT{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: transparent;
+  font-size: 30px;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  z-index: 10;
 }
 
 .textError{
@@ -322,5 +345,9 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+  }
+  .selectContainer{
+    width: 100vw;
+    max-width: 320px;
   }
 }

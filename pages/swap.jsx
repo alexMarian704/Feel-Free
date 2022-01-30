@@ -267,11 +267,11 @@ export default function swap() {
               className={style.selectedToken}
               onClick={() => changeToken(1)}
             >
-              <Image
+              <img
                 src={from.logo}
                 alt={from.name}
-                width="35%"
-                height="35%"
+                // width="35%"
+                // height="35%"
                 className={style.tokenImage}
               />
               <p className={style.text}>{from.symbol}</p>
@@ -291,11 +291,9 @@ export default function swap() {
               className={style.selectedToken}
               onClick={() => changeToken(2)}
             >
-              <Image
+              <img
                 src={to.logo}
                 alt={to.name}
-                width="35%"
-                height="35%"
                 className={style.tokenImage}
               />
               <p className={style.text}>{to.symbol}</p>
@@ -312,13 +310,7 @@ export default function swap() {
         <div className={style.swapDetails}>
           <div className={style.oneinchContainer}>
             <p className={style.details}>Powered by 1inch </p>
-            <Image
-              src="https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png"
-              alt="1inch"
-              width="30%"
-              height="30%"
-              className={style.tokenImage}
-            />
+            <img src="https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png" alt="1inch" className={style.tokenImage}/>
           </div>
           {gas > 0 && <p className={style.details}>Estimated Gas: {gas}</p>}
         </div>
@@ -351,11 +343,11 @@ export default function swap() {
                     className={style.token}
                     onClick={() => selectToken(token)}
                   >
-                    <Image
+                    <img
                       src={token.logo}
                       alt={token.name}
-                      width="50%"
-                      height="50%"
+                      width="90%"
+                      height="90%"
                       className={style.tokenImage}
                     />
                     <div className={style.nameToken}>
@@ -373,7 +365,7 @@ export default function swap() {
                     className={style.token}
                     onClick={() => selectToken(token)}
                   >
-                    <Image
+                    <img
                       src={token.logo}
                       alt={token.name}
                       width="50%"
