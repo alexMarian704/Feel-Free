@@ -159,6 +159,15 @@
   margin: auto;
 }
 
+.inputNFTContainer{
+  width: 80vw;
+  min-width: 260px;
+  max-width: 400px;
+  margin: auto;
+  padding-bottom: 50px;
+  margin-top: 20px;
+}
+
 .backButNFT{
   position: absolute;
   top: 0px;

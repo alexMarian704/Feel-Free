@@ -50,9 +50,9 @@ export default function TransferNFT({ userETH, selectedChain, style }) {
     setSelect(x);
   };
 
-  const backAll = ()=>{
-    setSelect("")
-  }
+  const backAll = () => {
+    setSelect("");
+  };
 
   return (
     <div>
@@ -70,33 +70,57 @@ export default function TransferNFT({ userETH, selectedChain, style }) {
         >
           {noNFT}
         </p>
-      )} 
+      )}
       {loading === true && (
         <div className={style.nftLoading}>
           <div className={style.loader}></div>
         </div>
       )}
       {select !== "" && (
-        <div className={style.selectContainer}>
-          <button onClick={backAll} className={style.backButNFT}>
-            <FontAwesomeIcon
-              icon={faArrowLeft}
-              color="#800040"
-              className={style.copyButton}
+        <div className={style.alignNFT}>
+          <div className={style.selectContainer}>
+            <button onClick={backAll} className={style.backButNFT}>
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                color="#800040"
+                className={style.copyButton}
+              />
+            </button>
+            <div className={style.nftContainer}>
+              <img
+                src={JSON.parse(select.metadata).image.replace(
+                  "ipfs://",
+                  "https://gateway.ipfs.io/ipfs/"
+                )}
+                alt={select.token_address}
+                className={style.img}
+              />
+              <div>
+                <h3>{select.name}</h3>
+                <p>{select.contract_type}</p>
+              </div>
+            </div>
+          </div>
+          <div className={style.inputNFTContainer}>
+            <label
+              style={{
+                fontSize: "20px",
+              }}
+            >
+              To
+            </label>
+            <input
+              type="text"
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+              placeholder="Address or tag"
+              id={style.input}
+              autoComplete="off"
             />
-          </button>
-          <div className={style.nftContainer}>
-            <img
-              src={JSON.parse(select.metadata).image.replace(
-                "ipfs://",
-                "https://gateway.ipfs.io/ipfs/"
-              )}
-              alt={select.token_address}
-              className={style.img}
-            />
-            <div>
-              <h3>{select.name}</h3>
-              <p>{select.contract_type}</p>
+            <div className={style.alignButton}>
+              <button className="setUpBut" id={style.button}>
+                Confirm
+              </button>
             </div>
           </div>
         </div>
