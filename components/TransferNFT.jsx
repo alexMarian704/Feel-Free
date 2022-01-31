@@ -37,13 +37,29 @@ export default function TransferNFT({ userETH, selectedChain, style }) {
   }, [selectedChain]);
 
   const transferNFT = async (nft) => {
-    const options = {
-      type: nft.contract_type,
-      receiver: to,
-      contractAddress: nft.token_address,
-      tokenId: nft.token_id,
-    };
-    let transaction = await Moralis.transfer(options);
+    console.log(nft);
+    let options;
+
+    if (nft.contract_type.toLowerCase() === "erc721") {
+      options = {
+        type: nft.contract_type.toLowerCase(),
+        receiver: to.toLowerCase(),
+        contractAddress: nft.token_address,
+        tokenId: nft.token_id,
+      };
+    }else{
+      options = {
+        type: nft.contract_type.toLowerCase(),
+        receiver: to.toLowerCase(),
+        contractAddress: nft.token_address,
+        tokenId: nft.token_id,
+        amount:1
+      };
+    }
+    
+    const transaction = await Moralis.transfer(options);
+    const result = await transaction.wait();
+    console.log(result);
   };
 
   const selectNFT = (x) => {
@@ -118,9 +134,14 @@ export default function TransferNFT({ userETH, selectedChain, style }) {
               autoComplete="off"
             />
             <div className={style.alignButton}>
-              <button className="setUpBut" id={style.button}>
+              <button
+                className="setUpBut"
+                id={style.button}
+                onClick={() => transferNFT(select)}
+              >
                 Confirm
               </button>
+              <p>{error}</p>
             </div>
           </div>
         </div>
