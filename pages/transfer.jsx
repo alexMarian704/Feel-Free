@@ -31,12 +31,6 @@ export default function Transfer() {
   let selectedChain;
   if (user) selectedChain = user.get("chain");
 
-  // useEffect(()=>{
-  //   if (!isWeb3Enabled && !isWeb3EnableLoading) {
-  //     enableWeb3()
-  //   }
-  // },[])
-
   const { fetch, error, isFetching } = useWeb3Transfer({
     amount: Moralis.Units.ETH(Number(amount)),
     receiver: to,
