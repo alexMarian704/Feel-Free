@@ -24,7 +24,7 @@ export default function ConfigUser({ setInfo }) {
           info: false,
           searchName: username.toLowerCase(),
           name: char[0].toLowerCase(),
-          name2: char[1].toLowerCase() ? char[1].toLowerCase() : undefined,
+          name2: char[1].toLowerCase() ? char[1].toLowerCase() : "",
           chain: "eth",
         });
       } else {
@@ -52,7 +52,7 @@ export default function ConfigUser({ setInfo }) {
         tagU.save();
         tagU.set("name", char[0].toLowerCase());
         tagU.save();
-        tagU.set("name2", char[1].toLowerCase() ? char[1].toLowerCase() : undefined);
+        tagU.set("name2", char[1].toLowerCase() ? char[1].toLowerCase() : "");
         tagU.save();
       } else {
         tagU.set("userTag", tag.toLowerCase().replace(/ /g, ""));
@@ -63,7 +63,7 @@ export default function ConfigUser({ setInfo }) {
         tagU.save();
         tagU.set("name", char[0].toLowerCase());
         tagU.save();
-        tagU.set("name", undefined);
+        tagU.set("name2", "");
         tagU.save();
       }
     } else if (username === "") {

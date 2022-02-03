@@ -78,6 +78,7 @@
 .align {
   width: calc(195px + 10vw);
   margin: auto;
+  margin-bottom: 10px;
 }
 .alignButton {
   width: calc(175px + 10vw);
@@ -92,7 +93,6 @@
 
 #input {
   border-width: 3px;
-  font-weight: 600;
   width: 100%; 
   height: calc(28px + 2vh);
   border-radius: 10px;
@@ -103,7 +103,7 @@
   border: none;
   outline: none;
   color: white;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 18px;
   padding-right: 50px;
   border: 2px solid #800040;

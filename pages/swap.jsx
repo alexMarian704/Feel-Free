@@ -8,7 +8,7 @@ import { Moralis } from "moralis";
 import Image from "next/image";
 import style from "../styles/Swap.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes , faPercent } from "@fortawesome/free-solid-svg-icons";
 import data from "../data/swapdata";
 
 export default function swap() {
@@ -35,6 +35,7 @@ export default function swap() {
   const [gas, setGas] = useState(0);
   const [search, setSearch] = useState("");
   const [searchArray, setSearchArray] = useState([]);
+  const [slippage , setSlippage] = useState(1);
 
   let selectedChain;
   if (user) {
@@ -42,7 +43,6 @@ export default function swap() {
   }
 
   async function getTokens() {
-    // await Moralis.enableWeb3();
     await Moralis.initPlugins();
     const result = await Moralis.Plugins.oneInch.getSupportedTokens({
       chain:
@@ -312,6 +312,11 @@ export default function swap() {
             <p className={style.details}>Powered by 1inch </p>
             <img src="https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png" alt="1inch" className={style.tokenImage}/>
           </div>
+          <p className={style.details}>Slippage: {slippage}
+          <FontAwesomeIcon icon={faPercent} color="white" style={{
+            fontSize:"11px"
+          }}/>
+          </p>
           {gas > 0 && <p className={style.details}>Estimated Gas: {gas}</p>}
         </div>
       )}

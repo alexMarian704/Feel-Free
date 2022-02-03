@@ -257,7 +257,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 51px;
+  min-height: 62px;
   color: black;
   background-color: rgb(34, 34, 34);
 }

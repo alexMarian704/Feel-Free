@@ -1,0 +1,74 @@
+.dataText{
+    font-size: calc(19px + 0.1vw);
+    white-space: nowrap;
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: calc(18px + 0.2vw);
+}
+
+.dataDiv img{
+    position: relative;
+    width: calc(170px + 6vw);
+    margin-bottom: 8px;
+    border-radius: 200px;
+    max-width: 230px;
+    margin-top: 20px;
+    box-shadow: 0px 0px 4px 3px rgba(177, 177, 177, 0.28);
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+
+.dataDiv img :hover{
+    background-color: black;
+}
+
+.alignImg{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainData{
+    width: 80%;
+    min-width: 250px;
+    max-width: 1000px;
+    box-shadow: 0px 0px 2px 2px rgba(177, 177, 177, 0.18);
+    margin: auto;
+    margin-top: 20px;
+    padding: calc(5px + 0.4vw);
+    padding-left: 15px;
+    border: 1px solid rgb(98, 98, 98);
+    border-radius: 18px;
+}
+
+.loader {
+    border: 15px solid white;
+    border-top: 15px solid #800040;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loadingContainer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(34, 34, 34, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

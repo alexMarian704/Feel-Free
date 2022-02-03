@@ -60,7 +60,7 @@
   width: 60%;
   background-color: transparent;
   color: white;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .tokensContainer {
@@ -222,6 +222,7 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .oneinchContainer {
