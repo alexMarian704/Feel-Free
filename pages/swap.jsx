@@ -5,10 +5,9 @@ import { useMoralis, useTokenPrice } from "react-moralis";
 import Reject from "../components/Reject";
 import ConfigAccount from "../components/ConfigAccount";
 import { Moralis } from "moralis";
-import Image from "next/image";
 import style from "../styles/Swap.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes , faPercent } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faPercent, faSync } from "@fortawesome/free-solid-svg-icons";
 import data from "../data/swapdata";
 
 export default function swap() {
@@ -35,7 +34,9 @@ export default function swap() {
   const [gas, setGas] = useState(0);
   const [search, setSearch] = useState("");
   const [searchArray, setSearchArray] = useState([]);
-  const [slippage , setSlippage] = useState(1);
+  const [slippage, setSlippage] = useState(1);
+  const [aux, setAux] = useState("");
+  const [auxAmount , setAuxAmount] = useState(0);
 
   let selectedChain;
   if (user) {
@@ -49,8 +50,8 @@ export default function swap() {
         selectedChain === "eth"
           ? "eth"
           : selectedChain === "bsc"
-          ? "bsc"
-          : "polygon",
+            ? "bsc"
+            : "polygon",
     });
     let array = [];
     const tokens = result.tokens;
@@ -105,6 +106,14 @@ export default function swap() {
     }
   }, [user, selectedChain]);
 
+  useEffect(()=>{
+    setAux(to);
+  },[to]);
+  
+  useEffect(()=>{
+    setAuxAmount(amount);
+  },[amount])
+
   const changeAmount = async (e) => {
     if (Number(e) !== 0) {
       const quote = await Moralis.Plugins.oneInch.quote({
@@ -112,8 +121,8 @@ export default function swap() {
           selectedChain === "eth"
             ? "eth"
             : selectedChain === "bsc"
-            ? "bsc"
-            : "polygon",
+              ? "bsc"
+              : "polygon",
         fromTokenAddress: `${from.address}`,
         toTokenAddress: `${to.address}`,
         amount: Moralis.Units.Token(Number(e), from.decimals).toString(),
@@ -135,8 +144,8 @@ export default function swap() {
           selectedChain === "eth"
             ? "eth"
             : selectedChain === "bsc"
-            ? "bsc"
-            : "polygon",
+              ? "bsc"
+              : "polygon",
         fromTokenAddress: `${from.address}`,
         toTokenAddress: `${to.address}`,
         amount: Moralis.Units.Token(1, from.decimals).toString(),
@@ -169,8 +178,8 @@ export default function swap() {
       selectedChain === "eth"
         ? "eth"
         : selectedChain === "bsc"
-        ? "bsc"
-        : "polygon",
+          ? "bsc"
+          : "polygon",
     fromTokenAddress: `${from.address}`,
     toTokenAddress: `${to.address}`,
     amount: Moralis.Units.ETH(Number(amount)),
@@ -243,6 +252,13 @@ export default function swap() {
     }
   };
 
+  const changeFromToTo = () => {
+    setTo(from)
+    setFrom(aux);
+    setAmount(amount2)
+    setAmount2(auxAmount)
+  }
+
   return (
     <div>
       <Head>
@@ -270,12 +286,13 @@ export default function swap() {
               <img
                 src={from.logo}
                 alt={from.name}
-                // width="35%"
-                // height="35%"
                 className={style.tokenImage}
               />
               <p className={style.text}>{from.symbol}</p>
             </button>
+            <div>
+              <button onClick={changeFromToTo}><FontAwesomeIcon icon={faSync} color="#800040" /></button>
+            </div>
           </div>
           <div className={style.inputContainer}>
             <input
@@ -310,12 +327,12 @@ export default function swap() {
         <div className={style.swapDetails}>
           <div className={style.oneinchContainer}>
             <p className={style.details}>Powered by 1inch </p>
-            <img src="https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png" alt="1inch" className={style.tokenImage}/>
+            <img src="https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png" alt="1inch" className={style.tokenImage} />
           </div>
           <p className={style.details}>Slippage: {slippage}
-          <FontAwesomeIcon icon={faPercent} color="white" style={{
-            fontSize:"11px"
-          }}/>
+            <FontAwesomeIcon icon={faPercent} color="white" style={{
+              fontSize: "11px"
+            }} />
           </p>
           {gas > 0 && <p className={style.details}>Estimated Gas: {gas}</p>}
         </div>
