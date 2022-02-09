@@ -7,6 +7,8 @@ import ConfigAccount from "../../components/ConfigAccount";
 import { Moralis } from "moralis";
 import Nav from '../../components/Nav';
 import style from "../../styles/UserId.module.css"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPlus , faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function UserID() {
   const [userData, setUserData] = useState("");
@@ -35,6 +37,8 @@ export default function UserID() {
     getData();
   }, [isInitialized , router.query.userID])
 
+  const selectedChain = user.get("chain");
+
   if (!isAuthenticated) {
     return <Reject />;
   } else if (
@@ -59,6 +63,14 @@ export default function UserID() {
           <div className={style.dataDiv}>
             <div className={style.alignImg}>
               <img src={userData.profilePhoto} alt="Profile Photo" />
+            </div>
+            <div className={style.buttonDiv}>
+              <button>Add friend <FontAwesomeIcon icon={faUserPlus}/></button>
+              <button>Send {selectedChain === "eth"
+                ? "ETH"
+                : selectedChain === "bsc"
+                ? "BNB"
+                : "MATIC"} <FontAwesomeIcon icon={faArrowRight} /></button>
             </div>
             <div className={style.mainData}>
               <p className={style.dataText}>Username: {userData.name} {userData.name2}</p>
