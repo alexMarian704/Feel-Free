@@ -78,6 +78,18 @@
   transition: all 300ms ease-in-out;
 }
 
+.priceContainer{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.priceContainer p{
+  width: 100%;
+  text-align: end;
+}
+
 .inputContainer div button:hover{
     transform: rotate(180deg);
 }

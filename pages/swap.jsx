@@ -11,7 +11,7 @@ import { faTimes, faPercent, faSync } from "@fortawesome/free-solid-svg-icons";
 import data from "../data/swapdata";
 
 export default function swap() {
-  const { isAuthenticated, user } = useMoralis();
+  const { isAuthenticated, user, isInitialized } = useMoralis();
   const [coins, setCoins] = useState([]);
   const [to, setTo] = useState({
     address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
@@ -36,7 +36,9 @@ export default function swap() {
   const [searchArray, setSearchArray] = useState([]);
   const [slippage, setSlippage] = useState(1);
   const [aux, setAux] = useState("");
-  const [auxAmount , setAuxAmount] = useState(0);
+  const [auxAmount, setAuxAmount] = useState(0);
+  const [priceFrom, setPriceFrom] = useState("");
+  const [priceTo, setPriceTo] = useState("");
 
   let selectedChain;
   if (user) {
@@ -67,10 +69,58 @@ export default function swap() {
     setCoins([...array]);
   }
 
-  // const getTokenPrice = async ()=>{
-  //   let price = await Moralis.Web3API.token.getTokenPrice({address : from.address , chain:"eth" , exchange:"uniswap-v3"})
-  //   console.log(price);
-  // }
+  //0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270 matic
+  //0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2 eth
+  //0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c bnb
+
+  const getTokenPrice = async () => {
+    if (isInitialized) {
+      if (to.symbol === "MATIC" || to.symbol === "ETH" || to.symbol === "BNB") {
+        let price = await Moralis.Web3API.token.getTokenPrice({
+          address: to.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : to.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        })
+        setPriceTo(price.usdPrice.toFixed(2))
+      } else {
+        let price = await Moralis.Web3API.token.getTokenPrice({
+          address: to.address, chain: selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        })
+        setPriceTo(price.usdPrice.toFixed(2))
+      }
+
+      if (from.symbol === "MATIC" || from.symbol === "ETH" || from.symbol === "BNB") {
+        let price2 = await Moralis.Web3API.token.getTokenPrice({
+          address: from.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : from.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        })
+        setPriceFrom(price2.usdPrice.toFixed(2));
+      } else {
+        let price2 = await Moralis.Web3API.token.getTokenPrice({
+          address: from.address, chain: selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        })
+        setPriceFrom(price2.usdPrice.toFixed(2));
+      }
+
+    }
+  }
+
+  useEffect(() => {
+    getTokenPrice();
+  }, [from, to])
 
   useEffect(() => {
     if (user) {
@@ -106,13 +156,13 @@ export default function swap() {
     }
   }, [user, selectedChain]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setAux(to);
-  },[to]);
-  
-  useEffect(()=>{
+  }, [to]);
+
+  useEffect(() => {
     setAuxAmount(amount);
-  },[amount])
+  }, [amount])
 
   const changeAmount = async (e) => {
     if (Number(e) !== 0) {
@@ -197,6 +247,7 @@ export default function swap() {
   const selectToken = (token) => {
     if (k === 1) {
       setFrom(token);
+      console.log(token);
       setVSelect(false);
       setAmount("");
       setAmount2("");
@@ -328,6 +379,10 @@ export default function swap() {
           <div className={style.oneinchContainer}>
             <p className={style.details}>Powered by 1inch </p>
             <img src="https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png" alt="1inch" className={style.tokenImage} />
+          </div>
+          <div className={style.priceContainer}>
+            {priceTo !== "" && <p>{to.symbol}: ~${priceTo}</p>}
+            {priceFrom !== "" && <p>{from.symbol}: ~${priceFrom}</p>}
           </div>
           <p className={style.details}>Slippage: {slippage}
             <FontAwesomeIcon icon={faPercent} color="white" style={{
