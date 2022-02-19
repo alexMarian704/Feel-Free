@@ -65,7 +65,6 @@ export default function SignIn() {
           </div>
           <h2 className="signText">Sign In with Wallet Connect</h2>
           <Image src={WC} alt="walletconnect" className="imgMeta" />
-          <br />
           <button onClick={walletConnectSignIn} className="signinBut">
             Wallet Connect
           </button>

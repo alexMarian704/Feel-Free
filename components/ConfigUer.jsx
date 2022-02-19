@@ -43,6 +43,7 @@ export default function ConfigUser({ setInfo }) {
       setInfo(false);
       const Tags = Moralis.Object.extend("Tags");
       const tagU = new Tags();
+
       if (char[1]) {
         tagU.set("userTag", tag.toLowerCase().replace(/ /g, ""));
         tagU.save();
@@ -54,6 +55,12 @@ export default function ConfigUser({ setInfo }) {
         tagU.save();
         tagU.set("name2", char[1].toLowerCase() ? char[1].toLowerCase() : "");
         tagU.save();
+
+        const tagACL = new Moralis.ACL();
+        tagACL.setPublicReadAccess(true);
+        tagACL.setWriteAccess(user.id, true)
+        tagU.setACL(tagACL)
+        tagU.save();
       } else {
         tagU.set("userTag", tag.toLowerCase().replace(/ /g, ""));
         tagU.save();
@@ -64,8 +71,28 @@ export default function ConfigUser({ setInfo }) {
         tagU.set("name", char[0].toLowerCase());
         tagU.save();
         tagU.set("name2", "");
+
+        const tagACL = new Moralis.ACL();
+        tagACL.setPublicReadAccess(true);
+        tagACL.setWriteAccess(user.id, true)
+        tagU.setACL(tagACL)
         tagU.save();
+
       }
+
+      const Notification = Moralis.Object.extend("Notification");
+      const noti = new Notification();
+      noti.set("ethAddress", user.get("ethAddress"))
+      noti.save()
+      noti.set("notifications", [])
+      noti.save();
+
+      const notificationsACL = new Moralis.ACL();
+      notificationsACL.setPublicWriteAccess(true);
+      notificationsACL.setReadAccess(user.id , true)
+      noti.setACL(notificationsACL)
+      noti.save();
+
     } else if (username === "") {
       setError("Please enter an username");
     } else if (tag.length < 4 && tag !== "") {

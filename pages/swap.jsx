@@ -74,48 +74,48 @@ export default function swap() {
   //0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c bnb
 
   const getTokenPrice = async () => {
-    if (isInitialized) {
-      if (to.symbol === "MATIC" || to.symbol === "ETH" || to.symbol === "BNB") {
-        let price = await Moralis.Web3API.token.getTokenPrice({
-          address: to.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : to.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
-            ? "eth"
-            : selectedChain === "bsc"
-              ? "bsc"
-              : "polygon",
-        })
-        setPriceTo(price.usdPrice.toFixed(2))
-      } else {
-        let price = await Moralis.Web3API.token.getTokenPrice({
-          address: to.address, chain: selectedChain === "eth"
-            ? "eth"
-            : selectedChain === "bsc"
-              ? "bsc"
-              : "polygon",
-        })
-        setPriceTo(price.usdPrice.toFixed(2))
-      }
+    // if (isInitialized) {
+    //   if (to.symbol === "MATIC" || to.symbol === "ETH" || to.symbol === "BNB") {
+    //     let price = await Moralis.Web3API.token.getTokenPrice({
+    //       address: to.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : to.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
+    //         ? "eth"
+    //         : selectedChain === "bsc"
+    //           ? "bsc"
+    //           : "polygon",
+    //     })
+    //     setPriceTo(price.usdPrice.toFixed(2))
+    //   } else {
+    //     let price = await Moralis.Web3API.token.getTokenPrice({
+    //       address: to.address, chain: selectedChain === "eth"
+    //         ? "eth"
+    //         : selectedChain === "bsc"
+    //           ? "bsc"
+    //           : "polygon",
+    //     })
+    //     setPriceTo(price.usdPrice.toFixed(2))
+    //   }
 
-      if (from.symbol === "MATIC" || from.symbol === "ETH" || from.symbol === "BNB") {
-        let price2 = await Moralis.Web3API.token.getTokenPrice({
-          address: from.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : from.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
-            ? "eth"
-            : selectedChain === "bsc"
-              ? "bsc"
-              : "polygon",
-        })
-        setPriceFrom(price2.usdPrice.toFixed(2));
-      } else {
-        let price2 = await Moralis.Web3API.token.getTokenPrice({
-          address: from.address, chain: selectedChain === "eth"
-            ? "eth"
-            : selectedChain === "bsc"
-              ? "bsc"
-              : "polygon",
-        })
-        setPriceFrom(price2.usdPrice.toFixed(2));
-      }
+    //   if (from.symbol === "MATIC" || from.symbol === "ETH" || from.symbol === "BNB") {
+    //     let price2 = await Moralis.Web3API.token.getTokenPrice({
+    //       address: from.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : from.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
+    //         ? "eth"
+    //         : selectedChain === "bsc"
+    //           ? "bsc"
+    //           : "polygon",
+    //     })
+    //     setPriceFrom(price2.usdPrice.toFixed(2));
+    //   } else {
+    //     let price2 = await Moralis.Web3API.token.getTokenPrice({
+    //       address: from.address, chain: selectedChain === "eth"
+    //         ? "eth"
+    //         : selectedChain === "bsc"
+    //           ? "bsc"
+    //           : "polygon",
+    //     })
+    //     setPriceFrom(price2.usdPrice.toFixed(2));
+    //   }
 
-    }
+    // }
   }
 
   useEffect(() => {

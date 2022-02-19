@@ -8,13 +8,15 @@ import { Moralis } from "moralis";
 import Nav from '../../components/Nav';
 import style from "../../styles/UserId.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus , faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import ProfilePicture from "../../public/profile.jpg";
+import Image from "next/image";
 
 export default function UserID() {
   const [userData, setUserData] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false)
-  const { isAuthenticated, user , isInitialized } = useMoralis();
+  const { isAuthenticated, user, isInitialized } = useMoralis();
   const router = useRouter()
 
   const getData = async () => {
@@ -35,9 +37,11 @@ export default function UserID() {
 
   useEffect(() => {
     getData();
-  }, [isInitialized , router.query.userID])
+  }, [isInitialized, router.query.userID])
 
-  const selectedChain = user.get("chain");
+  let selectedChain
+  if (user)
+    selectedChain = user.get("chain");
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -46,6 +50,10 @@ export default function UserID() {
     user.get("userNameChange") === false
   ) {
     return <ConfigAccount />;
+  }
+
+  const addFriend = () => {
+    
   }
 
   return (
@@ -62,15 +70,16 @@ export default function UserID() {
         <div>
           <div className={style.dataDiv}>
             <div className={style.alignImg}>
-              <img src={userData.profilePhoto} alt="Profile Photo" />
+              {userData.profilePhoto !== undefined && <img src={userData.profilePhoto} alt="Profile Photo" />}
+              {userData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
             </div>
             <div className={style.buttonDiv}>
-              <button>Add friend <FontAwesomeIcon icon={faUserPlus}/></button>
+              <button onClick={addFriend}>Add friend <FontAwesomeIcon icon={faUserPlus} /></button>
               <button>Send {selectedChain === "eth"
                 ? "ETH"
                 : selectedChain === "bsc"
-                ? "BNB"
-                : "MATIC"} <FontAwesomeIcon icon={faArrowRight} /></button>
+                  ? "BNB"
+                  : "MATIC"} <FontAwesomeIcon icon={faArrowRight} /></button>
             </div>
             <div className={style.mainData}>
               <p className={style.dataText}>Username: {userData.name} {userData.name2}</p>
