@@ -16,6 +16,7 @@ import {
 import { getBalance } from "../function/balance";
 import Web3 from 'web3'
 import TransferNFT from "../components/TransferNFT";
+import GetTransactions from "../components/GetTransactions";
 
 export default function Transfer() {
   const [amount, setAmount] = useState("");
@@ -250,6 +251,7 @@ export default function Transfer() {
         {error && <p className={style.error}>{error.message}</p>}
         {errorSend && <p className={style.error}>{errorSend}</p>}
       </div>}
+      <GetTransactions chain={selectedChain}/>
     </div>
   );
 }

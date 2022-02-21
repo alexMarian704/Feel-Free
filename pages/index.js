@@ -5,6 +5,7 @@ import Info from "../components/Info";
 import SignIn from "../components/Signin";
 import Head from "next/head";
 import Nav from "../components/Nav";
+import Notifications from "../components/Notifications";
 
 export default function Home({ name }) {
   const { isAuthenticated, user , isWeb3EnableLoading , isWeb3Enabled , enableWeb3 } = useMoralis();
@@ -29,6 +30,7 @@ export default function Home({ name }) {
         (info === true || user.get("info") === true) && (
           <div>
             <h1>Hi {user.get("username")}</h1>
+            <Notifications />
           </div>
         )}
       {(user.get("userNameChange") === undefined ||
@@ -37,6 +39,7 @@ export default function Home({ name }) {
       )}
       {(user.get("info") === false ||
         info === false) && <Info setInfo={setInfo} />}
+
     </div>
   );
 }
