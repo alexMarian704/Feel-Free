@@ -251,7 +251,7 @@ export default function Transfer() {
         {error && <p className={style.error}>{error.message}</p>}
         {errorSend && <p className={style.error}>{errorSend}</p>}
       </div>}
-      <GetTransactions chain={selectedChain}/>
+      <GetTransactions chain={selectedChain} userETHaddress={userETHaddress}/>
     </div>
   );
 }

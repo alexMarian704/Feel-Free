@@ -1,0 +1,39 @@
+.data{
+    background-color: rgb(51, 49, 49);
+    height: 80px;
+    width: 60vw;
+    margin: auto;
+    margin-top: 17px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 3px 1px rgba(42, 42, 42, 0.2);
+    max-width: 700px;
+    min-width: 263px;
+}
+
+.container h2{
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.data p{
+    white-space: nowrap;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 18px;
+    margin: auto;
+    margin-left: 7px;
+}
+
+.data span{
+    font-weight: 900;
+    color: #c2c1c1;
+    font-size: 18.5px;
+}
+
+@media only screen and (max-width: 620px) {
+    .data{
+      width: 95vw;
+    }
+  }
