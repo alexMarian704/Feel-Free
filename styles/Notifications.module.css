@@ -41,3 +41,12 @@
 .container p{
     font-size: 18px;
 }
+
+.request span{
+    cursor: pointer;
+    color: #acacac;
+}
+
+.request span:hover{
+    text-decoration: underline 2px;
+}

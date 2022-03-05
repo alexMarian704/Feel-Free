@@ -52,8 +52,23 @@ export default function UserID() {
     return <ConfigAccount />;
   }
 
-  const addFriend = () => {
-    
+  const addFriend = async () => {
+     const Notification = Moralis.Object.extend("Notification");
+      const noti = new Notification();
+      noti.save({
+        from:user.get("ethAddress"),
+        to:router.query.userID,
+        type:"Friend Request",
+        tag:user.get("userTag")
+      });
+
+      const notificationsACL = new Moralis.ACL();
+      notificationsACL.setWriteAccess(user.id , true);
+      notificationsACL.setReadAccess(user.id  , true)
+      notificationsACL.setWriteAccess(userData.idUser , true);
+      notificationsACL.setReadAccess(userData.idUser  , true);
+      noti.setACL(notificationsACL)
+      noti.save();
   }
 
   return (

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export default function ConfigUser({ setInfo }) {
-  const { logout, setUserData, user } = useMoralis();
+  const { setUserData, user } = useMoralis();
   const [username, setUsername] = useState("");
   const [tag, setTag] = useState("");
   const [validTag, setValidTag] = useState(null);
@@ -45,16 +45,21 @@ export default function ConfigUser({ setInfo }) {
       const tagU = new Tags();
 
       if (char[1]) {
-        tagU.set("userTag", tag.toLowerCase().replace(/ /g, ""));
-        tagU.save();
-        tagU.set("ethAddress", user.get("ethAddress"));
-        tagU.save();
-        tagU.set("searchName", username.toLowerCase());
-        tagU.save();
-        tagU.set("name", char[0].toLowerCase());
-        tagU.save();
-        tagU.set("name2", char[1].toLowerCase() ? char[1].toLowerCase() : "");
-        tagU.save();
+        // tagU.set("userTag", tag.toLowerCase().replace(/ /g, ""));     
+        // tagU.set("ethAddress", user.get("ethAddress"));      
+        // tagU.set("searchName", username.toLowerCase());      
+        // tagU.set("name", char[0].toLowerCase());
+        // tagU.set("name2", char[1].toLowerCase() ? char[1].toLowerCase() : "");
+        // tagU.save();
+        // tagU.set("idUser" , user.id)
+        tagU.save({
+          userTag:tag.toLowerCase().replace(/ /g, ""),
+          ethAddress:user.get("ethAddress"),
+          searchName:username.toLowerCase(),
+          name:char[0].toLowerCase(),
+          name2:char[1].toLowerCase() ? char[1].toLowerCase() : "",
+          idUser:user.id
+        });
 
         const tagACL = new Moralis.ACL();
         tagACL.setPublicReadAccess(true);
@@ -62,15 +67,14 @@ export default function ConfigUser({ setInfo }) {
         tagU.setACL(tagACL)
         tagU.save();
       } else {
-        tagU.set("userTag", tag.toLowerCase().replace(/ /g, ""));
-        tagU.save();
-        tagU.set("ethAddress", user.get("ethAddress"));
-        tagU.save();
-        tagU.set("searchName", username.toLowerCase());
-        tagU.save();
-        tagU.set("name", char[0].toLowerCase());
-        tagU.save();
-        tagU.set("name2", "");
+        tagU.save({
+          userTag:tag.toLowerCase().replace(/ /g, ""),
+          ethAddress:user.get("ethAddress"),
+          searchName:username.toLowerCase(),
+          name:char[0].toLowerCase(),
+          name2:"",
+          idUser:user.id
+        });
 
         const tagACL = new Moralis.ACL();
         tagACL.setPublicReadAccess(true);
@@ -79,19 +83,6 @@ export default function ConfigUser({ setInfo }) {
         tagU.save();
 
       }
-
-      const Notification = Moralis.Object.extend("Notification");
-      const noti = new Notification();
-      noti.set("ethAddress", user.get("ethAddress"))
-      noti.save()
-      noti.set("notifications", [])
-      noti.save();
-
-      const notificationsACL = new Moralis.ACL();
-      notificationsACL.setPublicWriteAccess(true);
-      notificationsACL.setReadAccess(user.id , true)
-      noti.setACL(notificationsACL)
-      noti.save();
 
     } else if (username === "") {
       setError("Please enter an username");

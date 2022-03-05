@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import Head from "next/head";
 import { useMoralis } from "react-moralis";
 import { Moralis } from "moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Notifications.module.css"
+import { useRouter } from "next/router";
 
 export default function Notifications() {
     const { user } = useMoralis();
     const [open, setOpen] = useState(false);
-    const [notArray , setNotArray] = useState([]);
+    const [notArray, setNotArray] = useState([]);
+    const route = useRouter()
 
     useEffect(async () => {
-        const userNotification= Moralis.Object.extend("Notification");
+        const userNotification = Moralis.Object.extend("Notification");
         const query = new Moralis.Query(userNotification);
-        query.equalTo("ethAddress", user.get("ethAddress"));
-        const results = await query.first();
-        setNotArray(results.toJSON().notifications)
+        query.equalTo("to", user.get("ethAddress"));
+        const results = await query.find();
+        if (results !== undefined)
+            setNotArray(results)
     }, [])
 
     return (
@@ -24,6 +26,19 @@ export default function Notifications() {
             {open === true &&
                 <div className={style.container}>
                     {notArray.length === 0 && <p>0 notifications</p>}
+                    {notArray.length > 0 &&
+                        <div>
+                            {notArray.map((x) => {
+                                const data = x.attributes;  
+                                if (data.type === "Friend Request") {
+                                    return (
+                                        <div className={style.request} key={data.from}>
+                                           <p>Friend Request from <span onClick={()=> route.push(`/users/${data.from}`)}>@{data.tag}</span></p>
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>}
                 </div>}
             <button className={style.open} onClick={() => setOpen(!open)}>
                 <FontAwesomeIcon icon={faBell} color="white" />
