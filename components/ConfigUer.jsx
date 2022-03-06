@@ -44,21 +44,28 @@ export default function ConfigUser({ setInfo }) {
       const Tags = Moralis.Object.extend("Tags");
       const tagU = new Tags();
 
+      const Friends = Moralis.Object.extend("Friends");
+      const friend = new Friends();
+      friend.save({
+        friendsArray: [],
+        ethAddress:user.get("ethAddress"),
+        aclArray:[user.id]
+      })
+
+      const FriendsACL = new Moralis.ACL();
+      FriendsACL.setReadAccess(user.id , true);
+      FriendsACL.setWriteAccess(user.id, true)
+      friend.setACL(FriendsACL)
+      friend.save();
+
       if (char[1]) {
-        // tagU.set("userTag", tag.toLowerCase().replace(/ /g, ""));     
-        // tagU.set("ethAddress", user.get("ethAddress"));      
-        // tagU.set("searchName", username.toLowerCase());      
-        // tagU.set("name", char[0].toLowerCase());
-        // tagU.set("name2", char[1].toLowerCase() ? char[1].toLowerCase() : "");
-        // tagU.save();
-        // tagU.set("idUser" , user.id)
         tagU.save({
-          userTag:tag.toLowerCase().replace(/ /g, ""),
-          ethAddress:user.get("ethAddress"),
-          searchName:username.toLowerCase(),
-          name:char[0].toLowerCase(),
-          name2:char[1].toLowerCase() ? char[1].toLowerCase() : "",
-          idUser:user.id
+          userTag: tag.toLowerCase().replace(/ /g, ""),
+          ethAddress: user.get("ethAddress"),
+          searchName: username.toLowerCase(),
+          name: char[0].toLowerCase(),
+          name2: char[1].toLowerCase() ? char[1].toLowerCase() : "",
+          idUser: user.id
         });
 
         const tagACL = new Moralis.ACL();
@@ -68,12 +75,12 @@ export default function ConfigUser({ setInfo }) {
         tagU.save();
       } else {
         tagU.save({
-          userTag:tag.toLowerCase().replace(/ /g, ""),
-          ethAddress:user.get("ethAddress"),
-          searchName:username.toLowerCase(),
-          name:char[0].toLowerCase(),
-          name2:"",
-          idUser:user.id
+          userTag: tag.toLowerCase().replace(/ /g, ""),
+          ethAddress: user.get("ethAddress"),
+          searchName: username.toLowerCase(),
+          name: char[0].toLowerCase(),
+          name2: "",
+          idUser: user.id
         });
 
         const tagACL = new Moralis.ACL();

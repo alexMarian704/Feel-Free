@@ -38,13 +38,75 @@
     transition: all ease-in-out 200ms;
 }
 
+.request{
+    margin-top: 10px;
+}
+
 .container p{
     font-size: 18px;
+    width: 100%;
+    text-align: center;
 }
 
 .request span{
     cursor: pointer;
     color: #acacac;
+}
+
+.butDiv{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 4px;
+}
+
+.notNumber{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: rgb(255, 255, 255);
+    height: 17px;
+    width: 17px;
+    font-size: 16px;
+    color: rgb(0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.accept{
+    width: 40%;
+    height: 30px;
+    border: 2px solid rgb(4, 104, 4);
+    color:rgb(4, 104, 4) ;
+    background-color: transparent;
+    max-width: 100px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+}
+
+.accept:hover{
+    background-color: rgb(4, 104, 4);
+    color: white;
+}
+
+.reject{
+    width: 40%;
+    height: 30px;
+    border: 2px solid rgb(110, 3, 3);
+    color:rgb(110, 3, 3);
+    background-color: transparent;
+    max-width: 100px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+}
+
+.reject:hover{
+    background-color: rgb(110, 3, 3);
+    color: white;
 }
 
 .request span:hover{

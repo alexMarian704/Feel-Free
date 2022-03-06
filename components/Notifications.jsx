@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMoralis } from "react-moralis";
 import { Moralis } from "moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Notifications.module.css"
 import { useRouter } from "next/router";
 
@@ -21,6 +21,14 @@ export default function Notifications() {
             setNotArray(results)
     }, [])
 
+    const accept = ()=>{
+
+    }
+
+    const reject = ()=>{
+        
+    }
+
     return (
         <div className={style.main}>
             {open === true &&
@@ -29,11 +37,15 @@ export default function Notifications() {
                     {notArray.length > 0 &&
                         <div>
                             {notArray.map((x) => {
-                                const data = x.attributes;  
+                                const data = x.attributes;
                                 if (data.type === "Friend Request") {
                                     return (
                                         <div className={style.request} key={data.from}>
-                                           <p>Friend Request from <span onClick={()=> route.push(`/users/${data.from}`)}>@{data.tag}</span></p>
+                                            <p>Friend Request from <span onClick={() => route.push(`/users/${data.from}`)}>@{data.tag}</span></p>
+                                            <div className={style.butDiv}>
+                                                <button className={style.accept}> <FontAwesomeIcon icon={faCheck} /></button>
+                                                <button className={style.reject}><FontAwesomeIcon icon={faTimes} /></button>
+                                            </div>
                                         </div>
                                     )
                                 }
@@ -41,6 +53,7 @@ export default function Notifications() {
                         </div>}
                 </div>}
             <button className={style.open} onClick={() => setOpen(!open)}>
+                <p className={style.notNumber}>{notArray.length}</p>
                 <FontAwesomeIcon icon={faBell} color="white" />
             </button>
         </div>
