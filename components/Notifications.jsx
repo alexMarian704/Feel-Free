@@ -12,17 +12,37 @@ export default function Notifications() {
     const [notArray, setNotArray] = useState([]);
     const route = useRouter()
 
-    useEffect(async () => {
+    const queryNotifications = async ()=>{
         const userNotification = Moralis.Object.extend("Notification");
         const query = new Moralis.Query(userNotification);
         query.equalTo("to", user.get("ethAddress"));
         const results = await query.find();
         if (results !== undefined)
             setNotArray(results)
+    }
+
+    useEffect(async () => {
+        queryNotifications();
     }, [])
 
-    const accept = ()=>{
+    const accept = async (address)=>{
+        const accFriend = Moralis.Object.extend("Friends");
+        const query = new Moralis.Query(accFriend);
+        query.equalTo("ethAddress", address);
+        const results = await query.first();
+        const array = [...results.attributes.friendsArray]
+        array.push(user.get("ethAddress"))
+        results.save({
+            friendsArray:array
+        })
 
+        const userNotification = Moralis.Object.extend("Notification");
+        const query1 = new Moralis.Query(userNotification);
+        query1.equalTo("from", address);
+        const results1 = await query1.first();
+        results1.destroy();
+
+        queryNotifications();
     }
 
     const reject = ()=>{
@@ -43,8 +63,8 @@ export default function Notifications() {
                                         <div className={style.request} key={data.from}>
                                             <p>Friend Request from <span onClick={() => route.push(`/users/${data.from}`)}>@{data.tag}</span></p>
                                             <div className={style.butDiv}>
-                                                <button className={style.accept}> <FontAwesomeIcon icon={faCheck} /></button>
-                                                <button className={style.reject}><FontAwesomeIcon icon={faTimes} /></button>
+                                                <button className={style.accept} onClick={() => accept(data.from)}> <FontAwesomeIcon icon={faCheck} /></button>
+                                                <button className={style.reject} onClick={()=> reject(data.from)}><FontAwesomeIcon icon={faTimes} /></button>
                                             </div>
                                         </div>
                                     )

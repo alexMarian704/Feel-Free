@@ -8,7 +8,7 @@ import { Moralis } from "moralis";
 import Nav from '../../components/Nav';
 import style from "../../styles/UserId.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus, faArrowRight, faUserSlash, faHourglass } from "@fortawesome/free-solid-svg-icons";
 import ProfilePicture from "../../public/profile.jpg";
 import Image from "next/image";
 
@@ -18,6 +18,8 @@ export default function UserID() {
   const [loading, setLoading] = useState(false)
   const { isAuthenticated, user, isInitialized } = useMoralis();
   const router = useRouter()
+  const [isFriend, setIsFriend] = useState(false);
+  const [isSend, setIsSend] = useState(false);
 
   const getData = async () => {
     if (isInitialized && router.query.userID) {
@@ -35,8 +37,31 @@ export default function UserID() {
     }
   }
 
+  const getFriends = async () => {
+    const userFriends = Moralis.Object.extend("Friends");
+    const query = new Moralis.Query(userFriends);
+    query.equalTo("ethAddress", user.get("ethAddress"));
+    const results = await query.first();
+    if (results.attributes.friendsArray.includes(router.query.userID))
+      setIsFriend(true);
+  }
+
+  const getRequest = async () => {
+    const userRequest = Moralis.Object.extend("Notification");
+    const query = new Moralis.Query(userRequest);
+    query.equalTo("to", router.query.userID);
+    const results = await query.first();
+    console.log(results);
+    if (results !== undefined)
+      setIsSend(true);
+  }
+
   useEffect(() => {
     getData();
+    if (isInitialized && router.query.userID) {
+      getFriends();
+      getRequest();
+    }
   }, [isInitialized, router.query.userID])
 
   let selectedChain
@@ -84,13 +109,23 @@ export default function UserID() {
     let array = results.attributes.aclArray;
     array.push(userData.idUser)
     results.set({
-      aclArray:array
+      aclArray: array
     })
 
     FriendsACL.setReadAccess(userData.idUser, true);
     FriendsACL.setWriteAccess(userData.idUser, true)
     results.setACL(FriendsACL)
     results.save();
+
+    setIsSend(true);
+  }
+
+  const removeFriend = () => {
+
+  }
+
+  const removeRequest = () => {
+
   }
 
   return (
@@ -112,8 +147,10 @@ export default function UserID() {
               {userData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
             </div>
             <div className={style.buttonDiv}>
-              <button onClick={addFriend}>Add friend <FontAwesomeIcon icon={faUserPlus} /></button>
-              <button>Send {selectedChain === "eth"
+              {isFriend === false && isSend === false && <button onClick={addFriend} className={style.redBut}>Add friend <FontAwesomeIcon icon={faUserPlus} /></button>}
+              {isFriend === true && isSend === false && <button onClick={removeFriend} className={style.removeFriend}>Remove friend<FontAwesomeIcon icon={faUserSlash} className={style.butIcon} /></button>}
+              {isSend === true && <button onClick={removeRequest} className={style.removeFriend}>Requested<FontAwesomeIcon icon={faHourglass} className={style.butIcon} /></button>}
+              <button className={style.redBut}>Send {selectedChain === "eth"
                 ? "ETH"
                 : selectedChain === "bsc"
                   ? "BNB"
