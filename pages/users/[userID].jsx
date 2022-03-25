@@ -51,9 +51,10 @@ export default function UserID() {
     const query = new Moralis.Query(userRequest);
     query.equalTo("to", router.query.userID);
     const results = await query.first();
-    console.log(results);
     if (results !== undefined)
       setIsSend(true);
+    else
+      setIsSend(false)
   }
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export default function UserID() {
     const query = new Moralis.Query(MyFriends);
     query.equalTo("ethAddress", user.get("ethAddress"));
     const results = await query.first();
-    console.log(results.attributes.aclArray);
+    // console.log(results.attributes.aclArray);
 
     const FriendsACL = new Moralis.ACL();
     for (let i = 0; i < results.attributes.aclArray.length; i++) {
@@ -120,12 +121,19 @@ export default function UserID() {
     setIsSend(true);
   }
 
-  const removeFriend = () => {
+  const removeFriend = async () => {
 
   }
 
-  const removeRequest = () => {
-
+  const removeRequest = async () => {
+    const userRequest = Moralis.Object.extend("Notification");
+    const query = new Moralis.Query(userRequest);
+    query.equalTo("to", router.query.userID);
+    const results = await query.first();
+    if (results !== undefined)
+      results.destroy().then(() => {
+        getRequest();
+      })
   }
 
   return (
