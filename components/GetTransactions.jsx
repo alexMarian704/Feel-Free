@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Head from "next/head";
 import { useMoralis } from "react-moralis";
 import { Moralis } from "moralis";
 import style from "../styles/Transactions.module.css"

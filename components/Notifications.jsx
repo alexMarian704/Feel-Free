@@ -55,8 +55,12 @@ export default function Notifications() {
         queryNotifications();
     }
 
-    const reject = ()=>{
-        
+    const reject = async (address)=> {
+        const userNotification = Moralis.Object.extend("Notification");
+        const query1 = new Moralis.Query(userNotification);
+        query1.equalTo("from", address);
+        const results1 = await query1.first();
+        results1.destroy();
     }
 
     return (
