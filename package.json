@@ -27,7 +27,7 @@
     "react-moralis": "^1.4.0",
     "shell-quote": "^1.7.3",
     "simple-get": "^4.0.1",
-    "web3": "^0.20.7"
+    "web3": "^1.7.4"
   },
   "devDependencies": {
     "eslint": "7.32.0",

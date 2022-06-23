@@ -36,6 +36,16 @@ export default function Notifications() {
             friendsArray:array
         })
 
+        const mFriend = Moralis.Object.extend("Friends");
+        const mquery = new Moralis.Query(mFriend);
+        mquery.equalTo("ethAddress", user.get("ethAddress"));
+        const mresults = await mquery.first();
+        const marray = [...mresults.attributes.friendsArray]
+        marray.push(address)
+        mresults.save({
+            friendsArray:marray
+        })
+
         const userNotification = Moralis.Object.extend("Notification");
         const query1 = new Moralis.Query(userNotification);
         query1.equalTo("from", address);

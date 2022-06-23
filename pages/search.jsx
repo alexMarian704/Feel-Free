@@ -18,7 +18,7 @@ export default function search() {
   const [value, setValue] = useState("");
   const [tag, setTag] = useState("");
   const [nameArray, setNameArray] = useState([]);
-  const [error , setError] = useState("");
+  const [error, setError] = useState("");
   const route = useRouter()
 
   if (!isAuthenticated) {
@@ -39,26 +39,25 @@ export default function search() {
       // console.log(results.attributes);
       setTag(results.attributes);
       setError("")
-    }else{
-      setError("No results found")
-    }
-
-    const UserNameData = Moralis.Object.extend("Tags");
-    const queryName = new Moralis.Query(UserNameData);
-    queryName.equalTo("name", value);
-    const resultsName = await queryName.find();
-    if (resultsName) {
-      for (let i = 0; i < resultsName.length; i++) {
-        const object = resultsName[i];
-        // console.log(object.attributes);
-        setError("")
+    } else {
+      // setError("No results found")
+      const UserNameData = Moralis.Object.extend("Tags");
+      const queryName = new Moralis.Query(UserNameData);
+      queryName.equalTo("name", value);
+      const resultsName = await queryName.find();
+      if (resultsName) {
+        for (let i = 0; i < resultsName.length; i++) {
+          const object = resultsName[i];
+          setTag(object.attributes);
+          setError("")
+        }
+      } else {
+        setError("No results found")
       }
-    }else{
-      setError("No results found")
     }
   };
 
-  const goToProfile = (eth)=>{
+  const goToProfile = (eth) => {
     route.push(`/users/${eth}`)
   }
 
@@ -89,7 +88,7 @@ export default function search() {
       </div>
       <div className={style.results}>
         {tag && (
-          <div className={style.resultUser} onClick={()=>  goToProfile(tag.ethAddress)}>
+          <div className={style.resultUser} onClick={() => goToProfile(tag.ethAddress)}>
             <div className={style.imgProfile}>
               {tag.profilePhoto !== undefined && (
                 <Image
@@ -120,7 +119,7 @@ export default function search() {
             </div>
           </div>
         )}
-        {error && <p className={style.errorSearch}>{error}</p> }
+        {error && <p className={style.errorSearch}>{error}</p>}
       </div>
     </div>
   );
