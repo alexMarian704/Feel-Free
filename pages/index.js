@@ -41,7 +41,7 @@ export default function Home({ name }) {
               </div>
             </div>
             <h1>Hi {user.get("username")}</h1>
-            {page === "FriendList" && <FriendList />}
+            {page === "FriendList" && <FriendList /> }
             <Notifications />
           </div>
         )}
