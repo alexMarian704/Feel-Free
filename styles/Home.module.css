@@ -1,3 +1,37 @@
 .title{
   color: red;
 }
+
+.homeNav{
+  width: 100%;
+  display: flex;
+  height: calc(46px + 1vh);
+  margin-bottom: 20px;
+}
+
+.homeNav h3{
+  width: 100%;
+  text-align: center;
+  font-size: calc(25px + 0.1vw);
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.page{
+  width: 50%;
+  cursor: pointer;
+  transition: all 110ms ease-in-out;
+  position: relative;
+}
+
+.select{
+  border-bottom: 3px solid #800040;
+  color: #800040;
+}
+
+.page:hover{
+  background-color: rgb(34, 34, 34);
+}

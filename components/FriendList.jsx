@@ -4,11 +4,14 @@ import { Moralis } from "moralis";
 import Image from "next/image";
 import style from "../styles/FriendList.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ProfilePicture from "../public/profile.jpg";
+import { useRouter } from "next/router";
 
 export default function FriendList() {
     const { user } = useMoralis();
     const [loading, setLoading] = useState(true)
     const [friendList, setFriendList] = useState(0);
+    const route = useRouter()
 
     if (friendList === 0) {
         const getFriend = async () => {
@@ -17,7 +20,7 @@ export default function FriendList() {
             query.equalTo("ethAddress", user.get("ethAddress"));
             const result = await query.first();
             //console.log(result);
-            if (result._objCount % 3 == 1) {
+            if (result._objCount % 2 == 1) {
                 if (result.attributes.friendsArray.length > 0) {
                     let array = []
                     for (let i = 0; i < result.attributes.friendsArray.length; i++) {
@@ -43,13 +46,44 @@ export default function FriendList() {
 
     console.log(friendList);
 
+    const goToProfile = (address)=>{
+        route.push(`/users/${address}`)
+    }
+
     return (
         <div>
             {friendList !== 0 && friendList !== 1 && loading == false &&
                 <div>
                     {friendList.map((friend, i) => (
-                        <div key={i}>
-                            <p>@{friend.userTag}</p>
+                        <div key={i} className={style.friendContainer} onClick={()=> goToProfile(friend.ethAddress)}>
+                            <div className={style.imgProfile}>
+                                {friend.profilePhoto !== undefined && (
+                                    <Image
+                                        src={tag.profilePhoto}
+                                        alt="profilePhoto"
+                                        width="50%"
+                                        height="50%"
+                                        layout="responsive"
+                                        objectFit="contain"
+                                        className={style.img}
+                                    />
+                                )}
+                                {friend.profilePhoto === undefined && (
+                                    <Image
+                                        src={ProfilePicture}
+                                        alt="profilePhoto"
+                                        width="50%"
+                                        height="50%"
+                                        layout="responsive"
+                                        objectFit="contain"
+                                        className={style.img}
+                                    />
+                                )}
+                            </div>
+                            <div className={style.friendData}>
+                                <p>{friend.name}</p>
+                                <p>@{friend.userTag}</p>
+                            </div>
                         </div>
                     )
                     )}

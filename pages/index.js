@@ -8,6 +8,7 @@ import Nav from "../components/Nav";
 import Notifications from "../components/Notifications";
 import { Moralis } from "moralis";
 import FriendList from "../components/FriendList";
+import style from "../styles/Home.module.css";
 
 export default function Home({ name }) {
   const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
@@ -32,15 +33,14 @@ export default function Home({ name }) {
       {user.get("userNameChange") === true &&
         (info === true || user.get("info") === true) && (
           <div>
-            <div>
-              <div onClick={()=> setPage("Messages") }>
+            <div className={style.homeNav}>
+              <div onClick={()=> setPage("Messages") } className={page === "Messages" ? `${style.page} ${style.select}`: style.page}>
                 <h3>Messages</h3>
               </div>
-              <div onClick={()=> setPage("FriendList") }>
+              <div onClick={()=> setPage("FriendList") } className={page === "FriendList" ? `${style.page} ${style.select}`: style.page}>
                 <h3>Friend List</h3>
               </div>
             </div>
-            <h1>Hi {user.get("username")}</h1>
             {page === "FriendList" && <FriendList /> }
             <Notifications />
           </div>
