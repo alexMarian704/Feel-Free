@@ -38,12 +38,14 @@ export default function UserID() {
   }
 
   const getFriends = async () => {
-    const userFriends = Moralis.Object.extend("Friends");
-    const query = new Moralis.Query(userFriends);
-    query.equalTo("ethAddress", user.get("ethAddress"));
-    const results = await query.first();
-    if (results.attributes.friendsArray.includes(router.query.userID))
-      setIsFriend(true);
+    if (user) {
+      const userFriends = Moralis.Object.extend("Friends");
+      const query = new Moralis.Query(userFriends);
+      query.equalTo("ethAddress", user.get("ethAddress"));
+      const results = await query.first();
+      if (results.attributes.friendsArray.includes(router.query.userID))
+        setIsFriend(true);
+    }
   }
 
   const getRequest = async () => {

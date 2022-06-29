@@ -51,6 +51,7 @@
   align-items: center;
   padding-left: 10px;
   cursor: pointer;
+  position: relative;
 }
 
 .friendData{
@@ -59,4 +60,26 @@
 
 .friendData p{
   font-size: calc(17px + 0.1vw);
+}
+
+.buttonContainer button{
+  background-color: transparent;
+  border: none;
+  font-size: calc(29px + 0.1vw);
+  color: white;
+  cursor: pointer;
+  transition: all 130ms ease-in-out;
+}
+
+.buttonContainer button:hover{
+    color: #800040;
+}
+
+.buttonContainer{
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  position: absolute;
+  right: 26px;
 }

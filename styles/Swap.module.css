@@ -236,9 +236,6 @@
   font-weight: 700;
   color: white;
   font-size: 17px;
-}
-
-.searchInput:focus{
   border: 2px solid #800040;
 }
 

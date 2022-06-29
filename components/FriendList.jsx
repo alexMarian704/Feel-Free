@@ -6,6 +6,7 @@ import style from "../styles/FriendList.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfilePicture from "../public/profile.jpg";
 import { useRouter } from "next/router";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
 
 export default function FriendList() {
     const { user } = useMoralis();
@@ -50,6 +51,10 @@ export default function FriendList() {
         route.push(`/users/${address}`)
     }
 
+    const goToChat = (address)=>{
+        route.push(`/messages/${address}`)
+    }
+
     return (
         <div>
             {friendList !== 0 && friendList !== 1 && loading == false &&
@@ -83,6 +88,9 @@ export default function FriendList() {
                             <div className={style.friendData}>
                                 <p>{friend.name}</p>
                                 <p>@{friend.userTag}</p>
+                            </div>
+                            <div className={style.buttonContainer}>
+                                <button onClick={()=> goToChat(friend.ethAddress)}><FontAwesomeIcon icon={faComment} /> </button>
                             </div>
                         </div>
                     )

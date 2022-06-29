@@ -118,9 +118,9 @@ export default function swap() {
     // }
   }
 
-  useEffect(() => {
-    getTokenPrice();
-  }, [from, to])
+  // useEffect(() => {
+  //   getTokenPrice();
+  // }, [from, to])
 
   useEffect(() => {
     if (user) {
@@ -157,15 +157,23 @@ export default function swap() {
   }, [user, selectedChain]);
 
   useEffect(() => {
-    setAux(to);
-  }, [to]);
+    setAux(from);
+  }, [from]);
 
   useEffect(() => {
-    setAuxAmount(amount);
-  }, [amount])
+    setAuxAmount(amount2);
+  }, [amount2])
+
+  useEffect(() => {
+    setAmount2(amount)
+    changeAmount2(amount)
+  }, [to])
 
   const changeAmount = async (e) => {
     if (Number(e) !== 0) {
+      console.log(e);
+      console.log(to);
+      console.log(from);
       const quote = await Moralis.Plugins.oneInch.quote({
         chain:
           selectedChain === "eth"
@@ -304,10 +312,8 @@ export default function swap() {
   };
 
   const changeFromToTo = () => {
-    setTo(from)
-    setFrom(aux);
-    setAmount(amount2)
-    setAmount2(auxAmount)
+    setFrom(to)
+    setTo(aux);
   }
 
   return (
@@ -414,47 +420,50 @@ export default function swap() {
               searchArray.length === 0 &&
               search === "" &&
               coins.map((token, i) => {
-                return (
-                  <div
-                    key={i}
-                    className={style.token}
-                    onClick={() => selectToken(token)}
-                  >
-                    <img
-                      src={token.logo}
-                      alt={token.name}
-                      width="90%"
-                      height="90%"
-                      className={style.tokenImage}
-                    />
-                    <div className={style.nameToken}>
-                      <p className={style.text}>{token.name}</p>
-                      <p className={style.textSymbol}>{token.symbol}</p>
+                if (token.symbol !== to.symbol && token.symbol !== from.symbol) {
+                  return (
+                    <div
+                      key={i}
+                      className={style.token}
+                      onClick={() => selectToken(token)}
+                    >
+                      <img
+                        src={token.logo}
+                        alt={token.name}
+                        width="90%"
+                        height="90%"
+                        className={style.tokenImage}
+                      />
+                      <div className={style.nameToken}>
+                        <p className={style.text}>{token.name}</p>
+                        <p className={style.textSymbol}>{token.symbol}</p>
+                      </div>
                     </div>
-                  </div>
-                );
+                  );
+                }
               })}
             {searchArray.length > 0 &&
               searchArray.map((token, i) => {
-                return (
-                  <div
-                    key={i}
-                    className={style.token}
-                    onClick={() => selectToken(token)}
-                  >
-                    <img
-                      src={token.logo}
-                      alt={token.name}
-                      width="50%"
-                      height="50%"
-                      className={style.tokenImage}
-                    />
-                    <div className={style.nameToken}>
-                      <p className={style.text}>{token.name}</p>
-                      <p className={style.textSymbol}>{token.symbol}</p>
+                if (token.symbol !== to.symbol && token.symbol !== from.symbol)
+                  return (
+                    <div
+                      key={i}
+                      className={style.token}
+                      onClick={() => selectToken(token)}
+                    >
+                      <img
+                        src={token.logo}
+                        alt={token.name}
+                        width="50%"
+                        height="50%"
+                        className={style.tokenImage}
+                      />
+                      <div className={style.nameToken}>
+                        <p className={style.text}>{token.name}</p>
+                        <p className={style.textSymbol}>{token.symbol}</p>
+                      </div>
                     </div>
-                  </div>
-                );
+                  );
               })}
             {search !== "" && searchArray.length === 0 && (
               <p className={style.noResult}>No result found</p>
