@@ -9,11 +9,12 @@ import Notifications from "../components/Notifications";
 import { Moralis } from "moralis";
 import FriendList from "../components/FriendList";
 import style from "../styles/Home.module.css";
+import PasswordConfig from "../components/Password";
 
 export default function Home({ name }) {
   const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
   const [info, setInfo] = useState(null);
-  const [page , setPage] = useState("Messages");
+  const [page, setPage] = useState("Messages");
 
   useEffect(() => {
     if (!isWeb3Enabled && !isWeb3EnableLoading) {
@@ -30,24 +31,28 @@ export default function Home({ name }) {
       </Head>
       <Nav balance={false} />
       <div className="marginDiv"></div>
-      {user.get("userNameChange") === true &&
+      {user.get("userNameChange") === true && user.get("passwordConfig") === true &&
         (info === true || user.get("info") === true) && (
           <div>
             <div className={style.homeNav}>
-              <div onClick={()=> setPage("Messages") } className={page === "Messages" ? `${style.page} ${style.select}`: style.page}>
+              <div onClick={() => setPage("Messages")} className={page === "Messages" ? `${style.page} ${style.select}` : style.page}>
                 <h3>Messages</h3>
               </div>
-              <div onClick={()=> setPage("FriendList") } className={page === "FriendList" ? `${style.page} ${style.select}`: style.page}>
+              <div onClick={() => setPage("FriendList")} className={page === "FriendList" ? `${style.page} ${style.select}` : style.page}>
                 <h3>Friend List</h3>
               </div>
             </div>
-            {page === "FriendList" && <FriendList /> }
+            {page === "FriendList" && <FriendList />}
             <Notifications />
           </div>
         )}
       {(user.get("userNameChange") === undefined ||
         user.get("userNameChange") === false) && (
           <ConfigUser setInfo={setInfo} />
+        )}
+      {(user.get("passwordConfig") === undefined ||
+        user.get("passwordConfig") === false) && user.get("userNameChange") === true && (
+          <PasswordConfig />
         )}
       {(user.get("info") === false ||
         info === false) && <Info setInfo={setInfo} />}
