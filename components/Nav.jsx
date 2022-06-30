@@ -114,6 +114,10 @@ export default function Nav({
     }
   };
 
+  useEffect(()=>{
+    console.log(user.get("passwordHash"))
+  },[])
+
   return (
     <nav className="nav-in" id="nav">
       {width < 711 && navIn === "out" && (

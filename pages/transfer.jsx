@@ -49,7 +49,8 @@ export default function Transfer() {
     return <Reject />;
   } else if (
     user.get("userNameChange") === undefined ||
-    user.get("userNameChange") === false
+    user.get("userNameChange") === false || user.get("passwordConfig") === undefined ||
+    user.get("passwordConfig") === false
   ) {
     return <ConfigAccount />;
   }
