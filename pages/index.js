@@ -54,7 +54,7 @@ export default function Home({ name }) {
           <ConfigUser setInfo={setInfo} />
         )}
       {(user.get("passwordConfig") === undefined ||
-        user.get("passwordConfig") === false) && user.get("userNameChange") === true && (
+        user.get("passwordConfig") === false) && user.get("userNameChange") === true && user.get("info") === true && (
           <PasswordConfig />
         )}
       {(user.get("info") === false ||

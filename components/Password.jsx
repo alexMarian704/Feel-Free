@@ -59,7 +59,7 @@ export default function PasswordConfig() {
         <br />
         <div className="checkDiv">
           <input type={seeC === false ? "password" : "text"} value={passwordCheck} onChange={(e) => setPasswordCheck(e.target.value)} className="setUpInput" />
-          <button className="checkBut" onClick={() => setSee(!seeC)}>
+          <button className="checkBut" onClick={() => setSeeC(!seeC)}>
             {seeC === false ? (
               <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
             ) : (

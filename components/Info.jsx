@@ -15,9 +15,10 @@ export default function Info({ setInfo }) {
 
   return (
     <div className="setUp">
-      <button className="exclamation">
+      {/* <button className="exclamation">
         <FontAwesomeIcon icon={faExclamation} color="rgb(243, 92, 4)" />
-      </button>
+      </button> */}
+      <h3 className="setUpTitle">Important</h3>
       <div className="infoClass">
         <h2 className="setUpInfoText">
           We don't have access to your private keys !
@@ -33,7 +34,7 @@ export default function Info({ setInfo }) {
           We recommend logging out when you are not using the platform !
         </h2>
       </div>
-      <button className="setUpBut" onClick={accept}>
+      <button className="setUpBut" onClick={accept} style={{width:"calc(140px + 1vw)" , fontSize:"calc(17px + 0.4vw)" , height:"calc(28px + 1vh)"}}>
         I understand
       </button>
     </div>
