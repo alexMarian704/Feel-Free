@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { getBalance } from "../function/balance";
 import ProfilePicture from "../public/profile.jpg";
+import CheckPassword from "../components/CheckPassword";
 
 export default function profile() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -28,6 +29,7 @@ export default function profile() {
   ) {
     return <ConfigAccount />;
   }
+  if(user.get("reCheck") === 1) return <CheckPassword />
 
   const changePhoto = async (e) => {
     const file = e.target.files[0];

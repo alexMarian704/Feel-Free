@@ -10,6 +10,7 @@ import { Moralis } from "moralis";
 import FriendList from "../components/FriendList";
 import style from "../styles/Home.module.css";
 import PasswordConfig from "../components/Password";
+import CheckPassword from "../components/CheckPassword";
 
 export default function Home({ name }) {
   const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
@@ -23,6 +24,8 @@ export default function Home({ name }) {
   }, [])
 
   if (!isAuthenticated) return <SignIn />;
+
+  if(user.get("reCheck") === 1 && user.get("passwordConfig")!== false) return <CheckPassword />
 
   return (
     <div className="container">

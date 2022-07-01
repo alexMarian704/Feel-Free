@@ -45,8 +45,6 @@ export default function FriendList() {
         getFriend();
     }
 
-    console.log(friendList);
-
     const goToProfile = (address)=>{
         route.push(`/users/${address}`)
     }

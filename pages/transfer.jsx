@@ -17,6 +17,7 @@ import { getBalance } from "../function/balance";
 import Web3 from 'web3'
 import TransferNFT from "../components/TransferNFT";
 import GetTransactions from "../components/GetTransactions";
+import CheckPassword from "../components/CheckPassword";
 
 export default function Transfer() {
   const [amount, setAmount] = useState("");
@@ -54,6 +55,7 @@ export default function Transfer() {
   ) {
     return <ConfigAccount />;
   }
+  if(user.get("reCheck") === 1) return <CheckPassword />
 
   const userETHaddress = user.get("ethAddress");
   if (fetchBalance === false) {

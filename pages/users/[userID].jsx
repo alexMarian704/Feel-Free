@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPlus, faArrowRight, faUserSlash, faHourglass } from "@fortawesome/free-solid-svg-icons";
 import ProfilePicture from "../../public/profile.jpg";
 import Image from "next/image";
+import CheckPassword from "../../components/CheckPassword";
 
 export default function UserID() {
   const [userData, setUserData] = useState("");
@@ -80,6 +81,7 @@ export default function UserID() {
   ) {
     return <ConfigAccount />;
   }
+  if(user.get("reCheck") === 1) return <CheckPassword />
 
   const addFriend = async () => {
     const Notification = Moralis.Object.extend("Notification");

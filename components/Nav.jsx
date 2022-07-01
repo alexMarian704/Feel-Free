@@ -35,8 +35,8 @@ export default function Nav({
     chainUser === "eth"
       ? "Ethereum"
       : chainUser === "bsc"
-      ? "Binance"
-      : "Polygon"
+        ? "Binance"
+        : "Polygon"
   );
   const [imageLink, setImageLink] = useState(
     chainUser === "eth" ? ethereum : chainUser === "bsc" ? binance : polygon
@@ -76,7 +76,7 @@ export default function Nav({
       setUserData({
         chain: "eth",
       });
-      enableWeb3({onComplete : ()=> switchNetwork("0x4")});
+      enableWeb3({ onComplete: () => switchNetwork("0x4") });
       if (balance === true)
         getBalance(userETHaddress).then((result) => {
           setBalance(result);
@@ -91,7 +91,7 @@ export default function Nav({
         chain: "bsc",
       });
       //0x38 bsc mainnet
-      enableWeb3({onComplete : ()=> switchNetwork("0x61")});
+      enableWeb3({ onComplete: () => switchNetwork("0x61") });
       if (balance === true)
         getBalance(userETHaddress).then((result) => {
           setBalance(result);
@@ -106,7 +106,7 @@ export default function Nav({
         chain: "polygon",
       });
       //0x89 polygon mainnet
-      enableWeb3({onComplete : ()=> switchNetwork("0x13881")});
+      enableWeb3({ onComplete: () => switchNetwork("0x13881") });
       if (balance === true)
         getBalance(userETHaddress).then((result) => {
           setBalance(result);
@@ -114,9 +114,16 @@ export default function Nav({
     }
   };
 
-  useEffect(()=>{
-    console.log(user.get("passwordHash"))
-  },[])
+  useEffect(() => {
+    const d = new Date();
+    let time = d.getTime();
+    if ((time - user.get("time")) / 1000 / 60 / 60 >= 3 && (user.get("reCheck") === 2 || user.get("reCheck")=== undefined)) {
+      console.log((time - user.get("time")) / 1000 / 60 / 60)
+      setUserData({
+        reCheck: 1
+      })
+    }
+  }, [])
 
   return (
     <nav className="nav-in" id="nav">

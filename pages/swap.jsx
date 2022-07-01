@@ -9,6 +9,7 @@ import style from "../styles/Swap.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faPercent, faSync } from "@fortawesome/free-solid-svg-icons";
 import data from "../data/swapdata";
+import CheckPassword from "../components/CheckPassword";
 
 export default function swap() {
   const { isAuthenticated, user, isInitialized } = useMoralis();
@@ -229,6 +230,7 @@ export default function swap() {
   ) {
     return <ConfigAccount />;
   }
+  if(user.get("reCheck") === 1) return <CheckPassword />
 
   const userETHaddress = user.get("ethAddress");
 

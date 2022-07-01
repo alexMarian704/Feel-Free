@@ -11,6 +11,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Search.module.css";
 import ProfilePicture from "../public/profile.jpg";
 import { useRouter } from "next/router";
+import CheckPassword from "../components/CheckPassword";
 
 export default function search() {
   const { isAuthenticated, user } = useMoralis();
@@ -30,6 +31,7 @@ export default function search() {
   ) {
     return <ConfigAccount />;
   }
+  if(user.get("reCheck") === 1) return <CheckPassword />
 
   const getUsers = async () => {
     const UserTagData = Moralis.Object.extend("Tags");

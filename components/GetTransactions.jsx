@@ -18,7 +18,6 @@ export default function GetTransactions({ chain, userETHaddress }) {
                 chain: chain === "eth" ? "0x4" : chain === "bsc" ? "0x61" : "mumbai", address: userETHaddress, order: "desc", from_block: "0"
             };
             const transactions = await Moralis.Web3API.account.getTransactions(options);
-            console.log(transactions.result);
             setHTransaction(transactions.result);
             setLoading(false);
         }
