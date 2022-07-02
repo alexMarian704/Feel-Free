@@ -8,14 +8,15 @@ import { Moralis } from "moralis";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfilePicture from "../../public/profile.jpg";
-import { faPaperPlane , faPaperclip } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
 import style from "../../styles/Messages.module.css"
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
   const router = useRouter()
-  const [message , setMessage] = useState("");
+  const [message, setMessage] = useState("");
+  const [value, setValue] = useState("")
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -25,21 +26,37 @@ export default function Messages() {
   ) {
     return <ConfigAccount />;
   }
-  if(user.get("reCheck") === 1) return <CheckPassword />
+  if (user.get("reCheck") === 1) return <CheckPassword />
 
-  if(user && router.query.mesID === user.get("ethAddress")) router.push("/")
+  if (user && router.query.mesID === user.get("ethAddress")) router.push("/")
+
+  const sendMessage = () => {
+    let messageList = []
+
+    if (JSON.parse(localStorage.getItem(router.query.mesID) !== null)) {
+      messageList = JSON.parse(localStorage.getItem(router.query.mesID))
+    }
+    messageList.push({ type: 1, message: message })
+    localStorage.setItem(router.query.mesID, JSON.stringify(messageList));
+  }
+
+  console.log(JSON.parse(localStorage.getItem(router.query.mesID)))
 
   return (
     <div>
       <Head>
         <title>Messages</title>
       </Head>
-      <Nav balance={false}/>
+      <Nav balance={false} />
       <div>
         <div></div>
         <div className={style.sendContainer}>
-          <input type="text" value={message} onChange={(e)=>setMessage(e.target.value)} placeholder="Write a message"/>
-          <button><FontAwesomeIcon icon={faPaperPlane} /></button>
+          <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
+            if (e.key === "Enter") {
+              sendMessage();
+            }
+          }} />
+          <button><FontAwesomeIcon icon={faPaperPlane} onClick={sendMessage} /></button>
           <button><FontAwesomeIcon icon={faPaperclip} /></button>
         </div>
       </div>
