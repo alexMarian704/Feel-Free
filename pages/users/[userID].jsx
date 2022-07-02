@@ -22,8 +22,10 @@ export default function UserID() {
   const [isFriend, setIsFriend] = useState(false);
   const [isSend, setIsSend] = useState(false);
 
+  if(user && router.query.userID === user.get("ethAddress")) router.push("/profile")
+
   const getData = async () => {
-    if (isInitialized && router.query.userID) {
+    if (isInitialized && router.query.userID && router.query.userID !== user.get("ethAddress")) {
       setLoading(true);
       const addressToTag = Moralis.Object.extend("Tags");
       const query = new Moralis.Query(addressToTag);
@@ -39,7 +41,7 @@ export default function UserID() {
   }
 
   const getFriends = async () => {
-    if (user) {
+    if (user && router.query.userID !== user.get("ethAddress")) {
       const userFriends = Moralis.Object.extend("Friends");
       const query = new Moralis.Query(userFriends);
       query.equalTo("ethAddress", user.get("ethAddress"));

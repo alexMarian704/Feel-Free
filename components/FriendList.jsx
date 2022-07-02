@@ -45,11 +45,11 @@ export default function FriendList() {
         getFriend();
     }
 
-    const goToProfile = (address)=>{
+    const goToProfile = (address) => {
         route.push(`/users/${address}`)
     }
 
-    const goToChat = (address)=>{
+    const goToChat = (address) => {
         route.push(`/messages/${address}`)
     }
 
@@ -58,7 +58,7 @@ export default function FriendList() {
             {friendList !== 0 && friendList !== 1 && loading == false &&
                 <div>
                     {friendList.map((friend, i) => (
-                        <div key={i} className={style.friendContainer} onClick={()=> goToProfile(friend.ethAddress)}>
+                        <div key={i} className={style.friendContainer}>
                             <div className={style.imgProfile}>
                                 {friend.profilePhoto !== undefined && (
                                     <Image
@@ -69,7 +69,7 @@ export default function FriendList() {
                                         layout="responsive"
                                         objectFit="contain"
                                         className={style.img}
-                                    />
+                                        onClick={() => goToProfile(friend.ethAddress)} />
                                 )}
                                 {friend.profilePhoto === undefined && (
                                     <Image
@@ -80,15 +80,15 @@ export default function FriendList() {
                                         layout="responsive"
                                         objectFit="contain"
                                         className={style.img}
-                                    />
+                                        onClick={() => goToProfile(friend.ethAddress)} />
                                 )}
                             </div>
                             <div className={style.friendData}>
-                                <p>{friend.name}</p>
-                                <p>@{friend.userTag}</p>
+                                <p onClick={() => goToProfile(friend.ethAddress)}>{friend.name}</p>
+                                <p onClick={() => goToProfile(friend.ethAddress)}>@{friend.userTag}</p>
                             </div>
                             <div className={style.buttonContainer}>
-                                <button onClick={()=> goToChat(friend.ethAddress)}><FontAwesomeIcon icon={faComment} /> </button>
+                                <button onClick={() => goToChat(friend.ethAddress)}><FontAwesomeIcon icon={faComment} /> </button>
                             </div>
                         </div>
                     )
