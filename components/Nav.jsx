@@ -117,8 +117,7 @@ export default function Nav({
   useEffect(() => {
     const d = new Date();
     let time = d.getTime();
-    if ((time - user.get("time")) / 1000 / 60 / 60 >= 12 && (user.get("reCheck") === 2 || user.get("reCheck")=== undefined)) {
-      console.log((time - user.get("time")) / 1000 / 60 / 60)
+    if ((time - user.get("time")) / 1000 / 60 / 60 >= 15 && (user.get("reCheck") === 2 || user.get("reCheck")=== undefined)) {
       setUserData({
         reCheck: 1
       })

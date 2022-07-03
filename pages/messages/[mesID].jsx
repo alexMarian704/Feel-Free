@@ -11,6 +11,7 @@ import ProfilePicture from "../../public/profile.jpg";
 import { faPaperPlane, faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
 import style from "../../styles/Messages.module.css"
+import AES from 'crypto-js/aes';
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -30,17 +31,78 @@ export default function Messages() {
 
   if (user && router.query.mesID === user.get("ethAddress")) router.push("/")
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     let messageList = []
+    
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+    const keyPair = window.crypto.subtle.generateKey({
+      name: "RSA-OAEP",
+      modulusLength: 4096,
+      publicExponent: new Uint8Array([1, 0, 1]),
+      hash: "SHA-256"
+    },
+      true,
+      ["encrypt", "decrypt"]
+    );
+    const encodedMessage = enc.encode(message);
+    const { privateKey, publicKey } = await keyPair;
+    const publicKeyJwk = await window.crypto.subtle.exportKey(
+      "jwk",
+      publicKey
+    );
+    const privateKeyJwk = await window.crypto.subtle.exportKey(
+      "jwk",
+      privateKey
+    );
 
-    if (JSON.parse(localStorage.getItem(router.query.mesID) !== null)) {
-      messageList = JSON.parse(localStorage.getItem(router.query.mesID))
-    }
-    messageList.push({ type: 1, message: message })
-    localStorage.setItem(router.query.mesID, JSON.stringify(messageList));
+    const publicKey1 = await window.crypto.subtle.importKey(
+      "jwk",
+      publicKeyJwk,
+      {
+        name: "RSA-OAEP",
+        modulusLength: 4096,
+        hash: "SHA-256"
+      },
+      true,
+      ["encrypt"]
+    );
+
+    const privateKey1 = await window.crypto.subtle.importKey(
+      "jwk",
+      privateKeyJwk,
+      {
+        name: "RSA-OAEP",
+        modulusLength: 4096,
+        hash: "SHA-256"
+      },
+      true,
+      ["decrypt"]
+    );
+
+    const encryptedText = await window.crypto.subtle.encrypt({
+      name: "RSA-OAEP"
+    },
+      publicKey1,
+      encodedMessage
+    )
+
+    const decryptedText = await window.crypto.subtle.decrypt({
+      name: "RSA-OAEP"
+    },
+      privateKey1,
+      encryptedText
+    )
+    console.log(dec.decode(decryptedText));
+
+    // if (JSON.parse(localStorage.getItem(router.query.mesID) !== null)) {
+    //   messageList = JSON.parse(localStorage.getItem(router.query.mesID))
+    // }
+    // messageList.push({ type: 1, message: message })
+    // localStorage.setItem(router.query.mesID, JSON.stringify(messageList));
   }
 
-  console.log(JSON.parse(localStorage.getItem(router.query.mesID)))
+  //console.log(JSON.parse(localStorage.getItem(router.query.mesID)))
 
   return (
     <div>
