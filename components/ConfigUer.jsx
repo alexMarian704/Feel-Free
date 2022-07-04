@@ -3,6 +3,7 @@ import { useMoralis } from "react-moralis";
 import { Moralis } from "moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import AES from 'crypto-js/aes';
 
 export default function ConfigUser({ setInfo }) {
   const { setUserData, user } = useMoralis();
@@ -12,8 +13,33 @@ export default function ConfigUser({ setInfo }) {
   const [error, setError] = useState("");
   const [use, setUse] = useState(false);
 
-  const setName = () => {
+  const setName = async () => {
     if (username !== "" && validTag === true) {
+
+      const keyPair = window.crypto.subtle.generateKey({
+        name: "RSA-OAEP",
+        modulusLength: 4096,
+        publicExponent: new Uint8Array([1, 0, 1]),
+        hash: "SHA-256"
+      },
+        true,
+        ["encrypt", "decrypt"]
+      );
+      const { privateKey, publicKey } = await keyPair;
+
+      const publicKeyJwk = await window.crypto.subtle.exportKey(
+        "jwk",
+        publicKey
+      );
+      const privateKeyJwk = await window.crypto.subtle.exportKey(
+        "jwk",
+        privateKey
+      );
+      const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
+      const encryptedPrivateKey = encrypt(privateKeyJwk, user.id);
+      localStorage.setItem("privateKeyUser" , encryptedPrivateKey)
+      const formatPublicKey = JSON.stringify(publicKeyJwk)
+
       let char = username.split(" ");
       if (char[1]) {
         setUserData({
@@ -26,8 +52,9 @@ export default function ConfigUser({ setInfo }) {
           name: char[0].toLowerCase(),
           name2: char[1].toLowerCase() ? char[1].toLowerCase() : "",
           chain: "eth",
-          passwordConfig:false,
-          reCheck:2,
+          passwordConfig: false,
+          reCheck: 2,
+          formatPublicKey:formatPublicKey
         });
       } else {
         setUserData({
@@ -40,8 +67,9 @@ export default function ConfigUser({ setInfo }) {
           name: char[0].toLowerCase(),
           name2: undefined,
           chain: "eth",
-          passwordConfig:false,
-          reCheck:2,
+          passwordConfig: false,
+          reCheck: 2,
+          formatPublicKey:formatPublicKey
         });
       }
       setInfo(false);
@@ -52,12 +80,12 @@ export default function ConfigUser({ setInfo }) {
       const friend = new Friends();
       friend.save({
         friendsArray: [],
-        ethAddress:user.get("ethAddress"),
-        aclArray:[user.id]
+        ethAddress: user.get("ethAddress"),
+        aclArray: [user.id]
       })
 
       const FriendsACL = new Moralis.ACL();
-      FriendsACL.setReadAccess(user.id , true);
+      FriendsACL.setReadAccess(user.id, true);
       FriendsACL.setWriteAccess(user.id, true)
       friend.setACL(FriendsACL)
       friend.save();

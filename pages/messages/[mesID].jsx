@@ -12,6 +12,7 @@ import { faPaperPlane, faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
 import style from "../../styles/Messages.module.css"
 import AES from 'crypto-js/aes';
+import ENC from 'crypto-js/enc-utf8'
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -31,34 +32,25 @@ export default function Messages() {
 
   if (user && router.query.mesID === user.get("ethAddress")) router.push("/")
 
+  const sendImage = async () => {
+    
+  }
+
   const sendMessage = async () => {
     let messageList = []
-    
+
     const enc = new TextEncoder();
     const dec = new TextDecoder();
-    const keyPair = window.crypto.subtle.generateKey({
-      name: "RSA-OAEP",
-      modulusLength: 4096,
-      publicExponent: new Uint8Array([1, 0, 1]),
-      hash: "SHA-256"
-    },
-      true,
-      ["encrypt", "decrypt"]
-    );
-    const encodedMessage = enc.encode(message);
-    const { privateKey, publicKey } = await keyPair;
-    const publicKeyJwk = await window.crypto.subtle.exportKey(
-      "jwk",
-      publicKey
-    );
-    const privateKeyJwk = await window.crypto.subtle.exportKey(
-      "jwk",
-      privateKey
-    );
 
-    const publicKey1 = await window.crypto.subtle.importKey(
+    const encodedMessage = enc.encode(message);
+    const encryptedPrivateKEy = localStorage.getItem("privateKeyUser")
+    const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
+    const decryptedPrivateKEy = decrypt(encryptedPrivateKEy, user.id);
+    const publicKeyUser = JSON.parse(user.get("formatPublicKey"))
+
+    const originPublicKey = await window.crypto.subtle.importKey(
       "jwk",
-      publicKeyJwk,
+      publicKeyUser,
       {
         name: "RSA-OAEP",
         modulusLength: 4096,
@@ -68,9 +60,9 @@ export default function Messages() {
       ["encrypt"]
     );
 
-    const privateKey1 = await window.crypto.subtle.importKey(
+    const originPrivateKey = await window.crypto.subtle.importKey(
       "jwk",
-      privateKeyJwk,
+      decryptedPrivateKEy,
       {
         name: "RSA-OAEP",
         modulusLength: 4096,
@@ -83,14 +75,14 @@ export default function Messages() {
     const encryptedText = await window.crypto.subtle.encrypt({
       name: "RSA-OAEP"
     },
-      publicKey1,
+      originPublicKey,
       encodedMessage
     )
 
     const decryptedText = await window.crypto.subtle.decrypt({
       name: "RSA-OAEP"
     },
-      privateKey1,
+      originPrivateKey,
       encryptedText
     )
     console.log(dec.decode(decryptedText));
@@ -119,7 +111,7 @@ export default function Messages() {
             }
           }} />
           <button><FontAwesomeIcon icon={faPaperPlane} onClick={sendMessage} /></button>
-          <button><FontAwesomeIcon icon={faPaperclip} /></button>
+          <button><FontAwesomeIcon icon={faPaperclip} onClick={sendImage} /></button>
         </div>
       </div>
     </div>
