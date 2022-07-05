@@ -37,8 +37,9 @@ export default function ConfigUser({ setInfo }) {
       );
       const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
       const encryptedPrivateKey = encrypt(privateKeyJwk, user.id);
-      localStorage.setItem("privateKeyUser" , encryptedPrivateKey)
+      localStorage.setItem(`privateKeyUser${user.get("ethAddress")}` , encryptedPrivateKey)
       const formatPublicKey = JSON.stringify(publicKeyJwk)
+      localStorage.setItem(`publicKeyUser${user.get("ethAddress")}` , formatPublicKey)
 
       let char = username.split(" ");
       if (char[1]) {
@@ -97,7 +98,8 @@ export default function ConfigUser({ setInfo }) {
           searchName: username.toLowerCase(),
           name: char[0].toLowerCase(),
           name2: char[1].toLowerCase() ? char[1].toLowerCase() : "",
-          idUser: user.id
+          idUser: user.id,
+          formatPublicKey:formatPublicKey
         });
 
         const tagACL = new Moralis.ACL();
@@ -112,7 +114,8 @@ export default function ConfigUser({ setInfo }) {
           searchName: username.toLowerCase(),
           name: char[0].toLowerCase(),
           name2: "",
-          idUser: user.id
+          idUser: user.id,
+          formatPublicKey:formatPublicKey
         });
 
         const tagACL = new Moralis.ACL();

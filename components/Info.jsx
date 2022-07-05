@@ -34,7 +34,7 @@ export default function Info({ setInfo }) {
           We recommend logging out when you are not using the platform !
         </h2>
       </div>
-      <button className="setUpBut" onClick={accept} style={{width:"calc(140px + 1vw)" , fontSize:"calc(17px + 0.4vw)" , height:"calc(28px + 1vh)"}}>
+      <button className="setUpBut" onClick={accept} style={{width:"calc(140px + 1vw)" , fontSize:"calc(16px + 0.4vw)" , height:"calc(28px + 1vh)"}}>
         I understand
       </button>
     </div>
