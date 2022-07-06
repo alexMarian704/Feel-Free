@@ -12,7 +12,7 @@ export default function Notifications() {
     const [notArray, setNotArray] = useState([]);
     const route = useRouter()
 
-    const queryNotifications = async ()=>{
+    const queryNotifications = async () => {
         const userNotification = Moralis.Object.extend("Notification");
         const query = new Moralis.Query(userNotification);
         query.equalTo("to", user.get("ethAddress"));
@@ -25,7 +25,7 @@ export default function Notifications() {
         queryNotifications();
     }, [])
 
-    const accept = async (address)=>{
+    const accept = async (address) => {
         const accFriend = Moralis.Object.extend("Friends");
         const query = new Moralis.Query(accFriend);
         query.equalTo("ethAddress", address);
@@ -33,7 +33,7 @@ export default function Notifications() {
         const array = [...results.attributes.friendsArray]
         array.push(user.get("ethAddress"))
         results.save({
-            friendsArray:array
+            friendsArray: array
         })
 
         const mFriend = Moralis.Object.extend("Friends");
@@ -43,20 +43,20 @@ export default function Notifications() {
         const marray = [...mresults.attributes.friendsArray]
         marray.push(address)
         mresults.save({
-            friendsArray:marray
+            friendsArray: marray
         })
 
         const userNotification = Moralis.Object.extend("Notification");
         const query1 = new Moralis.Query(userNotification);
         query1.equalTo("from", address);
         const results1 = await query1.first();
-        results1.destroy().then(()=>{
+        results1.destroy().then(() => {
             queryNotifications();
         });
 
     }
 
-    const reject = async (address)=> {
+    const reject = async (address) => {
         const userNotification = Moralis.Object.extend("Notification");
         const query1 = new Moralis.Query(userNotification);
         query1.equalTo("from", address);
@@ -79,7 +79,7 @@ export default function Notifications() {
                                             <p>Friend Request from <span onClick={() => route.push(`/users/${data.from}`)}>@{data.tag}</span></p>
                                             <div className={style.butDiv}>
                                                 <button className={style.accept} onClick={() => accept(data.from)}> <FontAwesomeIcon icon={faCheck} /></button>
-                                                <button className={style.reject} onClick={()=> reject(data.from)}><FontAwesomeIcon icon={faTimes} /></button>
+                                                <button className={style.reject} onClick={() => reject(data.from)}><FontAwesomeIcon icon={faTimes} /></button>
                                             </div>
                                         </div>
                                     )
