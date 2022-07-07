@@ -18,7 +18,6 @@ export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
   const router = useRouter()
   const [message, setMessage] = useState("");
-  const [value, setValue] = useState("")
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -30,20 +29,25 @@ export default function Messages() {
     return bytes.buffer;
   }
 
-  const receiveMessage = async () => {
+  const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
+  const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
+
+  const unredMessages = async () => {
     if (isAuthenticated && router.query.mesID) {
       let messageList = []
       let main = {
         userAddress: user.get("ethAddress"),
         messages: messageList
       }
+      let ref;
+      if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
+        ref = `a${router.query.mesID.slice(2)}${user.get("ethAddress").slice(2)}`
+      } else {
+        ref = `a${user.get("ethAddress").slice(2)}${router.query.mesID.slice(2)}`
+      }
       const dec = new TextDecoder();
       const encryptedPrivateKey = localStorage.getItem(`privateKeyUser${user.get("ethAddress")}`)
-      const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
-      const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
-
       const decryptedPrivateKEy = decrypt(encryptedPrivateKey, user.id);
-
       const originPrivateKey = await window.crypto.subtle.importKey(
         "jwk",
         decryptedPrivateKEy,
@@ -55,80 +59,109 @@ export default function Messages() {
         true,
         ["decrypt"]
       );
-      if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
-        const ref = `a${router.query.mesID.slice(2)}${user.get("ethAddress").slice(2)}`
-        const query = new Moralis.Query(ref)
-        query.equalTo("from", router.query.mesID);
-        const subscription = await query.subscribe()
-        subscription.on("create", async (mesObject) => {
-          //console.log(mesObject.attributes.message)
-          const bufferText = _base64ToArrayBuffer(mesObject.attributes.message)
+
+      const unread = Moralis.Object.extend(ref);
+      const query = new Moralis.Query(unread);
+      query.equalTo("from", router.query.mesID);
+      const results = await query.find();
+      if (results !== undefined) {
+        for (let i = 0; i < results.length; i++) {
+          const bufferText = _base64ToArrayBuffer(results[i].attributes.message)
           const decryptedText = await window.crypto.subtle.decrypt({
             name: "RSA-OAEP"
           },
             originPrivateKey,
             bufferText
           )
-          console.log(dec.decode(decryptedText));
-        })
-      } else {
-        const ref = `a${user.get("ethAddress").slice(2)}${router.query.mesID.slice(2)}`
-        const query = new Moralis.Query(ref)
-        query.equalTo("from", router.query.mesID);
-        const subscription = await query.subscribe()
-        subscription.on("create", async (mesObject) => {
-          //console.log(mesObject.attributes.message)
-          const bufferText = _base64ToArrayBuffer(mesObject.attributes.message)
-          const decryptedText = await window.crypto.subtle.decrypt({
-            name: "RSA-OAEP"
-          },
-            originPrivateKey,
-            bufferText
-          )
-          console.log(dec.decode(decryptedText));
-        })
+          const textMessage = dec.decode(decryptedText)
+          if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+            const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+            const decryptedMessages = decrypt(encryptedMessages, user.id);
+            main.messages = decryptedMessages.messages
+            console.log(decryptedMessages.messages)
+          }
+          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time })
+          const encryptedMessagesList = encrypt(main, user.id)
+          localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+        }
+        for (let i = 0; i < results.length; i++) {
+          const query1 = new Moralis.Query(unread);
+          query1.equalTo("time", results[i].attributes.time);
+          const results1 = await query1.first();
+          if (results1 !== undefined)
+            results1.destroy()
+        }
       }
     }
+  }
 
-    // const enc = new TextEncoder();
+  const receiveMessage = async () => {
+    if (isAuthenticated && router.query.mesID) {
+      let messageList = []
+      let main = {
+        userAddress: user.get("ethAddress"),
+        messages: messageList
+      }
+      const dec = new TextDecoder();
+      const encryptedPrivateKey = localStorage.getItem(`privateKeyUser${user.get("ethAddress")}`)
+      const decryptedPrivateKEy = decrypt(encryptedPrivateKey, user.id);
+      const originPrivateKey = await window.crypto.subtle.importKey(
+        "jwk",
+        decryptedPrivateKEy,
+        {
+          name: "RSA-OAEP",
+          modulusLength: 4096,
+          hash: "SHA-256"
+        },
+        true,
+        ["decrypt"]
+      );
 
-    // const encodedMessage = enc.encode(message);
-    // const decryptedPrivateKEy = decrypt(encryptedPrivateKey, user.id);
-    // const publicKeyUser = JSON.parse(user.get("formatPublicKey"))
+      let ref
+      if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
+        ref = `a${router.query.mesID.slice(2)}${user.get("ethAddress").slice(2)}`
+      } else {
+        ref = `a${user.get("ethAddress").slice(2)}${router.query.mesID.slice(2)}`
+      }
+      const query = new Moralis.Query(ref)
+      query.equalTo("from", router.query.mesID);
+      const subscription = await query.subscribe()
+      subscription.on("create", async (mesObject) => {
+        const bufferText = _base64ToArrayBuffer(mesObject.attributes.message)
+        const decryptedText = await window.crypto.subtle.decrypt({
+          name: "RSA-OAEP"
+        },
+          originPrivateKey,
+          bufferText
+        )
+        const textMessage = dec.decode(decryptedText)
+        console.log(textMessage);
 
-    // const originPublicKey = await window.crypto.subtle.importKey(
-    //   "jwk",
-    //   publicKeyUser,
-    //   {
-    //     name: "RSA-OAEP",
-    //     modulusLength: 4096,
-    //     hash: "SHA-256"
-    //   },
-    //   true,
-    //   ["encrypt"]
-    // );
-
-    // const encryptedText = await window.crypto.subtle.encrypt({
-    //   name: "RSA-OAEP"
-    // },
-    //   originPublicKey,
-    //   encodedMessage
-    // )
-
-    // if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
-    //   const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
-    //   const decryptedMessages = decrypt(encryptedMessages, user.id);
-    //   main.messages = decryptedMessages.messages
-    //   console.log(decryptedMessages.messages)
-    // }
-    // main.messages.push({ type: 1, message: message })
-    // const encryptedMessagesList = encrypt(main, user.id)
-    // localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+        const deleteMessage = Moralis.Object.extend(ref);
+        const query1 = new Moralis.Query(deleteMessage);
+        query1.equalTo("time", mesObject.attributes.time);
+        const results1 = await query1.first();
+        if (textMessage !== "" && results1 !== undefined) {
+          results1.destroy().then(() => {
+            if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+              const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+              const decryptedMessages = decrypt(encryptedMessages, user.id);
+              main.messages = decryptedMessages.messages
+              console.log(decryptedMessages.messages)
+            }
+            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time })
+            const encryptedMessagesList = encrypt(main, user.id)
+            localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+          })
+        }
+      })
+    }
   }
 
   useEffect(() => {
+    unredMessages()
     receiveMessage();
-  }, [isAuthenticated , router.query.mesID])
+  }, [isAuthenticated, router.query.mesID])
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -157,6 +190,8 @@ export default function Messages() {
   }
 
   const pushMessage = async () => {
+    const d = new Date();
+    let time = d.getTime();
     let messageList = []
     let main = {
       userAddress: user.get("ethAddress"),
@@ -190,54 +225,38 @@ export default function Messages() {
     )
     const base64Text = _arrayBufferToBase64(encryptedText)
 
-    const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
-    const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
-
     if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
       const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
       const decryptedMessages = decrypt(encryptedMessages, user.id);
       main.messages = decryptedMessages.messages
       console.log(decryptedMessages.messages)
     }
-    main.messages.push({ type: 1, message: message })
+    main.messages.push({ type: 1, message: message, time: time })
     const encryptedMessagesList = encrypt(main, user.id)
     localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
 
+    let ref;
     if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
-      const ref = `a${router.query.mesID.slice(2)}${user.get("ethAddress").slice(2)}`
-      const MessageOrigin = Moralis.Object.extend(ref);
-      const messageOriginPush = new MessageOrigin();
-      messageOriginPush.save({
-        from: user.get("ethAddress"),
-        to: router.query.userID,
-        message: base64Text,
-        publicKey: JSON.stringify(publicKeyEncrypt)
-      });
-      const messageACL = new Moralis.ACL();
-      messageACL.setWriteAccess(user.id, true);
-      messageACL.setReadAccess(user.id, true)
-      messageACL.setWriteAccess(results.attributes.idUser, true);
-      messageACL.setReadAccess(results.attributes.idUser, true);
-      messageOriginPush.setACL(messageACL)
-      messageOriginPush.save();
+      ref = `a${router.query.mesID.slice(2)}${user.get("ethAddress").slice(2)}`
     } else {
-      const ref = `a${user.get("ethAddress").slice(2)}${router.query.mesID.slice(2)}`
-      const MessageOrigin = Moralis.Object.extend(ref);
-      const messageOriginPush = new MessageOrigin();
-      messageOriginPush.save({
-        from: user.get("ethAddress"),
-        to: router.query.userID,
-        message: base64Text,
-        publicKey: JSON.stringify(publicKeyEncrypt)
-      });
-      const messageACL = new Moralis.ACL();
-      messageACL.setWriteAccess(user.id, true);
-      messageACL.setReadAccess(user.id, true)
-      messageACL.setWriteAccess(results.attributes.idUser, true);
-      messageACL.setReadAccess(results.attributes.idUser, true);
-      messageOriginPush.setACL(messageACL)
-      messageOriginPush.save();
+      ref = `a${user.get("ethAddress").slice(2)}${router.query.mesID.slice(2)}`
     }
+    const MessageOrigin = Moralis.Object.extend(ref);
+    const messageOriginPush = new MessageOrigin();
+    messageOriginPush.save({
+      from: user.get("ethAddress"),
+      to: router.query.userID,
+      message: base64Text,
+      publicKey: JSON.stringify(publicKeyEncrypt),
+      time: time
+    });
+    const messageACL = new Moralis.ACL();
+    messageACL.setWriteAccess(user.id, true);
+    messageACL.setReadAccess(user.id, true)
+    messageACL.setWriteAccess(results.attributes.idUser, true);
+    messageACL.setReadAccess(results.attributes.idUser, true);
+    messageOriginPush.setACL(messageACL)
+    messageOriginPush.save();
   }
 
   return (
