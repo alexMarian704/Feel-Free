@@ -122,6 +122,7 @@ export default function Nav({
         reCheck: 1
       })
     }
+    Moralis.LiveQuery.close()
   }, [])
 
   return (

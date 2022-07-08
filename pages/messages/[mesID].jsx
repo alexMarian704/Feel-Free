@@ -8,16 +8,21 @@ import { Moralis } from "moralis";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfilePicture from "../../public/profile.jpg";
-import { faPaperPlane, faPaperclip } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faPaperclip, faArrowLeft, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
 import style from "../../styles/Messages.module.css"
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
+import Link from "next/link";
+import RenderMessage from "../../components/Message";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
   const router = useRouter()
   const [message, setMessage] = useState("");
+  const [friendData, setFriendData] = useState("");
+  const [error, setError] = useState("");
+  const [localMessages, setLocalMessages] = useState([]);
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -27,6 +32,31 @@ export default function Messages() {
       bytes[i] = binary_string.charCodeAt(i);
     }
     return bytes.buffer;
+  }
+
+  const getData = async () => {
+    if (isAuthenticated && router.query.mesID) {
+      const addressToTag = Moralis.Object.extend("Tags");
+      const query = new Moralis.Query(addressToTag);
+      query.equalTo("ethAddress", router.query.mesID);
+      const results = await query.first();
+      if (results !== undefined) {
+        setFriendData(results.attributes);
+      } else {
+        setError("User was not found");
+      }
+    }
+  }
+
+  const getLocalMessages = () => {
+    if (isAuthenticated && router.query.mesID) {
+      if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+        const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+        const decryptedMessages = decrypt(encryptedMessages, user.id);
+        console.log(decryptedMessages.messages)
+        setLocalMessages(decryptedMessages.messages)
+      }
+    }
   }
 
   const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
@@ -91,6 +121,8 @@ export default function Messages() {
           if (results1 !== undefined)
             results1.destroy()
         }
+        if (main.messages.length > 0)
+          setLocalMessages(main.messages)
       }
     }
   }
@@ -152,6 +184,8 @@ export default function Messages() {
             main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time })
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+            if (main.messages.length > 0)
+              setLocalMessages(main.messages)
           })
         }
       })
@@ -161,6 +195,8 @@ export default function Messages() {
   useEffect(() => {
     unredMessages()
     receiveMessage();
+    getData()
+    getLocalMessages()
   }, [isAuthenticated, router.query.mesID])
 
   if (!isAuthenticated) {
@@ -257,16 +293,36 @@ export default function Messages() {
     messageACL.setReadAccess(results.attributes.idUser, true);
     messageOriginPush.setACL(messageACL)
     messageOriginPush.save();
+    if (main.messages.length > 0)
+      setLocalMessages(main.messages)
   }
 
   return (
-    <div>
+    <div className={style.body}>
       <Head>
         <title>Messages-{router.query.mesID}</title>
       </Head>
-      <Nav balance={false} />
+      <div className={style.mesNav}>
+        <div className={style.containers}>
+          <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
+          {friendData !== "" && <div className={style.alignImg} onClick={() => router.push(`/users/${router.query.mesID}`)}>
+            {friendData.profilePhoto !== undefined && <img src={friendData.profilePhoto} alt="Profile Photo" />}
+            {friendData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
+          </div>}
+          {friendData !== "" && <Link href={`/users/${router.query.mesID}`}>
+            <h2>{friendData.name} {friendData.name2}</h2>
+          </Link>}
+        </div>
+        <div className={style.containers}>
+          <button className={style.options}><FontAwesomeIcon icon={faEllipsisV} /></button>
+        </div>
+      </div>
+      <div className={style.messageContainer}>
+        {localMessages.length > 0 && localMessages.map((message, i) => (
+          <RenderMessage message={message} key={i} />
+        ))}
+      </div>
       <div>
-        <div></div>
         <div className={style.sendContainer}>
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
             if (e.key === "Enter") {

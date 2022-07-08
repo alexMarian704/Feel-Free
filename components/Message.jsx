@@ -6,8 +6,8 @@ export default function RenderMessage({ message }) {
   const { setUserData } = useMoralis();
 
   return (
-    <div className="setUp">
-        
+    <div>
+        <p>{message.message}</p>
     </div>
   );
 }
