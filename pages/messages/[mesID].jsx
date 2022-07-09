@@ -226,75 +226,79 @@ export default function Messages() {
   }
 
   const pushMessage = async () => {
-    const d = new Date();
-    let time = d.getTime();
-    let messageList = []
-    let main = {
-      userAddress: user.get("ethAddress"),
-      messages: messageList
-    }
-    const addressToTag = Moralis.Object.extend("Tags");
-    const query = new Moralis.Query(addressToTag);
-    query.equalTo("ethAddress", router.query.mesID);
-    const results = await query.first();
-    const publicKeyEncrypt = JSON.parse(results.attributes.formatPublicKey)
+    if (message !== "") {
+      const d = new Date();
+      let time = d.getTime();
+      let messageList = []
+      let main = {
+        userAddress: user.get("ethAddress"),
+        messages: messageList
+      }
+      const addressToTag = Moralis.Object.extend("Tags");
+      const query = new Moralis.Query(addressToTag);
+      query.equalTo("ethAddress", router.query.mesID);
+      const results = await query.first();
+      const publicKeyEncrypt = JSON.parse(results.attributes.formatPublicKey)
 
-    const enc = new TextEncoder();
-    const encodedMessage = enc.encode(message);
-    const originPublicKey = await window.crypto.subtle.importKey(
-      "jwk",
-      publicKeyEncrypt,
-      {
-        name: "RSA-OAEP",
-        modulusLength: 4096,
-        hash: "SHA-256"
+      const enc = new TextEncoder();
+      const encodedMessage = enc.encode(message);
+      const originPublicKey = await window.crypto.subtle.importKey(
+        "jwk",
+        publicKeyEncrypt,
+        {
+          name: "RSA-OAEP",
+          modulusLength: 4096,
+          hash: "SHA-256"
+        },
+        true,
+        ["encrypt"]
+      );
+
+      const encryptedText = await window.crypto.subtle.encrypt({
+        name: "RSA-OAEP"
       },
-      true,
-      ["encrypt"]
-    );
+        originPublicKey,
+        encodedMessage
+      )
+      const base64Text = _arrayBufferToBase64(encryptedText)
 
-    const encryptedText = await window.crypto.subtle.encrypt({
-      name: "RSA-OAEP"
-    },
-      originPublicKey,
-      encodedMessage
-    )
-    const base64Text = _arrayBufferToBase64(encryptedText)
+      if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+        const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+        const decryptedMessages = decrypt(encryptedMessages, user.id);
+        main.messages = decryptedMessages.messages
+        console.log(decryptedMessages.messages)
+      }
+      main.messages.push({ type: 1, message: message, time: time , seen:false })
+      const encryptedMessagesList = encrypt(main, user.id)
+      localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
 
-    if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
-      const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
-      const decryptedMessages = decrypt(encryptedMessages, user.id);
-      main.messages = decryptedMessages.messages
-      console.log(decryptedMessages.messages)
+      let ref;
+      if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
+        ref = `a${router.query.mesID.slice(2)}${user.get("ethAddress").slice(2)}`
+      } else {
+        ref = `a${user.get("ethAddress").slice(2)}${router.query.mesID.slice(2)}`
+      }
+      const MessageOrigin = Moralis.Object.extend(ref);
+      const messageOriginPush = new MessageOrigin();
+      messageOriginPush.save({
+        from: user.get("ethAddress"),
+        to: router.query.userID,
+        message: base64Text,
+        publicKey: JSON.stringify(publicKeyEncrypt),
+        time: time
+      });
+      const messageACL = new Moralis.ACL();
+      messageACL.setWriteAccess(user.id, true);
+      messageACL.setReadAccess(user.id, true)
+      messageACL.setWriteAccess(results.attributes.idUser, true);
+      messageACL.setReadAccess(results.attributes.idUser, true);
+      messageOriginPush.setACL(messageACL)
+      messageOriginPush.save();
+      if (main.messages.length > 0) {
+        setLocalMessages(main.messages)
+        setMessage("");
+      }
     }
-    main.messages.push({ type: 1, message: message, time: time })
-    const encryptedMessagesList = encrypt(main, user.id)
-    localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-
-    let ref;
-    if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
-      ref = `a${router.query.mesID.slice(2)}${user.get("ethAddress").slice(2)}`
-    } else {
-      ref = `a${user.get("ethAddress").slice(2)}${router.query.mesID.slice(2)}`
-    }
-    const MessageOrigin = Moralis.Object.extend(ref);
-    const messageOriginPush = new MessageOrigin();
-    messageOriginPush.save({
-      from: user.get("ethAddress"),
-      to: router.query.userID,
-      message: base64Text,
-      publicKey: JSON.stringify(publicKeyEncrypt),
-      time: time
-    });
-    const messageACL = new Moralis.ACL();
-    messageACL.setWriteAccess(user.id, true);
-    messageACL.setReadAccess(user.id, true)
-    messageACL.setWriteAccess(results.attributes.idUser, true);
-    messageACL.setReadAccess(results.attributes.idUser, true);
-    messageOriginPush.setACL(messageACL)
-    messageOriginPush.save();
-    if (main.messages.length > 0)
-      setLocalMessages(main.messages)
   }
 
   return (

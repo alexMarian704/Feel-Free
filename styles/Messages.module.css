@@ -26,6 +26,7 @@
     margin-right: 10px;
     box-shadow: 0px 0px 1px 2px rgba(23, 22, 22, 0.38);
     padding-left: 8px;
+    padding-right: 8px;
 }
 
 .sendContainer button {
@@ -80,19 +81,33 @@
     margin-bottom: 8px;
 }
 
-.containers{
+.containers {
     display: flex;
     align-items: center;
 }
 
-.messageContainer{
+.messageContainer {
     overflow-y: scroll;
     margin-bottom: 10px;
     height: calc(97.2vh - 125px);
     width: 100%;
+    scrollbar-color:rgb(35, 34, 34) ;
+    scrollbar-width: thin;
 }
 
-.options{
+.messageContainer::-webkit-scrollbar {
+    width: 4px;
+}
+
+.messageContainer::-webkit-scrollbar-track {
+    background-color: rgb(35, 34, 34);
+}
+
+.messageContainer::-webkit-scrollbar-thumb {
+    background: rgb(99, 98, 98);
+}
+
+.options {
     border: none;
     width: calc(30px + 1vw);
     height: calc(25px + 1vh);
@@ -105,15 +120,15 @@
     background-color: transparent;
     color: white;
     border-radius: 40px;
-    transition: all 100ms ease-in-out; 
+    transition: all 100ms ease-in-out;
 }
 
-.mesNav h2{
+.mesNav h2 {
     color: white;
     cursor: pointer;
 }
 
-.alignImg{
+.alignImg {
     width: calc(37px + 0.5vw);
     display: flex;
     justify-content: center;
@@ -122,12 +137,90 @@
     cursor: pointer;
 }
 
-.alignImg img{
+.alignImg img {
     border-radius: 50%;
 }
 
-.backBut:hover, .options:hover {
+.backBut:hover,
+.options:hover {
     background-color: rgb(0, 0, 0);
     color: white;
     border-color: black;
+}
+
+.myMessage {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.friendMessage {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    width: 100%;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.myMessageContainer {
+    width: calc(150px + 20vw);
+    max-width: 600px;
+    background-color: #800040;
+    margin-right: 12px;
+    border-radius: 8px 8px 0px 8px;
+    padding: 3px;
+    padding-left: 7px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-bottom: 17px;
+}
+
+.myText,
+.friendText {
+    font-size: 22px;
+    overflow-wrap: break-word;
+    width: 100%;
+}
+
+.friendContainer {
+    width: calc(150px + 20vw);
+    max-width: 600px;
+    margin-left: 12px;
+    border-radius: 8px 8px 8px 0px;
+    background-color: rgb(48, 48, 48);
+    padding: 3px;
+    padding-left: 7px;
+    padding-bottom: 15px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.tailF {
+    position: absolute;
+    border: 3px solid rgb(48, 48, 48);
+    bottom: 0px;
+    left: -2px;
+    border-radius: 6px 0px 0px 0px;
+}
+
+.tailM {
+    position: absolute;
+    border: 3px solid #800040;
+    bottom: 0px;
+    right: -2px;
+    border-radius: 0px 6px 0px 0px;
+}
+
+.messageTime {
+    position: absolute;
+    right: 6px;
+    bottom: 3px;
 }
