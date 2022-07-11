@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Nav from '../../components/Nav';
 import Head from "next/head";
 import { useMoralis } from "react-moralis";
@@ -15,6 +15,7 @@ import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import Link from "next/link";
 import RenderMessage from "../../components/Message";
+import { getFriendUnreadMessages } from "../../function/getFriendUnreadMessages";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -23,6 +24,10 @@ export default function Messages() {
   const [friendData, setFriendData] = useState("");
   const [error, setError] = useState("");
   const [localMessages, setLocalMessages] = useState([]);
+  const messageRef = useRef();
+  const [friednUnreadMessages, setFriendUnreadMessages] = useState(0)
+  const [idMessage, setIdMessage] = useState([]);
+  const [render, setRender] = useState(100);
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -53,7 +58,7 @@ export default function Messages() {
       if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
         const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
         const decryptedMessages = decrypt(encryptedMessages, user.id);
-        console.log(decryptedMessages.messages)
+        // console.log(decryptedMessages.messages)
         setLocalMessages(decryptedMessages.messages)
       }
     }
@@ -108,7 +113,7 @@ export default function Messages() {
             const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
             const decryptedMessages = decrypt(encryptedMessages, user.id);
             main.messages = decryptedMessages.messages
-            console.log(decryptedMessages.messages)
+            //console.log(decryptedMessages.messages)
           }
           main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time })
           const encryptedMessagesList = encrypt(main, user.id)
@@ -123,6 +128,7 @@ export default function Messages() {
         }
         if (main.messages.length > 0)
           setLocalMessages(main.messages)
+        messageRef.current.scrollIntoView({ behavior: 'instant' })
       }
     }
   }
@@ -167,7 +173,6 @@ export default function Messages() {
           bufferText
         )
         const textMessage = dec.decode(decryptedText)
-        console.log(textMessage);
 
         const deleteMessage = Moralis.Object.extend(ref);
         const query1 = new Moralis.Query(deleteMessage);
@@ -179,13 +184,15 @@ export default function Messages() {
               const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
               const decryptedMessages = decrypt(encryptedMessages, user.id);
               main.messages = decryptedMessages.messages
-              console.log(decryptedMessages.messages)
+              //console.log(decryptedMessages.messages)
             }
             main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time })
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             if (main.messages.length > 0)
               setLocalMessages(main.messages)
+            setRender(++render);
+            messageRef.current.scrollIntoView({ behavior: 'smooth' })
           })
         }
       })
@@ -193,11 +200,22 @@ export default function Messages() {
   }
 
   useEffect(() => {
+    if (messageRef.current !== undefined) {
+      messageRef.current.scrollIntoView({ behavior: 'instant' })
+    }
+  }, [messageRef.current])
+
+  useEffect(() => {
     unredMessages()
     receiveMessage();
     getData()
     getLocalMessages()
+    if (isAuthenticated) {
+      getFriendUnreadMessages(router.query.mesID, user.get("ethAddress"), setFriendUnreadMessages)
+    }
   }, [isAuthenticated, router.query.mesID])
+
+  // console.log(friednUnreadMessages);
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -268,7 +286,7 @@ export default function Messages() {
         main.messages = decryptedMessages.messages
         console.log(decryptedMessages.messages)
       }
-      main.messages.push({ type: 1, message: message, time: time , seen:false })
+      main.messages.push({ type: 1, message: message, time: time, seen: false })
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
 
@@ -297,6 +315,9 @@ export default function Messages() {
       if (main.messages.length > 0) {
         setLocalMessages(main.messages)
         setMessage("");
+        setFriendUnreadMessages(++friednUnreadMessages)
+        setRender(++render);
+        messageRef.current.scrollIntoView({ behavior: 'smooth' })
       }
     }
   }
@@ -322,9 +343,15 @@ export default function Messages() {
         </div>
       </div>
       <div className={style.messageContainer}>
-        {localMessages.length > 0 && localMessages.map((message, i) => (
-          <RenderMessage message={message} key={i} />
-        ))}
+        {render < localMessages.length-1 && <div className={style.renderMoreDiv}>
+          <button className={style.renderMore} onClick={()=> setRender(render+100)}>Load messages</button>
+        </div>}
+        {localMessages.length > 0 && localMessages.map((message, i) => {
+          if (i >= localMessages.length - render-1)
+            return (
+              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} />
+            )
+        })}
       </div>
       <div>
         <div className={style.sendContainer}>
