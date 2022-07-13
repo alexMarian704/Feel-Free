@@ -167,7 +167,7 @@
 }
 
 .myMessageContainer {
-    max-width: 70vw;
+    max-width: 75vw;
     min-width: 70px;
     background-color: #800040;
     margin-right: 12px;
@@ -189,7 +189,7 @@
 }
 
 .friendContainer {
-    max-width: 70vw;
+    max-width: 75vw;
     min-width: 70px;
     margin-left: 12px;
     border-radius: 8px 8px 8px 0px;
@@ -228,14 +228,14 @@
 
 .myMessageTime{
     position: absolute;
-    right: 25px;
+    right: 27px;
     bottom: 3px;
 }
 
 .checkMessage{
     position: absolute;
     bottom: 3px;
-    right: 4px;
+    right: 7px;
     color: rgb(255, 255, 255);
 }
 
@@ -265,4 +265,27 @@
 
 .renderMore:hover{
     background-color: #58042e;
+}
+
+.img{
+    border-radius: 8px 8px 8px 8px;
+}
+
+.myImgContainer{
+    max-width: 75vw;
+    min-width: 70px;
+    background-color: #800040;
+    margin-right: 12px;
+    border-radius: 8px 8px 0px 8px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 4px;
+}
+
+@media only screen and (min-width: 1200px) {
+    .myImgContainer{
+        max-width: 1000px;
+    }
 }

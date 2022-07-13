@@ -28,6 +28,7 @@ export default function Messages() {
   const [friednUnreadMessages, setFriendUnreadMessages] = useState(0)
   const [idMessage, setIdMessage] = useState([]);
   const [render, setRender] = useState(100);
+  const fileRef = useRef();
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -115,7 +116,7 @@ export default function Messages() {
             main.messages = decryptedMessages.messages
             //console.log(decryptedMessages.messages)
           }
-          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time })
+          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time , image:results[i].attributes.image })
           const encryptedMessagesList = encrypt(main, user.id)
           localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
         }
@@ -186,7 +187,7 @@ export default function Messages() {
               main.messages = decryptedMessages.messages
               //console.log(decryptedMessages.messages)
             }
-            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time })
+            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time , image:mesObject.attributes.image})
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             if (main.messages.length > 0)
@@ -229,10 +230,6 @@ export default function Messages() {
 
   if (user && router.query.mesID === user.get("ethAddress")) router.push("/")
 
-  const sendImage = async () => {
-
-  }
-
   function _arrayBufferToBase64(buffer) {
     let binary = '';
     let bytes = new Uint8Array(buffer);
@@ -243,7 +240,7 @@ export default function Messages() {
     return window.btoa(binary);
   }
 
-  const pushMessage = async () => {
+  const pushMessage = async (image , message) => {
     if (message !== "") {
       const d = new Date();
       let time = d.getTime();
@@ -284,9 +281,10 @@ export default function Messages() {
         const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
         const decryptedMessages = decrypt(encryptedMessages, user.id);
         main.messages = decryptedMessages.messages
-        console.log(decryptedMessages.messages)
+        //console.log(decryptedMessages.messages)
       }
-      main.messages.push({ type: 1, message: message, time: time, seen: false })
+      main.messages.push({ type: 1, message: message, time: time, seen: false , image:image })
+      console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
 
@@ -303,7 +301,8 @@ export default function Messages() {
         to: router.query.userID,
         message: base64Text,
         publicKey: JSON.stringify(publicKeyEncrypt),
-        time: time
+        time: time,
+        image:image
       });
       const messageACL = new Moralis.ACL();
       messageACL.setWriteAccess(user.id, true);
@@ -320,6 +319,17 @@ export default function Messages() {
         messageRef.current.scrollIntoView({ behavior: 'smooth' })
       }
     }
+  }
+
+  const sendImage = async (e) => {
+    const file = e.target.files[0];
+    console.log(e.target.files[0]);
+    const type = e.target.files[0].type.replace("image/", "");
+    const name = `imageMessage.${type}`;
+    const imageMessage = new Moralis.File(name, file);
+    await imageMessage.saveIPFS();
+
+    pushMessage(true , imageMessage.ipfs());
   }
 
   return (
@@ -343,11 +353,11 @@ export default function Messages() {
         </div>
       </div>
       <div className={style.messageContainer}>
-        {render < localMessages.length-1 && <div className={style.renderMoreDiv}>
-          <button className={style.renderMore} onClick={()=> setRender(render+100)}>Load messages</button>
+        {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
+          <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>
         </div>}
         {localMessages.length > 0 && localMessages.map((message, i) => {
-          if (i >= localMessages.length - render-1)
+          if (i >= localMessages.length - render - 1)
             return (
               <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} />
             )
@@ -357,11 +367,21 @@ export default function Messages() {
         <div className={style.sendContainer}>
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
             if (e.key === "Enter") {
-              pushMessage();
+              pushMessage(false , message);
             }
           }} />
-          <button><FontAwesomeIcon icon={faPaperPlane} onClick={pushMessage} /></button>
-          <button><FontAwesomeIcon icon={faPaperclip} onClick={sendImage} /></button>
+          <button><FontAwesomeIcon icon={faPaperPlane} onClick={()=>pushMessage(false , message)} /></button>
+          <button><FontAwesomeIcon icon={faPaperclip} onClick={() => {
+            fileRef.current.click();
+          }} /></button>
+          <input
+            type="file"
+            onChange={sendImage}
+            ref={fileRef}
+            style={{
+              display: "none",
+            }}
+          />
         </div>
       </div>
     </div>
