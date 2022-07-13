@@ -16,6 +16,7 @@ import ENC from 'crypto-js/enc-utf8'
 import Link from "next/link";
 import RenderMessage from "../../components/Message";
 import { getFriendUnreadMessages } from "../../function/getFriendUnreadMessages";
+import Options from "../../components/Options";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -29,6 +30,7 @@ export default function Messages() {
   const [idMessage, setIdMessage] = useState([]);
   const [render, setRender] = useState(100);
   const fileRef = useRef();
+  const [open , setOpen] = useState(false)
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -116,7 +118,7 @@ export default function Messages() {
             main.messages = decryptedMessages.messages
             //console.log(decryptedMessages.messages)
           }
-          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time , image:results[i].attributes.image })
+          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, image: results[i].attributes.image })
           const encryptedMessagesList = encrypt(main, user.id)
           localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
         }
@@ -187,7 +189,7 @@ export default function Messages() {
               main.messages = decryptedMessages.messages
               //console.log(decryptedMessages.messages)
             }
-            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time , image:mesObject.attributes.image})
+            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, image: mesObject.attributes.image })
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             if (main.messages.length > 0)
@@ -240,7 +242,7 @@ export default function Messages() {
     return window.btoa(binary);
   }
 
-  const pushMessage = async (image , message) => {
+  const pushMessage = async (image, message) => {
     if (message !== "") {
       const d = new Date();
       let time = d.getTime();
@@ -283,7 +285,7 @@ export default function Messages() {
         main.messages = decryptedMessages.messages
         //console.log(decryptedMessages.messages)
       }
-      main.messages.push({ type: 1, message: message, time: time, seen: false , image:image })
+      main.messages.push({ type: 1, message: message, time: time, seen: false, image: image })
       console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
@@ -302,7 +304,7 @@ export default function Messages() {
         message: base64Text,
         publicKey: JSON.stringify(publicKeyEncrypt),
         time: time,
-        image:image
+        image: image
       });
       const messageACL = new Moralis.ACL();
       messageACL.setWriteAccess(user.id, true);
@@ -329,11 +331,11 @@ export default function Messages() {
     const imageMessage = new Moralis.File(name, file);
     await imageMessage.saveIPFS();
 
-    pushMessage(true , imageMessage.ipfs());
+    pushMessage(true, imageMessage.ipfs());
   }
 
   return (
-    <div className={style.body}>
+    <div className={style.body} onClick={()=> setOpen(!open)}>
       <Head>
         <title>Messages-{router.query.mesID}</title>
       </Head>
@@ -348,9 +350,7 @@ export default function Messages() {
             <h2>{friendData.name} {friendData.name2}</h2>
           </Link>}
         </div>
-        <div className={style.containers}>
-          <button className={style.options}><FontAwesomeIcon icon={faEllipsisV} /></button>
-        </div>
+        <Options open={open} setOpen={setOpen}/>
       </div>
       <div className={style.messageContainer}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
@@ -367,10 +367,10 @@ export default function Messages() {
         <div className={style.sendContainer}>
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
             if (e.key === "Enter") {
-              pushMessage(false , message);
+              pushMessage(false, message);
             }
           }} />
-          <button><FontAwesomeIcon icon={faPaperPlane} onClick={()=>pushMessage(false , message)} /></button>
+          <button><FontAwesomeIcon icon={faPaperPlane} onClick={() => pushMessage(false, message)} /></button>
           <button><FontAwesomeIcon icon={faPaperclip} onClick={() => {
             fileRef.current.click();
           }} /></button>

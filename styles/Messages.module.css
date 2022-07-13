@@ -84,6 +84,7 @@
 .containers {
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .messageContainer {
@@ -288,4 +289,50 @@
     .myImgContainer{
         max-width: 1000px;
     }
+}
+
+.optionsContainer{
+    position: absolute;
+    background-color: rgb(21, 21, 21);
+    bottom: calc(-140px - 4vh);
+    z-index: 100;
+    right: 10px;
+    width: calc(140px + 1vw);
+    box-shadow: 0px 0px 1px 2px rgba(35, 34, 34, 0.48);
+    border-radius: 7px;
+    transition: opacity 300ms ease-in-out;
+}
+
+.optionsContainer button{
+    width: 100%;
+    height: calc(35px + 1vh);
+    cursor: pointer;
+    color: white;
+    background-color: rgb(21, 21, 21);
+    outline: none;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    font-size: 16px;
+}
+
+.optionsContainer button:first-child{
+    border-radius: 7px 7px 0px 0px;
+}
+
+.optionsContainer button:last-child{
+    border-radius: 0px 0px 7px 7px;
+}
+
+.optionsContainer button:hover{
+    background-color: rgb(35, 34, 34);
+}
+
+#open{
+    opacity: 1;
+}
+
+#close{
+    opacity: 0;
+    bottom: calc(140px + 4vh);
 }

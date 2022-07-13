@@ -129,7 +129,7 @@ export default function UserID() {
   }
 
   const removeFriend = async () => {
-
+    
   }
 
   const removeRequest = async () => {
