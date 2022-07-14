@@ -18,6 +18,7 @@ import Web3 from 'web3'
 import TransferNFT from "../components/TransferNFT";
 import GetTransactions from "../components/GetTransactions";
 import CheckPassword from "../components/CheckPassword";
+import Notifications from "../components/Notifications";
 
 export default function Transfer() {
   const [amount, setAmount] = useState("");
@@ -255,6 +256,7 @@ export default function Transfer() {
         {errorSend && <p className={style.error}>{errorSend}</p>}
       </div>}
       <GetTransactions chain={selectedChain} userETHaddress={userETHaddress}/>
+      <Notifications />
     </div>
   );
 }

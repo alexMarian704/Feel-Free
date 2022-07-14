@@ -12,6 +12,7 @@ import style from "../styles/Search.module.css";
 import ProfilePicture from "../public/profile.jpg";
 import { useRouter } from "next/router";
 import CheckPassword from "../components/CheckPassword";
+import Notifications from "../components/Notifications";
 
 export default function search() {
   const { isAuthenticated, user } = useMoralis();
@@ -124,6 +125,7 @@ export default function search() {
         )}
         {error && <p className={style.errorSearch}>{error}</p>}
       </div>
+      <Notifications />
     </div>
   );
 }

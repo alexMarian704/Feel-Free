@@ -12,6 +12,7 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { getBalance } from "../function/balance";
 import ProfilePicture from "../public/profile.jpg";
 import CheckPassword from "../components/CheckPassword";
+import Notifications from "../components/Notifications";
 
 export default function profile() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -136,6 +137,7 @@ export default function profile() {
           </h2>
         </div>
       </div>
+      <Notifications />
     </div>
   );
 }

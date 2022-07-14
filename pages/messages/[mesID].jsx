@@ -30,7 +30,7 @@ export default function Messages() {
   const [idMessage, setIdMessage] = useState([]);
   const [render, setRender] = useState(100);
   const fileRef = useRef();
-  const [open , setOpen] = useState(false)
+  const [open, setOpen] = useState(false)
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -129,9 +129,10 @@ export default function Messages() {
           if (results1 !== undefined)
             results1.destroy()
         }
-        if (main.messages.length > 0)
+        if (main.messages.length > 0) {
           setLocalMessages(main.messages)
-        messageRef.current.scrollIntoView({ behavior: 'instant' })
+          messageRef.current.scrollIntoView({ behavior: 'instant' })
+        }
       }
     }
   }
@@ -192,10 +193,11 @@ export default function Messages() {
             main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, image: mesObject.attributes.image })
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-            if (main.messages.length > 0)
+            if (main.messages.length > 0) {
               setLocalMessages(main.messages)
-            setRender(++render);
-            messageRef.current.scrollIntoView({ behavior: 'smooth' })
+              setRender(++render);
+              messageRef.current.scrollIntoView({ behavior: 'smooth' })
+            }
           })
         }
       })
@@ -206,7 +208,7 @@ export default function Messages() {
     if (messageRef.current !== undefined) {
       messageRef.current.scrollIntoView({ behavior: 'instant' })
     }
-  }, [messageRef.current])
+  }, [messageRef.current, router.query.mesID])
 
   useEffect(() => {
     unredMessages()
@@ -335,7 +337,7 @@ export default function Messages() {
   }
 
   return (
-    <div className={style.body} onClick={()=> setOpen(!open)}>
+    <div className={style.body}>
       <Head>
         <title>Messages-{router.query.mesID}</title>
       </Head>
@@ -350,9 +352,9 @@ export default function Messages() {
             <h2>{friendData.name} {friendData.name2}</h2>
           </Link>}
         </div>
-        <Options open={open} setOpen={setOpen}/>
+        <Options open={open} setOpen={setOpen} />
       </div>
-      <div className={style.messageContainer}>
+      <div className={style.messageContainer} onClick={() => setOpen(false)}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>
         </div>}
@@ -364,7 +366,7 @@ export default function Messages() {
         })}
       </div>
       <div>
-        <div className={style.sendContainer}>
+        <div className={style.sendContainer} onClick={() => setOpen(false)}>
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
             if (e.key === "Enter") {
               pushMessage(false, message);

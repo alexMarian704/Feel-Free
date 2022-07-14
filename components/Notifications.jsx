@@ -36,6 +36,11 @@ export default function Notifications() {
             friendsArray: array
         })
 
+        const addressToTag = Moralis.Object.extend("Tags");
+        const queryTag = new Moralis.Query(addressToTag);
+        queryTag.equalTo("ethAddress", address);
+        const resultsTag = await queryTag.first();
+
         const mFriend = Moralis.Object.extend("Friends");
         const mquery = new Moralis.Query(mFriend);
         mquery.equalTo("ethAddress", user.get("ethAddress"));
@@ -45,6 +50,22 @@ export default function Notifications() {
         mresults.save({
             friendsArray: marray
         })
+
+        const FriendsACL = new Moralis.ACL();
+        for (let i = 0; i < mresults.attributes.aclArray.length; i++) {
+            FriendsACL.setReadAccess(mresults.attributes.aclArray[i], true);
+            FriendsACL.setWriteAccess(mresults.attributes.aclArray[i], true)
+        }
+        let array1 = mresults.attributes.aclArray;
+        array1.push(resultsTag.attributes.idUser)
+        mresults.set({
+            aclArray: array1
+        })
+
+        FriendsACL.setReadAccess(resultsTag.attributes.idUser, true);
+        FriendsACL.setWriteAccess(resultsTag.attributes.idUser, true)
+        mresults.setACL(FriendsACL)
+        mresults.save();
 
         const userNotification = Moralis.Object.extend("Notification");
         const query1 = new Moralis.Query(userNotification);

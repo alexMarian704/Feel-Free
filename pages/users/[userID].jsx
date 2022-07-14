@@ -22,7 +22,7 @@ export default function UserID() {
   const [isFriend, setIsFriend] = useState(false);
   const [isSend, setIsSend] = useState(false);
 
-  if(user && router.query.userID === user.get("ethAddress")) router.push("/profile")
+  if (user && router.query.userID === user.get("ethAddress")) router.push("/profile")
 
   const getData = async () => {
     if (isInitialized && router.query.userID && router.query.userID !== user.get("ethAddress")) {
@@ -83,7 +83,7 @@ export default function UserID() {
   ) {
     return <ConfigAccount />;
   }
-  if(user.get("reCheck") === 1) return <CheckPassword />
+  if (user.get("reCheck") === 1) return <CheckPassword />
 
   const addFriend = async () => {
     const Notification = Moralis.Object.extend("Notification");
@@ -107,7 +107,6 @@ export default function UserID() {
     const query = new Moralis.Query(MyFriends);
     query.equalTo("ethAddress", user.get("ethAddress"));
     const results = await query.first();
-    // console.log(results.attributes.aclArray);
 
     const FriendsACL = new Moralis.ACL();
     for (let i = 0; i < results.attributes.aclArray.length; i++) {
@@ -128,8 +127,38 @@ export default function UserID() {
     setIsSend(true);
   }
 
+  const removeACL = async (address, id, friend) => {
+    const MyFriends = Moralis.Object.extend("Friends");
+    const query = new Moralis.Query(MyFriends);
+    query.equalTo("ethAddress", address);
+    const results = await query.first();
+    const FriendsACL = new Moralis.ACL();
+    let array = [];
+    let friendArray = []
+    for (let i = 0; i < results.attributes.aclArray.length; i++) {
+      if (results.attributes.aclArray[i] !== id) {
+        FriendsACL.setReadAccess(results.attributes.aclArray[i], true);
+        FriendsACL.setWriteAccess(results.attributes.aclArray[i], true);
+        array.push(results.attributes.aclArray[i])
+      }
+    }
+    for (let i = 0; i < results.attributes.friendsArray.length; i++) {
+      if (results.attributes.friendsArray[i] !== friend) {
+        friendArray.push(results.attributes.friendsArray[i])
+      }
+    }
+    results.set({
+      aclArray: array,
+      friendsArray: friendArray
+    })
+    results.setACL(FriendsACL)
+    results.save();
+  }
+
   const removeFriend = async () => {
-    
+    removeACL(user.get("ethAddress"), userData.idUser, router.query.userID)
+    removeACL(router.query.userID, user.id, user.get("ethAddress"))
+    setIsFriend(false);
   }
 
   const removeRequest = async () => {
