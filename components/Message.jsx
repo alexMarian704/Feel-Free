@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderMessage({ message, number, total, refMes, unread }) {
+export default function RenderMessage({ message, number, total, refMes, unread , focusImage , setFocusImage}) {
   const d = new Date(message.time);
   let time = d.getHours();
   let minutes = d.getMinutes();
@@ -23,6 +23,7 @@ export default function RenderMessage({ message, number, total, refMes, unread }
               layout="responsive"
               objectFit="contain"
               className={style.img}
+              onClick={()=> setFocusImage(message.message)}
             />
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime}>{`${hours}:${minutes}`}</p>}
@@ -63,6 +64,7 @@ export default function RenderMessage({ message, number, total, refMes, unread }
               layout="responsive"
               objectFit="contain"
               className={style.img}
+              onClick={()=> setFocusImage(message.message)}
             />
             <p className={style.tailF}></p>
             {minutes >= 10 && <p className={style.messageTime}>{`${hours}:${minutes}`}</p>}

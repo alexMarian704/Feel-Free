@@ -8,7 +8,7 @@ import { Moralis } from "moralis";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfilePicture from "../../public/profile.jpg";
-import { faPaperPlane, faPaperclip, faArrowLeft, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faPaperclip, faArrowLeft, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
 import style from "../../styles/Messages.module.css"
 import AES from 'crypto-js/aes';
@@ -31,6 +31,7 @@ export default function Messages() {
   const [render, setRender] = useState(100);
   const fileRef = useRef();
   const [open, setOpen] = useState(false)
+  const [focusImage, setFocusImage] = useState("");
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -341,6 +342,13 @@ export default function Messages() {
       <Head>
         <title>Messages-{router.query.mesID}</title>
       </Head>
+      <div className={style.focusImage} style={focusImage !== "" ? { width: "100vw" , height:"100vh" } : { width:"0vw" , height:"0vh" }}>
+        <img src={focusImage}
+          alt="Image"
+          className={style.imgFocus} style={focusImage !== "" ? { display:"block" } : { display:"none" }}/>
+          <button onClick={()=> setFocusImage("")} style={focusImage !== "" ? { display:"block" } : { display:"none" }}>
+            <FontAwesomeIcon icon={faTimes}/></button>
+      </div>
       <div className={style.mesNav}>
         <div className={style.containers}>
           <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
@@ -361,7 +369,7 @@ export default function Messages() {
         {localMessages.length > 0 && localMessages.map((message, i) => {
           if (i >= localMessages.length - render - 1)
             return (
-              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} />
+              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} />
             )
         })}
       </div>
@@ -372,10 +380,10 @@ export default function Messages() {
               pushMessage(false, message);
             }
           }} />
-          <button><FontAwesomeIcon icon={faPaperPlane} onClick={() => pushMessage(false, message)} /></button>
-          <button><FontAwesomeIcon icon={faPaperclip} onClick={() => {
+          <button onClick={() => pushMessage(false, message)}><FontAwesomeIcon icon={faPaperPlane} /></button>
+          <button onClick={() => {
             fileRef.current.click();
-          }} /></button>
+          }}><FontAwesomeIcon icon={faPaperclip} /></button>
           <input
             type="file"
             onChange={sendImage}

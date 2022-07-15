@@ -92,7 +92,7 @@
     margin-bottom: 10px;
     height: calc(97.2vh - 125px);
     width: 100%;
-    scrollbar-color:rgb(35, 34, 34) ;
+    scrollbar-color: rgb(35, 34, 34);
     scrollbar-width: thin;
 }
 
@@ -227,27 +227,27 @@
     bottom: 3px;
 }
 
-.myMessageTime{
+.myMessageTime {
     position: absolute;
     right: 27px;
     bottom: 3px;
 }
 
-.checkMessage{
+.checkMessage {
     position: absolute;
     bottom: 3px;
     right: 7px;
     color: rgb(255, 255, 255);
 }
 
-.renderMoreDiv{
+.renderMoreDiv {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.renderMore{
+.renderMore {
     cursor: pointer;
     height: 40px;
     width: calc(140px + 1vw);
@@ -264,15 +264,17 @@
     transition: all 150ms ease-in-out;
 }
 
-.renderMore:hover{
+.renderMore:hover {
     background-color: #58042e;
 }
 
-.img{
+.img {
     border-radius: 8px 8px 8px 8px;
+    cursor: pointer;
+    max-height: 460px;
 }
 
-.myImgContainer{
+.myImgContainer {
     max-width: 75vw;
     min-width: 70px;
     background-color: #800040;
@@ -286,12 +288,12 @@
 }
 
 @media only screen and (min-width: 1200px) {
-    .myImgContainer{
+    .myImgContainer {
         max-width: 1000px;
     }
 }
 
-.optionsContainer{
+.optionsContainer {
     position: absolute;
     background-color: rgb(21, 21, 21);
     bottom: calc(-140px - 4vh);
@@ -303,7 +305,7 @@
     transition: opacity 300ms ease-in-out;
 }
 
-.optionsContainer button{
+.optionsContainer button {
     width: 100%;
     height: calc(35px + 1vh);
     cursor: pointer;
@@ -316,23 +318,62 @@
     font-size: 16px;
 }
 
-.optionsContainer button:first-child{
+.optionsContainer button:first-child {
     border-radius: 7px 7px 0px 0px;
 }
 
-.optionsContainer button:last-child{
+.optionsContainer button:last-child {
     border-radius: 0px 0px 7px 7px;
 }
 
-.optionsContainer button:hover{
+.optionsContainer button:hover {
     background-color: rgb(35, 34, 34);
 }
 
-#open{
+#open {
     opacity: 1;
 }
 
-#close{
+#close {
     opacity: 0;
     bottom: calc(140px + 4vh);
+}
+
+.focusImage {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    background-color: rgb(35, 34, 34);
+    z-index: 200;
+    transition: all 200ms ease-in-out;
+    top: 0px;
+    left: 0px;
+}
+
+.focusImage button {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 28px;
+    border: none;
+    background-color: transparent;
+    color: white;
+}
+
+.focusImage button:hover {
+    color: grey;
+}
+
+.imgFocus {
+    /* width: 100%; */
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
