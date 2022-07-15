@@ -17,6 +17,7 @@ import Link from "next/link";
 import RenderMessage from "../../components/Message";
 import { getFriendUnreadMessages } from "../../function/getFriendUnreadMessages";
 import Options from "../../components/Options";
+import { messageOrder } from "../../function/messageOrder";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -133,6 +134,7 @@ export default function Messages() {
         if (main.messages.length > 0) {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
+          messageOrder(user.get("ethAddress") , router.query.mesID)
         }
       }
     }
@@ -194,6 +196,7 @@ export default function Messages() {
             main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, image: mesObject.attributes.image })
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+            messageOrder(user.get("ethAddress") , router.query.mesID)
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
               setRender(++render);
@@ -292,6 +295,7 @@ export default function Messages() {
       console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+      messageOrder(user.get("ethAddress") , router.query.mesID)
 
       let ref;
       if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
