@@ -134,7 +134,7 @@ export default function Messages() {
         if (main.messages.length > 0) {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
-          messageOrder(user.get("ethAddress") , router.query.mesID)
+          messageOrder(user.get("ethAddress") , router.query.mesID , message , friendData.name , friendData.name2 , friendData.profilePhoto)
         }
       }
     }
@@ -196,7 +196,8 @@ export default function Messages() {
             main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, image: mesObject.attributes.image })
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-            messageOrder(user.get("ethAddress") , router.query.mesID)
+            messageOrder(user.get("ethAddress") , router.query.mesID , message , friendData.name , friendData.name2 , friendData.profilePhoto)
+
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
               setRender(++render);
@@ -295,7 +296,7 @@ export default function Messages() {
       console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-      messageOrder(user.get("ethAddress") , router.query.mesID)
+      messageOrder(user.get("ethAddress") , router.query.mesID , message , friendData.name , friendData.name2 , friendData.profilePhoto)
 
       let ref;
       if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
