@@ -11,6 +11,7 @@ import FriendList from "../components/FriendList";
 import style from "../styles/Home.module.css";
 import PasswordConfig from "../components/Password";
 import CheckPassword from "../components/CheckPassword";
+import Chats from "../components/Chats";
 
 export default function Home({ name }) {
   const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
@@ -46,6 +47,7 @@ export default function Home({ name }) {
               </div>
             </div>
             {page === "FriendList" && <FriendList />}
+            {page === "Messages" && <Chats /> }
             <Notifications />
           </div>
         )}

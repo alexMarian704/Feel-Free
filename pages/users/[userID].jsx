@@ -187,7 +187,10 @@ export default function UserID() {
           <div className={style.dataDiv}>
             <br />
             <div className={style.alignImg}>
-              {userData.profilePhoto !== undefined && <img src={userData.profilePhoto} alt="Profile Photo" />}
+              {userData.profilePhoto !== undefined && <Image src={userData.profilePhoto} alt="Profile Photo" width="90%"
+              height="90%"
+              layout="fill"
+              objectFit="cover"/>}
               {userData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
             </div>
             <div className={style.buttonDiv}>

@@ -85,8 +85,8 @@ export default function profile() {
               alt="profilePhoto"
               width="90%"
               height="90%"
-              layout="responsive"
-              objectFit="contain"
+              layout="fill"
+              objectFit="cover"
               className={style.img}
             />
           )}
@@ -96,8 +96,8 @@ export default function profile() {
               alt="profilePhoto"
               width="90%"
               height="90%"
-              layout="responsive"
-              objectFit="contain"
+              layout="fill"
+              objectFit="cover"
               className={style.img}
             />
           )}

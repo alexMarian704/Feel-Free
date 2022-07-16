@@ -80,6 +80,8 @@
     width: 56px;
     border: 2px solid #800040;
     border-radius: 50%;
+    position: relative;
+    height: 56px;
 }
 
 .img{

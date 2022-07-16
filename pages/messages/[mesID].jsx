@@ -44,6 +44,7 @@ export default function Messages() {
     return bytes.buffer;
   }
 
+
   const getData = async () => {
     if (isAuthenticated && router.query.mesID) {
       const addressToTag = Moralis.Object.extend("Tags");
@@ -52,6 +53,12 @@ export default function Messages() {
       const results = await query.first();
       if (results !== undefined) {
         setFriendData(results.attributes);
+        let data = {
+          name:results.attributes.name,
+          name2:results.attributes.name2,
+          profilePhoto:results.attributes.profilePhoto
+        }
+        localStorage.setItem(user.get("ethAddress") + router.query.mesID + "data", JSON.stringify(data))
       } else {
         setError("User was not found");
       }
@@ -134,7 +141,8 @@ export default function Messages() {
         if (main.messages.length > 0) {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
-          messageOrder(user.get("ethAddress") , router.query.mesID , message , friendData.name , friendData.name2 , friendData.profilePhoto)
+          let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
+          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2 , main.messages[main.messages.length - 1].time , "friend")
         }
       }
     }
@@ -196,7 +204,8 @@ export default function Messages() {
             main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, image: mesObject.attributes.image })
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-            messageOrder(user.get("ethAddress") , router.query.mesID , message , friendData.name , friendData.name2 , friendData.profilePhoto)
+            let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
+            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2 , mesObject.attributes.time , "friend") 
 
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
@@ -224,8 +233,6 @@ export default function Messages() {
       getFriendUnreadMessages(router.query.mesID, user.get("ethAddress"), setFriendUnreadMessages)
     }
   }, [isAuthenticated, router.query.mesID])
-
-  // console.log(friednUnreadMessages);
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -296,7 +303,7 @@ export default function Messages() {
       console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-      messageOrder(user.get("ethAddress") , router.query.mesID , message , friendData.name , friendData.name2 , friendData.profilePhoto)
+      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2 , time , "you")
 
       let ref;
       if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
@@ -347,18 +354,22 @@ export default function Messages() {
       <Head>
         <title>Messages-{router.query.mesID}</title>
       </Head>
-      <div className={style.focusImage} style={focusImage !== "" ? { width: "100vw" , height:"100vh" } : { width:"0vw" , height:"0vh" }}>
+      <div className={style.focusImage} style={focusImage !== "" ? { width: "100vw", height: "100vh" } : { width: "0vw", height: "0vh" }}>
         <img src={focusImage}
           alt="Image"
-          className={style.imgFocus} style={focusImage !== "" ? { display:"block" } : { display:"none" }}/>
-          <button onClick={()=> setFocusImage("")} style={focusImage !== "" ? { display:"block" } : { display:"none" }}>
-            <FontAwesomeIcon icon={faTimes}/></button>
+          className={style.imgFocus} style={focusImage !== "" ? { display: "block" } : { display: "none" }} />
+        <button onClick={() => setFocusImage("")} style={focusImage !== "" ? { display: "block" } : { display: "none" }}>
+          <FontAwesomeIcon icon={faTimes} /></button>
       </div>
       <div className={style.mesNav}>
         <div className={style.containers}>
           <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
           {friendData !== "" && <div className={style.alignImg} onClick={() => router.push(`/users/${router.query.mesID}`)}>
-            {friendData.profilePhoto !== undefined && <img src={friendData.profilePhoto} alt="Profile Photo" />}
+            {friendData.profilePhoto !== undefined && <Image src={friendData.profilePhoto} alt="Profile Photo" 
+                  width="50%"
+                  height="50%"
+                  layout="fill"
+                  objectFit="cover"/>}
             {friendData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
           </div>}
           {friendData !== "" && <Link href={`/users/${router.query.mesID}`}>

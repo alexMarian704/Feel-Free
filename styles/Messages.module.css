@@ -131,6 +131,8 @@
 
 .alignImg {
     width: calc(37px + 0.5vw);
+    height: calc(37px + 0.5vw);
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;

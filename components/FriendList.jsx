@@ -62,12 +62,12 @@ export default function FriendList() {
                             <div className={style.imgProfile}>
                                 {friend.profilePhoto !== undefined && (
                                     <Image
-                                        src={tag.profilePhoto}
+                                        src={friend.profilePhoto}
                                         alt="profilePhoto"
                                         width="50%"
                                         height="50%"
-                                        layout="responsive"
-                                        objectFit="contain"
+                                        layout="fill"
+                                        objectFit="cover"
                                         className={style.img}
                                         onClick={() => goToProfile(friend.ethAddress)} />
                                 )}

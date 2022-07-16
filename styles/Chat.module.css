@@ -1,0 +1,67 @@
+.container {
+    width: 100%;
+    height: calc(55px + 2vh);
+    display: flex;
+    align-items: center;
+    padding-left: 7px;
+    margin-top: 2px;
+    transition: all 250ms ease-in-out;
+}
+
+.imgContainer {
+    position: relative;
+    width: calc(46px + 1vh);
+    height: calc(44px + 1vh);
+    border-radius: 200px;
+    max-width: 230px;
+    border: 2px solid #800040;
+    margin-right: 10px;
+}
+
+.imgContainer img {
+    border-radius: 50%;
+}
+
+.infoContainer{
+    height: 100%;
+    width: 100%;
+    border-bottom: 2px solid rgb(63, 62, 62);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 14px;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+}
+
+.container:hover{
+    opacity: 0.4;
+    background-color: rgb(63, 62, 62);
+}
+
+.mainData span{
+    color: rgb(150, 150, 150);
+}
+
+.infoContainer p{
+    font-size: calc(16px + 0.1vw);
+}
+
+.chatsContainer{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-color: rgb(35, 34, 34);
+    scrollbar-width: thin;
+}
+
+.chatsContainer::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chatsContainer::-webkit-scrollbar-track {
+    background-color: rgb(35, 34, 34);
+}
+
+.chatsContainer::-webkit-scrollbar-thumb {
+    background: rgb(99, 98, 98);
+}

@@ -100,8 +100,8 @@ export default function search() {
                   alt="profilePhoto"
                   width="50%"
                   height="50%"
-                  layout="responsive"
-                  objectFit="contain"
+                  layout="fill"
+                  objectFit="cover"
                   className={style.img}
                 />
               )}
