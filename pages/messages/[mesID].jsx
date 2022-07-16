@@ -328,6 +328,7 @@ export default function Messages() {
       messageACL.setReadAccess(results.attributes.idUser, true);
       messageOriginPush.setACL(messageACL)
       messageOriginPush.save();
+      
       if (main.messages.length > 0) {
         setLocalMessages(main.messages)
         setMessage("");
