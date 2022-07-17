@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Nav from '../../components/Nav';
 import Head from "next/head";
 import { useMoralis } from "react-moralis";
 import Reject from "../../components/Reject";
@@ -28,11 +27,12 @@ export default function Messages() {
   const [localMessages, setLocalMessages] = useState([]);
   const messageRef = useRef();
   const [friednUnreadMessages, setFriendUnreadMessages] = useState(0)
-  const [idMessage, setIdMessage] = useState([]);
   const [render, setRender] = useState(100);
   const fileRef = useRef();
   const [open, setOpen] = useState(false)
   const [focusImage, setFocusImage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [initial , setInitial] = useState([])
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -54,9 +54,9 @@ export default function Messages() {
       if (results !== undefined) {
         setFriendData(results.attributes);
         let data = {
-          name:results.attributes.name,
-          name2:results.attributes.name2,
-          profilePhoto:results.attributes.profilePhoto
+          name: results.attributes.name,
+          name2: results.attributes.name2,
+          profilePhoto: results.attributes.profilePhoto
         }
         localStorage.setItem(user.get("ethAddress") + router.query.mesID + "data", JSON.stringify(data))
       } else {
@@ -72,6 +72,7 @@ export default function Messages() {
         const decryptedMessages = decrypt(encryptedMessages, user.id);
         // console.log(decryptedMessages.messages)
         setLocalMessages(decryptedMessages.messages)
+        setInitial(decryptedMessages.messages)
       }
     }
   }
@@ -142,7 +143,7 @@ export default function Messages() {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
           let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
-          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2 , main.messages[main.messages.length - 1].time , "friend")
+          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend")
         }
       }
     }
@@ -205,7 +206,7 @@ export default function Messages() {
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
-            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2 , mesObject.attributes.time , "friend") 
+            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend")
 
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
@@ -221,10 +222,12 @@ export default function Messages() {
   useEffect(() => {
     if (messageRef.current !== undefined) {
       messageRef.current.scrollIntoView({ behavior: 'instant' })
+      setLoading(false);
     }
-  }, [messageRef.current, router.query.mesID])
+  }, [initial, router.query.mesID])
 
   useEffect(() => {
+    setLoading(true)
     unredMessages()
     receiveMessage();
     getData()
@@ -254,6 +257,33 @@ export default function Messages() {
       binary += String.fromCharCode(bytes[i]);
     }
     return window.btoa(binary);
+  }
+
+  const pushNotification = async (friendId) => {
+    const userNotification = Moralis.Object.extend("Notification");
+    const query = new Moralis.Query(userNotification);
+    query.equalTo("to", user.get("ethAddress"));
+    query.equalTo("tag", user.get("userTag"));
+    query.equalTo("type", "New message");
+    const results = await query.find();
+    if (results === undefined) {
+      const Notification = Moralis.Object.extend("Notification");
+      const noti = new Notification();
+      noti.save({
+        from: user.get("ethAddress"),
+        to: router.query.mesID,
+        type: "New message",
+        tag: user.get("userTag")
+      });
+
+      const notificationsACL = new Moralis.ACL();
+      notificationsACL.setWriteAccess(user.id, true);
+      notificationsACL.setReadAccess(user.id, true)
+      notificationsACL.setWriteAccess(friendId, true);
+      notificationsACL.setReadAccess(friendId, true);
+      noti.setACL(notificationsACL)
+      noti.save();
+    }
   }
 
   const pushMessage = async (image, message) => {
@@ -300,10 +330,10 @@ export default function Messages() {
         //console.log(decryptedMessages.messages)
       }
       main.messages.push({ type: 1, message: message, time: time, seen: false, image: image })
-      console.log(main.messages)
+      // console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2 , time , "you")
+      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you")
 
       let ref;
       if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
@@ -328,7 +358,9 @@ export default function Messages() {
       messageACL.setReadAccess(results.attributes.idUser, true);
       messageOriginPush.setACL(messageACL)
       messageOriginPush.save();
-      
+
+      pushNotification(results.attributes.idUser);
+
       if (main.messages.length > 0) {
         setLocalMessages(main.messages)
         setMessage("");
@@ -366,11 +398,11 @@ export default function Messages() {
         <div className={style.containers}>
           <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
           {friendData !== "" && <div className={style.alignImg} onClick={() => router.push(`/users/${router.query.mesID}`)}>
-            {friendData.profilePhoto !== undefined && <Image src={friendData.profilePhoto} alt="Profile Photo" 
-                  width="50%"
-                  height="50%"
-                  layout="fill"
-                  objectFit="cover"/>}
+            {friendData.profilePhoto !== undefined && <Image src={friendData.profilePhoto} alt="Profile Photo"
+              width="50%"
+              height="50%"
+              layout="fill"
+              objectFit="cover" />}
             {friendData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
           </div>}
           {friendData !== "" && <Link href={`/users/${router.query.mesID}`}>
@@ -379,6 +411,9 @@ export default function Messages() {
         </div>
         <Options open={open} setOpen={setOpen} />
       </div>
+      {loading === true && <div className={style.loadingContainer}>
+        <div className={style.loader}></div>
+      </div>}
       <div className={style.messageContainer} onClick={() => setOpen(false)}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>

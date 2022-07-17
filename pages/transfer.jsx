@@ -20,17 +20,17 @@ import GetTransactions from "../components/GetTransactions";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
 
-export default function Transfer() {
+export default function Transfer({ tag }) {
   const [amount, setAmount] = useState("");
   const [to, setTo] = useState("");
-  const { user, isAuthenticated , isWeb3EnableLoading , isWeb3Enabled , enableWeb3 } = useMoralis();
+  const { user, isAuthenticated, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
   const [errorSend, setErrorSend] = useState("");
   const router = useRouter();
   const [confirm, setConfirm] = useState(false);
   const [balance, setBalance] = useState(0);
   const [fetchBalance, setFetchBalance] = useState(false);
   const [toTag, setToTag] = useState("");
-  const [transferMode , setTransferMode] = useState("Token")
+  const [transferMode, setTransferMode] = useState("Token")
   let selectedChain;
   if (user) selectedChain = user.get("chain");
 
@@ -47,6 +47,12 @@ export default function Transfer() {
     setErrorSend("");
   }, [isFetching, error]);
 
+  useEffect(()=>{
+    if(tag !== undefined){
+      setTo("@"+tag);
+    }
+  },[tag])
+
   if (!isAuthenticated) {
     return <Reject />;
   } else if (
@@ -56,7 +62,7 @@ export default function Transfer() {
   ) {
     return <ConfigAccount />;
   }
-  if(user.get("reCheck") === 1) return <CheckPassword />
+  if (user.get("reCheck") === 1) return <CheckPassword />
 
   const userETHaddress = user.get("ethAddress");
   if (fetchBalance === false) {
@@ -104,9 +110,9 @@ export default function Transfer() {
     }
   };
 
-  const backTag =()=>{
+  const backTag = () => {
     setConfirm(false)
-    if(toTag){
+    if (toTag) {
       setTo(toTag)
     }
   }
@@ -124,10 +130,10 @@ export default function Transfer() {
       />
       <div className="marginDiv"></div>
       <div className={style.transferMode}>
-        <div onClick={()=> setTransferMode("Token")}><p>Transfer Coins</p></div>
-        <div onClick={()=> setTransferMode("NFT")}><p>Transfer NFTs</p></div>
+        <div onClick={() => setTransferMode("Token")}><p>Transfer Coins</p></div>
+        <div onClick={() => setTransferMode("NFT")}><p>Transfer NFTs</p></div>
       </div>
-      {transferMode === "NFT" && <TransferNFT userETH={userETHaddress} selectedChain={selectedChain} style={style}/>}
+      {transferMode === "NFT" && <TransferNFT userETH={userETHaddress} selectedChain={selectedChain} style={style} />}
       {transferMode === "Token" && <div className={style.transfer}>
         <div className={style.align}>
           <p className={style.label}>
@@ -135,8 +141,8 @@ export default function Transfer() {
             {selectedChain === "eth"
               ? "ETH"
               : selectedChain === "bsc"
-              ? "BNB"
-              : "MATIC"}{" "}
+                ? "BNB"
+                : "MATIC"}{" "}
             address
           </p>
           <div className={style.addressContainer}>
@@ -154,8 +160,8 @@ export default function Transfer() {
             {selectedChain === "eth"
               ? "ETH"
               : selectedChain === "bsc"
-              ? "BNB"
-              : "MATIC"}
+                ? "BNB"
+                : "MATIC"}
           </p>
         </div>
         <br />
@@ -171,8 +177,8 @@ export default function Transfer() {
               selectedChain === "eth"
                 ? "0.0 ETH"
                 : selectedChain === "bsc"
-                ? "0.0 BNB"
-                : "0.0 MATIC"
+                  ? "0.0 BNB"
+                  : "0.0 MATIC"
             }
             min="0"
             autoComplete="off"
@@ -236,8 +242,8 @@ export default function Transfer() {
                 {selectedChain === "eth"
                   ? "ETH"
                   : selectedChain === "bsc"
-                  ? "BNB"
-                  : "MATIC"}
+                    ? "BNB"
+                    : "MATIC"}
               </p>
               <div className={style.alignButton}>
                 <button
@@ -255,7 +261,7 @@ export default function Transfer() {
         {error && <p className={style.error}>{error.message}</p>}
         {errorSend && <p className={style.error}>{errorSend}</p>}
       </div>}
-      <GetTransactions chain={selectedChain} userETHaddress={userETHaddress}/>
+      <GetTransactions chain={selectedChain} userETHaddress={userETHaddress} />
       <Notifications />
     </div>
   );

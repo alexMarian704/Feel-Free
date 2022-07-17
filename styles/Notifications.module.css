@@ -33,9 +33,24 @@
     left: 0;
     width: 280px;
     height: 380px;
-    border-radius: 6px;
+    border-radius: 3px;
     box-shadow: 0px 0px 10px 1px rgba(34, 33, 33, 0.12);
     transition: all ease-in-out 200ms;
+    overflow-y: scroll;
+    scrollbar-color: rgb(35, 34, 34);
+    scrollbar-width: thin;
+}
+
+.container::-webkit-scrollbar {
+    width: 2px;
+}
+
+.container::-webkit-scrollbar-track {
+    background-color: rgb(35, 34, 34);
+}
+
+.container::-webkit-scrollbar-thumb {
+    background: rgb(99, 98, 98);
 }
 
 .request{
@@ -48,9 +63,28 @@
     text-align: center;
 }
 
+.dot{
+    color: #800040;
+    font-size: 14px;
+}
+
 .request span{
     cursor: pointer;
     color: #acacac;
+}
+
+.newMessage{
+    margin-top: 10px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+
+.newMessage:hover{
+    background-color: rgb(70, 70, 70);
 }
 
 .butDiv{

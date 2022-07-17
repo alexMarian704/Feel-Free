@@ -10,10 +10,9 @@
 
 .imgContainer {
     position: relative;
-    width: calc(46px + 1vh);
-    height: calc(44px + 1vh);
+    width: calc(47px + 1vh);
+    height: calc(45px + 1vh);
     border-radius: 200px;
-    max-width: 230px;
     border: 2px solid #800040;
     margin-right: 10px;
 }

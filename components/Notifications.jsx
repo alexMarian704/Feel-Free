@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMoralis } from "react-moralis";
 import { Moralis } from "moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faTimes, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faTimes, faCheck, faCircle} from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Notifications.module.css"
 import { useRouter } from "next/router";
 
@@ -102,6 +102,12 @@ export default function Notifications() {
                                                 <button className={style.accept} onClick={() => accept(data.from)}> <FontAwesomeIcon icon={faCheck} /></button>
                                                 <button className={style.reject} onClick={() => reject(data.from)}><FontAwesomeIcon icon={faTimes} /></button>
                                             </div>
+                                        </div>
+                                    )
+                                }else if(data.type === "New message"){
+                                    return (
+                                        <div className={style.newMessage} onClick={() => route.push(`/messages/${data.from}`)} key={data.from}>
+                                            <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New message from <span>@{data.tag}</span></p>
                                         </div>
                                     )
                                 }

@@ -11,7 +11,7 @@ export default function Options({open , setOpen}) {
 
     return (
         <div className={style.containers}>
-            <button className={style.options}><FontAwesomeIcon icon={faEllipsisV} onClick={()=> setOpen(!open)}/></button>
+            <button className={style.options} onClick={()=> setOpen(!open)}><FontAwesomeIcon icon={faEllipsisV}/></button>
             <div className={style.optionsContainer} id={open === false ? style.close : style.open}>
                 <button>Block</button>
                 <button>Media</button>

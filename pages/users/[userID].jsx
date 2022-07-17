@@ -197,7 +197,7 @@ export default function UserID() {
               {isFriend === false && isSend === false && <button onClick={addFriend} className={style.redBut}>Add friend <FontAwesomeIcon icon={faUserPlus} /></button>}
               {isFriend === true && isSend === false && <button onClick={removeFriend} className={style.removeFriend}>Remove friend<FontAwesomeIcon icon={faUserSlash} className={style.butIcon} /></button>}
               {isSend === true && <button onClick={removeRequest} className={style.removeFriend}>Requested<FontAwesomeIcon icon={faHourglass} className={style.butIcon} /></button>}
-              <button className={style.redBut}>Send {selectedChain === "eth"
+              <button className={style.redBut} onClick={()=> router.push(`/transfer/${userData.userTag}`)}>Send {selectedChain === "eth"
                 ? "ETH"
                 : selectedChain === "bsc"
                   ? "BNB"
