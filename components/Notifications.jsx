@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMoralis } from "react-moralis";
 import { Moralis } from "moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faTimes, faCheck, faCircle} from "@fortawesome/free-solid-svg-icons";
+import { faBell, faTimes, faCheck, faCircle } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Notifications.module.css"
 import { useRouter } from "next/router";
 
@@ -10,6 +10,7 @@ export default function Notifications() {
     const { user } = useMoralis();
     const [open, setOpen] = useState(false);
     const [notArray, setNotArray] = useState([]);
+    const [idArray, setIdArray] = useState([])
     const route = useRouter()
 
     const queryNotifications = async () => {
@@ -19,6 +20,14 @@ export default function Notifications() {
         const results = await query.find();
         if (results !== undefined)
             setNotArray(results)
+
+        const subscription = await query.subscribe()
+        subscription.on("create", (object) => {
+            if (idArray.includes(object.id) === false) {
+                setIdArray([...idArray, object.id])
+                setNotArray([...results, object])
+            }
+        })
     }
 
     useEffect(async () => {
@@ -89,7 +98,9 @@ export default function Notifications() {
         <div className={style.main}>
             {open === true &&
                 <div className={style.container}>
-                    {notArray.length === 0 && <p>0 notifications</p>}
+                    {notArray.length === 0 && <p style={{
+                        marginTop: "8px"
+                    }}>0 notifications</p>}
                     {notArray.length > 0 &&
                         <div>
                             {notArray.map((x) => {
@@ -104,7 +115,7 @@ export default function Notifications() {
                                             </div>
                                         </div>
                                     )
-                                }else if(data.type === "New message"){
+                                } else if (data.type === "New message") {
                                     return (
                                         <div className={style.newMessage} onClick={() => route.push(`/messages/${data.from}`)} key={data.from}>
                                             <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New message from <span>@{data.tag}</span></p>

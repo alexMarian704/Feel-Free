@@ -32,7 +32,7 @@ export default function Messages() {
   const [open, setOpen] = useState(false)
   const [focusImage, setFocusImage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [initial , setInitial] = useState([])
+  const [initial, setInitial] = useState([])
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -112,6 +112,7 @@ export default function Messages() {
       const query = new Moralis.Query(unread);
       query.equalTo("from", router.query.mesID);
       const results = await query.find();
+      deleteNotification();
       if (results !== undefined) {
         for (let i = 0; i < results.length; i++) {
           const bufferText = _base64ToArrayBuffer(results[i].attributes.message)
@@ -189,6 +190,7 @@ export default function Messages() {
           bufferText
         )
         const textMessage = dec.decode(decryptedText)
+        deleteNotification()
 
         const deleteMessage = Moralis.Object.extend(ref);
         const query1 = new Moralis.Query(deleteMessage);
@@ -206,6 +208,7 @@ export default function Messages() {
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
+
             messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend")
 
             if (main.messages.length > 0) {
@@ -216,6 +219,17 @@ export default function Messages() {
           })
         }
       })
+    }
+  }
+
+  const deleteNotification = async () => {
+    const userNotification = Moralis.Object.extend("Notification");
+    const query = new Moralis.Query(userNotification);
+    query.equalTo("from", router.query.mesID);
+    query.equalTo("type", "New message");
+    const results = await query.first();
+    if (results !== undefined) {
+      results.destroy()
     }
   }
 
@@ -259,13 +273,13 @@ export default function Messages() {
     return window.btoa(binary);
   }
 
-  const pushNotification = async (friendId) => {
+  const notification = async (friendId)=>{
     const userNotification = Moralis.Object.extend("Notification");
     const query = new Moralis.Query(userNotification);
     query.equalTo("to", user.get("ethAddress"));
     query.equalTo("tag", user.get("userTag"));
     query.equalTo("type", "New message");
-    const results = await query.find();
+    const results = await query.first();
     if (results === undefined) {
       const Notification = Moralis.Object.extend("Notification");
       const noti = new Notification();
@@ -284,6 +298,18 @@ export default function Messages() {
       noti.setACL(notificationsACL)
       noti.save();
     }
+  }
+
+  const pushNotification = async (friendId) => {
+    const userNotification = Moralis.Object.extend("Tags");
+    const query = new Moralis.Query(userNotification);
+    query.equalTo("ethAddress", router.query.mesID);
+    const results = await query.first();
+      if (results.attributes.muteNotification === undefined) {
+        notification(friendId)
+      }else if(results.attributes.muteNotification.includes(user.get("ethAddress")) === false){
+        notification(friendId)
+      }
   }
 
   const pushMessage = async (image, message) => {
@@ -327,7 +353,6 @@ export default function Messages() {
         const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
         const decryptedMessages = decrypt(encryptedMessages, user.id);
         main.messages = decryptedMessages.messages
-        //console.log(decryptedMessages.messages)
       }
       main.messages.push({ type: 1, message: message, time: time, seen: false, image: image })
       // console.log(main.messages)
@@ -409,7 +434,7 @@ export default function Messages() {
             <h2>{friendData.name} {friendData.name2}</h2>
           </Link>}
         </div>
-        <Options open={open} setOpen={setOpen} />
+        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} />
       </div>
       {loading === true && <div className={style.loadingContainer}>
         <div className={style.loader}></div>

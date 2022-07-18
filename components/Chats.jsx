@@ -17,8 +17,8 @@ export default function Chats() {
         <div>
             {chatsArray.length > 0 &&
                 <div className={style.chatsContainer}>
-                    {chatsArray.map((chat) => (
-                        <ChatMain lastMessage={chat.lastMessage} name={chat.name} name2={chat.name2} profilePhoto={chat.profilePhoto} address={chat.chat} time={chat.time} last={chat.last}/>
+                    {chatsArray.map((chat , i) => (
+                        <ChatMain key={i} lastMessage={chat.lastMessage} name={chat.name} name2={chat.name2} profilePhoto={chat.profilePhoto} address={chat.chat} time={chat.time} last={chat.last}/>
                     ))}
                 </div>
             }
