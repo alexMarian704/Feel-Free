@@ -13,6 +13,10 @@
     justify-content: center;
 }
 
+.sendContainer h4{
+    font-size: calc(20px + 0.1vw);
+}
+
 .sendContainer input {
     background-color: rgb(48, 48, 48);
     width: 80%;

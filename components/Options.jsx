@@ -4,13 +4,16 @@ import { Moralis } from "moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { blockUser } from "../function/block.js"
+import { unblockUser } from "../function/unblock.js"
 
-export default function Options({ open, setOpen, userAddress, friendAddress }) {
+export default function Options({ open, setOpen, userAddress, friendAddress , getBlock }) {
     const { setUserData, user } = useMoralis();
     const [error, setError] = useState("");
     const [mute, setMute] = useState(false);
+    const [block , setBlock] = useState(false);
 
-    const getMuteNotifications = async () => {
+    const getMuteNotifications_blockUsers = async () => {
         const userNotification = Moralis.Object.extend("Tags");
         const query = new Moralis.Query(userNotification);
         query.equalTo("ethAddress", userAddress);
@@ -21,10 +24,16 @@ export default function Options({ open, setOpen, userAddress, friendAddress }) {
             else
                 setMute(false);
         }
+        if (results.attributes.blockUsers !== undefined){
+            if (results.attributes.blockUsers.includes(friendAddress))
+                setBlock(true);
+            else
+                setBlock(false);
+        }
     }
 
     useEffect(()=>{
-        getMuteNotifications();
+        getMuteNotifications_blockUsers();
     },[friendAddress])
 
     const muteNotifications = async () => {
@@ -43,7 +52,7 @@ export default function Options({ open, setOpen, userAddress, friendAddress }) {
             })
             results.save();
         }
-        getMuteNotifications();
+        getMuteNotifications_blockUsers();
     }
 
     const turnOnNotifications = async ()=>{
@@ -56,14 +65,17 @@ export default function Options({ open, setOpen, userAddress, friendAddress }) {
         results.set({
             muteNotification: filter
         })
-        results.save().then(()=>getMuteNotifications())
+        results.save().then(()=>getMuteNotifications_blockUsers())
     }
+
+
 
     return (
         <div className={style.containers}>
             <button className={style.options} onClick={() => setOpen(!open)}><FontAwesomeIcon icon={faEllipsisV} /></button>
             <div className={style.optionsContainer} id={open === false ? style.close : style.open}>
-                <button>Block</button>
+                {block === false && <button onClick={()=> blockUser(getMuteNotifications_blockUsers , friendAddress , userAddress , getBlock)}>Block</button>}
+                {block === true && <button onClick={()=> unblockUser(getMuteNotifications_blockUsers , friendAddress , userAddress , getBlock)}>Unblock</button>}
                 <button>Media</button>
                 {mute === false && <button onClick={muteNotifications}>Mute notifications</button>}
                 {mute === true && <button onClick={turnOnNotifications} >Turn on notifications</button>}

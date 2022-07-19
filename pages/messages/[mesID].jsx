@@ -33,6 +33,8 @@ export default function Messages() {
   const [focusImage, setFocusImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [initial, setInitial] = useState([])
+  const [block, setBlock] = useState(false);
+  const [myBlock, setMyBlock] = useState(false)
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -233,6 +235,31 @@ export default function Messages() {
     }
   }
 
+  const getBlock = async (address, type) => {
+    if (address && router.query.mesID) {
+      const userAddress = user.get("ethAddress");
+      const friendBlock = Moralis.Object.extend("Tags");
+      const query = new Moralis.Query(friendBlock);
+      query.equalTo("ethAddress", address);
+      const results = await query.first();
+      if (type === "friend") {
+        if (results.attributes.blockUsers !== undefined) {
+          if (results.attributes.blockUsers.includes(userAddress))
+            setBlock(true);
+          else
+            setBlock(false);
+        }
+      } else {
+        if (results.attributes.blockUsers !== undefined) {
+          if (results.attributes.blockUsers.includes(router.query.mesID))
+            setMyBlock(true);
+          else
+            setMyBlock(false);
+        }
+      }
+    }
+  }
+
   useEffect(() => {
     if (messageRef.current !== undefined) {
       messageRef.current.scrollIntoView({ behavior: 'instant' })
@@ -246,6 +273,10 @@ export default function Messages() {
     receiveMessage();
     getData()
     getLocalMessages()
+    if (isAuthenticated) {
+      getBlock(router.query.mesID, "friend")
+      getBlock(user.get("ethAddress"), "my")
+    }
     if (isAuthenticated) {
       getFriendUnreadMessages(router.query.mesID, user.get("ethAddress"), setFriendUnreadMessages)
     }
@@ -273,7 +304,7 @@ export default function Messages() {
     return window.btoa(binary);
   }
 
-  const notification = async (friendId)=>{
+  const notification = async (friendId) => {
     const userNotification = Moralis.Object.extend("Notification");
     const query = new Moralis.Query(userNotification);
     query.equalTo("to", user.get("ethAddress"));
@@ -305,11 +336,11 @@ export default function Messages() {
     const query = new Moralis.Query(userNotification);
     query.equalTo("ethAddress", router.query.mesID);
     const results = await query.first();
-      if (results.attributes.muteNotification === undefined) {
-        notification(friendId)
-      }else if(results.attributes.muteNotification.includes(user.get("ethAddress")) === false){
-        notification(friendId)
-      }
+    if (results.attributes.muteNotification === undefined) {
+      notification(friendId)
+    } else if (results.attributes.muteNotification.includes(user.get("ethAddress")) === false) {
+      notification(friendId)
+    }
   }
 
   const pushMessage = async (image, message) => {
@@ -434,7 +465,7 @@ export default function Messages() {
             <h2>{friendData.name} {friendData.name2}</h2>
           </Link>}
         </div>
-        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} />
+        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock}/>
       </div>
       {loading === true && <div className={style.loadingContainer}>
         <div className={style.loader}></div>
@@ -451,7 +482,7 @@ export default function Messages() {
         })}
       </div>
       <div>
-        <div className={style.sendContainer} onClick={() => setOpen(false)}>
+        {block === false && myBlock === false && <div className={style.sendContainer} onClick={() => setOpen(false)}>
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
             if (e.key === "Enter") {
               pushMessage(false, message);
@@ -469,7 +500,15 @@ export default function Messages() {
               display: "none",
             }}
           />
-        </div>
+        </div>}
+        {block === true &&
+          <div className={style.sendContainer} onClick={() => setOpen(false)}>
+            <h4>You have been blocked</h4>
+          </div>}
+        {myBlock === true && friendData !== "" &&
+          <div className={style.sendContainer} onClick={() => setOpen(false)}>
+            <h4>You have blocked {friendData.name} {friendData.name2}</h4>
+          </div>}
       </div>
     </div>
   );
