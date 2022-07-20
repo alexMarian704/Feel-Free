@@ -17,6 +17,7 @@ import RenderMessage from "../../components/Message";
 import { getFriendUnreadMessages } from "../../function/getFriendUnreadMessages";
 import Options from "../../components/Options";
 import { messageOrder } from "../../function/messageOrder";
+import Media from "../../components/Media";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -35,6 +36,7 @@ export default function Messages() {
   const [initial, setInitial] = useState([])
   const [block, setBlock] = useState(false);
   const [myBlock, setMyBlock] = useState(false)
+  const [openMedia , setOpenMedia] = useState(false);
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -146,7 +148,7 @@ export default function Messages() {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
           let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
-          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend")
+          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", results[i].attributes.image)
         }
       }
     }
@@ -211,7 +213,7 @@ export default function Messages() {
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
 
-            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend")
+            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend", mesObject.attributes.image)
 
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
@@ -389,7 +391,7 @@ export default function Messages() {
       // console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you")
+      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you" , image)
 
       let ref;
       if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
@@ -429,7 +431,6 @@ export default function Messages() {
 
   const sendImage = async (e) => {
     const file = e.target.files[0];
-    console.log(e.target.files[0]);
     const type = e.target.files[0].type.replace("image/", "");
     const name = `imageMessage.${type}`;
     const imageMessage = new Moralis.File(name, file);
@@ -465,11 +466,12 @@ export default function Messages() {
             <h2>{friendData.name} {friendData.name2}</h2>
           </Link>}
         </div>
-        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock}/>
+        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} />
       </div>
       {loading === true && <div className={style.loadingContainer}>
         <div className={style.loader}></div>
       </div>}
+      {openMedia === true && <Media setOpenMedia={setOpenMedia} messages={localMessages} friendData={friendData}/>}
       <div className={style.messageContainer} onClick={() => setOpen(false)}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>

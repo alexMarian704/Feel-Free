@@ -13,7 +13,7 @@
     justify-content: center;
 }
 
-.sendContainer h4{
+.sendContainer h4 {
     font-size: calc(20px + 0.1vw);
 }
 
@@ -384,7 +384,7 @@
     transform: translate(-50%, -50%);
 }
 
-.loadingContainer{
+.loadingContainer {
     width: 100%;
     position: absolute;
     z-index: 20;
@@ -402,13 +402,105 @@
     width: 70px;
     height: 70px;
     animation: spin 2s linear infinite;
-  }
-  
-  @keyframes spin {
+}
+
+@keyframes spin {
     0% {
-      transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     100% {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
+}
+
+.mediaImageProfile {
+    width: calc(150px + 1vw);
+    height: calc(150px + 1vw);
+    position: relative;
+    border-radius: 50%;
+    margin: auto;
+}
+
+.mediaImageProfile img {
+    border-radius: 100px;
+}
+
+.mediaContainer {
+    position: absolute;
+    z-index: 400;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    top: 0px;
+    background: #121212;
+    padding-top: 20px;
+}
+
+.mediaBackBut {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+    outline: none;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 27px;
+    font-size: 17px;
+    color: #800040;
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0px 0px 1px 2px rgba(35, 34, 34, 0.48);
+}
+
+.mediaInfo {
+    display: flex;
+    width: calc(350px + 1vw);
+    margin: auto;
+    justify-content: space-evenly;
+    font-size: calc(17px + 0.1vw);
+    margin-top: 9px;
+}
+
+.mediaInfo h4 {
+    width: 100%;
+    text-align: center;
+}
+
+.icons {
+    font-size: calc(20px + 0.1vw);
+    width: 100%;
+    text-align: center;
+    color: #800040;
+}
+
+.mediaContent {
+    border-top: 1px solid rgb(195, 195, 195);
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+.mediaContent h4 {
+    font-size: calc(18px + 0.1vw);
+    width: 100vw;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.mediaRenderImage {
+    width: calc(160px + 1vw);
+    height: calc(160px + 1vw);
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.mediaRenderImage img {
+    border-radius: 8px;
+}

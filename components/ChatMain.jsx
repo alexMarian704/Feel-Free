@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 import style from "../styles/Chat.module.css"
 import ProfilePicture from "../public/profile.jpg";
 import Image from "next/image";
 import { Moralis } from "moralis";
 
-export default function ChatMain({ name, name2, address, lastMessage, time, last }) {
+export default function ChatMain({ name, name2, address, lastMessage, time, last, image }) {
     const [friendData, setFriendData] = useState("");
     const { user } = useMoralis();
     const router = useRouter();
@@ -57,11 +58,16 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     alt="Profile Photo" />}
             </div>
             <div className={style.infoContainer} onClick={() => router.push(`/messages/${address}`)}>
-                <div className={style.mainData}>
+                {(image === false || image===undefined) && <div className={style.mainData}>
                     <p>{name} {name2}</p>
                     {last === "you" && <p><span>You:</span> {lastMessage}</p>}
                     {last === "friend" && <p><span>{name}:</span> {lastMessage}</p>}
-                </div>
+                </div>}
+                {image === true && <div className={style.mainData}>
+                    <p>{name} {name2}</p>
+                    {last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faImage} /> </p>}
+                    {last === "friend" && <p><span>{name}: </span><FontAwesomeIcon icon={faImage} /></p>}
+                </div>}
                 <div>
                     {dataToday === data && month === monthToday && year === yearToday && minutes > 9 && <p>{hours}:{minutes}</p>}
                     {dataToday === data && month === monthToday && year === yearToday && minutes <= 9 && <p>{hours}:0{minutes}</p>}
