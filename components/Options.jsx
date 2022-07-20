@@ -68,8 +68,6 @@ export default function Options({ open, setOpen, userAddress, friendAddress, get
         results.save().then(() => getMuteNotifications_blockUsers())
     }
 
-
-
     return (
         <div className={style.containers}>
             <button className={style.options} onClick={() => setOpen(!open)}><FontAwesomeIcon icon={faEllipsisV} /></button>

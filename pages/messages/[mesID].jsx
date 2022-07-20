@@ -456,8 +456,6 @@ export default function Messages() {
           <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
           {friendData !== "" && <div className={style.alignImg} onClick={() => router.push(`/users/${router.query.mesID}`)}>
             {friendData.profilePhoto !== undefined && <Image src={friendData.profilePhoto} alt="Profile Photo"
-              width="50%"
-              height="50%"
               layout="fill"
               objectFit="cover" />}
             {friendData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
@@ -466,12 +464,12 @@ export default function Messages() {
             <h2>{friendData.name} {friendData.name2}</h2>
           </Link>}
         </div>
-        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} />
+        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia}/>
       </div>
       {loading === true && <div className={style.loadingContainer}>
         <div className={style.loader}></div>
       </div>}
-      {openMedia === true && <Media setOpenMedia={setOpenMedia} messages={localMessages} friendData={friendData}/>}
+      {openMedia === true && <Media setOpenMedia={setOpenMedia} messages={localMessages} friendData={friendData} setFocusImage={setFocusImage} />}
       <div className={style.messageContainer} onClick={() => setOpen(false)}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>

@@ -350,7 +350,7 @@
     height: 100vh;
     position: absolute;
     background-color: rgb(35, 34, 34);
-    z-index: 200;
+    z-index: 402;
     transition: all 200ms ease-in-out;
     top: 0px;
     left: 0px;
@@ -503,4 +503,10 @@
 
 .mediaRenderImage img {
     border-radius: 8px;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+
+.mediaRenderImage img:hover{
+    opacity: 0.5;
 }

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faUser, faAt } from "@fortawesome/free-solid-svg-icons";
 
-const Media = ({ setOpenMedia, messages, friendData }) => {
+const Media = ({ setOpenMedia, messages, friendData, setFocusImage }) => {
     const [includes, setIncludes] = useState(messages.filter(x => x.image === true).length > 0)
     return (
         <div className={style.mediaContainer}>
@@ -42,7 +42,9 @@ const Media = ({ setOpenMedia, messages, friendData }) => {
                             <div className={style.mediaRenderImage} key={i}>
                                 <Image src={image.message} alt="Profile Photo"
                                     layout="fill"
-                                    objectFit="cover" />
+                                    objectFit="cover" 
+                                    onClick={()=> setFocusImage(image.message)}
+                                    />
                             </div>
                         )
                     }

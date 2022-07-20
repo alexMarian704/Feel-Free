@@ -14,7 +14,6 @@ body {
   margin: 0;
   scrollbar-color: rgb(35, 34, 34);
   scrollbar-width: thin;
-  overflow-x: hidden;
 }
 
 *::-webkit-scrollbar {

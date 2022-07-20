@@ -21,7 +21,7 @@ export default function RenderMessage({ message, number, total, refMes, unread ,
               width="100%"
               height="100%"
               layout="responsive"
-              objectFit="contain"
+              objectfit="contain"
               className={style.img}
               onClick={()=> setFocusImage(message.message)}
             />
@@ -62,7 +62,7 @@ export default function RenderMessage({ message, number, total, refMes, unread ,
               width="100%"
               height="100%"
               layout="responsive"
-              objectFit="contain"
+              objectfit="contain"
               className={style.img}
               onClick={()=> setFocusImage(message.message)}
             />
