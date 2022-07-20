@@ -32,6 +32,7 @@ const Media = ({ setOpenMedia, messages, friendData, setFocusImage }) => {
                     </div>
                 </div>
             </div>
+            
             <div className={style.mediaContent}>
                 {includes === false && <div>
                     <h4>No media content</h4>
