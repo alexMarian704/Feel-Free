@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage , faFile } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 import style from "../styles/Chat.module.css"
 import ProfilePicture from "../public/profile.jpg";
@@ -65,8 +65,8 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                 </div>}
                 {(file === "application/pdf" || file === "image/jpg" || file === "image/png" || file === "text/plain" || file=== "image/jpeg") && <div className={style.mainData}>
                     <p>{name} {name2}</p>
-                    {last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faImage} /> </p>}
-                    {last === "friend" && <p><span>{name}: </span><FontAwesomeIcon icon={faImage} /></p>}
+                    {last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faFile} /> </p>}
+                    {last === "friend" && <p><span>{name}: </span><FontAwesomeIcon icon={faFile} /></p>}
                 </div>}
                 <div>
                     {dataToday === data && month === monthToday && year === yearToday && minutes > 9 && <p>{hours}:{minutes}</p>}

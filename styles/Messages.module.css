@@ -546,3 +546,50 @@
     align-items: center;
     position: relative;
 }
+
+.painTextFile{
+    width: 30vw;
+    background-color: white;
+    height: calc(45px + 1vh);
+    max-width: 400px;
+    min-width: 220px;
+    margin-right: 12px;
+    border: 3px solid #800040;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(19px + 0.1vw);
+    text-decoration: none;
+    color: black;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.painTextFile span , .painTextFileFriend span{
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.painTextFileFriend{
+    width: 30vw;
+    background-color: white;
+    height: 60px;
+    max-width: 400px;
+    min-width: 220px;
+    margin-left: 12px;
+    border: 3px solid rgb(48, 48, 48);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(19px + 0.1vw);
+    text-decoration: none;
+    color: black;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    overflow: hidden;
+}

@@ -36,7 +36,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
     else if (message.file === "text/plain")
       return (
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
-          <a href={message.message} download>{message.fileName}</a>
+          <a className={style.painTextFile} href={message.message} download><span>{message.fileName}</span></a>
         </div>
       )
     else if (message.file === "application/pdf")
@@ -89,7 +89,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
     else if (message.file === "text/plain")
       return (
         <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
-          <a href={message.message} download>{message.fileName}</a>
+          <a  className={style.painTextFileFriend}  href={message.message} download><span>{message.fileName}</span></a>
         </div>
       )
     else if (message.file === "application/pdf")
