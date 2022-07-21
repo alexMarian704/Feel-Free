@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatMain from "./ChatMain";
 import style from "../styles/Chat.module.css"
 
@@ -18,7 +17,7 @@ export default function Chats() {
             {chatsArray.length > 0 &&
                 <div className={style.chatsContainer}>
                     {chatsArray.map((chat , i) => (
-                        <ChatMain key={i} lastMessage={chat.lastMessage} name={chat.name} name2={chat.name2} profilePhoto={chat.profilePhoto} address={chat.chat} time={chat.time} last={chat.last} image={chat.image}/>
+                        <ChatMain key={i} lastMessage={chat.lastMessage} name={chat.name} name2={chat.name2} profilePhoto={chat.profilePhoto} address={chat.chat} time={chat.time} last={chat.last} file={chat.file}/>
                     ))}
                 </div>
             }

@@ -36,7 +36,7 @@ export default function Messages() {
   const [initial, setInitial] = useState([])
   const [block, setBlock] = useState(false);
   const [myBlock, setMyBlock] = useState(false)
-  const [openMedia , setOpenMedia] = useState(false);
+  const [openMedia, setOpenMedia] = useState(false);
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -133,7 +133,7 @@ export default function Messages() {
             main.messages = decryptedMessages.messages
             //console.log(decryptedMessages.messages)
           }
-          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, image: results[i].attributes.image })
+          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName:results[i].attributes.fileName })
           const encryptedMessagesList = encrypt(main, user.id)
           localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
         }
@@ -148,7 +148,7 @@ export default function Messages() {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
           let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
-          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", results[i].attributes.image)
+          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", results[i].attributes.file)
         }
       }
     }
@@ -208,12 +208,12 @@ export default function Messages() {
               main.messages = decryptedMessages.messages
               //console.log(decryptedMessages.messages)
             }
-            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, image: mesObject.attributes.image })
+            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, file: mesObject.attributes.file, fileName:mesObject.attributes.fileName })
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
 
-            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend", mesObject.attributes.image)
+            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend", mesObject.attributes.file )
 
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
@@ -266,11 +266,16 @@ export default function Messages() {
     if (messageRef.current !== undefined) {
       messageRef.current.scrollIntoView({ behavior: 'instant' })
       setLoading(false);
+    } 
+    else if (isAuthenticated) {
+      if (localStorage.getItem(router.query.mesID + user.get("ethAddress")) === null)
+        setLoading(false);
     }
-  }, [initial, router.query.mesID])
+  }, [initial, router.query.mesID , isAuthenticated])
 
   useEffect(() => {
-    setLoading(true)
+    if (isAuthenticated && localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)
+      setLoading(true)
     unredMessages()
     receiveMessage();
     getData()
@@ -345,7 +350,7 @@ export default function Messages() {
     }
   }
 
-  const pushMessage = async (image, message) => {
+  const pushMessage = async (file,fileName, message) => {
     if (message !== "") {
       const d = new Date();
       let time = d.getTime();
@@ -387,11 +392,11 @@ export default function Messages() {
         const decryptedMessages = decrypt(encryptedMessages, user.id);
         main.messages = decryptedMessages.messages
       }
-      main.messages.push({ type: 1, message: message, time: time, seen: false, image: image })
-      // console.log(main.messages)
+      main.messages.push({ type: 1, message: message, time: time, seen: false, file: file , fileName:fileName })
+      console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you" , image)
+      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you", file)
 
       let ref;
       if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
@@ -407,7 +412,8 @@ export default function Messages() {
         message: base64Text,
         publicKey: JSON.stringify(publicKeyEncrypt),
         time: time,
-        image: image
+        file: file,
+        fileName:fileName
       });
       const messageACL = new Moralis.ACL();
       messageACL.setWriteAccess(user.id, true);
@@ -431,12 +437,15 @@ export default function Messages() {
 
   const sendImage = async (e) => {
     const file = e.target.files[0];
-    const type = e.target.files[0].type.replace("image/", "");
-    const name = `imageMessage.${type}`;
-    const imageMessage = new Moralis.File(name, file);
+    //const type = e.target.files[0].type.replace("image/", "");
+    //const name = `imageMessage.${type}`;
+    console.log(file)
+    const imageMessage = new Moralis.File(file.name, file);
     await imageMessage.saveIPFS();
 
-    pushMessage(true, imageMessage.ipfs());
+    console.log(imageMessage.ipfs())
+
+    pushMessage(file.type, file.name , imageMessage.ipfs());
   }
 
   return (
@@ -464,7 +473,7 @@ export default function Messages() {
             <h2>{friendData.name} {friendData.name2}</h2>
           </Link>}
         </div>
-        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia}/>
+        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} />
       </div>
       {loading === true && <div className={style.loadingContainer}>
         <div className={style.loader}></div>
@@ -485,10 +494,10 @@ export default function Messages() {
         {block === false && myBlock === false && <div className={style.sendContainer} onClick={() => setOpen(false)}>
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
             if (e.key === "Enter") {
-              pushMessage(false, message);
+              pushMessage("message","message", message);
             }
           }} />
-          <button onClick={() => pushMessage(false, message)}><FontAwesomeIcon icon={faPaperPlane} /></button>
+          <button onClick={() => pushMessage("message","message", message)}><FontAwesomeIcon icon={faPaperPlane} /></button>
           <button onClick={() => {
             fileRef.current.click();
           }}><FontAwesomeIcon icon={faPaperclip} /></button>

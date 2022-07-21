@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faUser, faAt } from "@fortawesome/free-solid-svg-icons";
 
 const Media = ({ setOpenMedia, messages, friendData, setFocusImage }) => {
-    const [includes, setIncludes] = useState(messages.filter(x => x.image === true).length > 0)
+    const [includes, setIncludes] = useState(messages.filter(x => x.file === "image/jpg" || x.file === "image/jpeg" || x.file === "image/png").length > 0)
     return (
         <div className={style.mediaContainer}>
             <button className={style.mediaBackBut} onClick={() => setOpenMedia(false)}><FontAwesomeIcon icon={faArrowLeft} /> </button>
@@ -38,7 +38,7 @@ const Media = ({ setOpenMedia, messages, friendData, setFocusImage }) => {
                     <h4>No media content</h4>
                 </div>}
                 {includes === true && messages.map((image , i) => {
-                    if (image.image === true) {
+                    if (image.file === "image/jpg" || image.file === "image/jpeg" || image.file === "image/png") {
                         return (
                             <div className={style.mediaRenderImage} key={i}>
                                 <Image src={image.message} alt="Profile Photo"

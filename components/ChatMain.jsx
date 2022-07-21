@@ -8,7 +8,7 @@ import ProfilePicture from "../public/profile.jpg";
 import Image from "next/image";
 import { Moralis } from "moralis";
 
-export default function ChatMain({ name, name2, address, lastMessage, time, last, image }) {
+export default function ChatMain({ name, name2, address, lastMessage, time, last, file }) {
     const [friendData, setFriendData] = useState("");
     const { user } = useMoralis();
     const router = useRouter();
@@ -58,12 +58,12 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     alt="Profile Photo" />}
             </div>
             <div className={style.infoContainer} onClick={() => router.push(`/messages/${address}`)}>
-                {(image === false || image===undefined) && <div className={style.mainData}>
+                {(file==="message") && <div className={style.mainData}>
                     <p>{name} {name2}</p>
                     {last === "you" && <p><span>You:</span> {lastMessage}</p>}
                     {last === "friend" && <p><span>{name}:</span> {lastMessage}</p>}
                 </div>}
-                {image === true && <div className={style.mainData}>
+                {(file === "application/pdf" || file === "image/jpg" || file === "image/png" || file === "text/plain" || file=== "image/jpeg") && <div className={style.mainData}>
                     <p>{name} {name2}</p>
                     {last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faImage} /> </p>}
                     {last === "friend" && <p><span>{name}: </span><FontAwesomeIcon icon={faImage} /></p>}

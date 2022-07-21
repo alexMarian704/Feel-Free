@@ -4,14 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderMessage({ message, number, total, refMes, unread , focusImage , setFocusImage }) {
+export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage }) {
   const d = new Date(message.time);
   let time = d.getHours();
   let minutes = d.getMinutes();
   let hours = d.getHours();
 
   if (message.type === 1) {
-    if (message.image === true)
+    if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
       return (
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
           <div className={style.myImgContainer}>
@@ -23,7 +23,7 @@ export default function RenderMessage({ message, number, total, refMes, unread ,
               layout="responsive"
               objectfit="contain"
               className={style.img}
-              onClick={()=> setFocusImage(message.message)}
+              onClick={() => setFocusImage(message.message)}
             />
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime}>{`${hours}:${minutes}`}</p>}
@@ -33,6 +33,20 @@ export default function RenderMessage({ message, number, total, refMes, unread ,
           </div>
         </div>
       );
+    else if (message.file === "text/plain")
+      return (
+        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
+          <a href={message.message} download>{message.fileName}</a>
+        </div>
+      )
+    else if (message.file === "application/pdf")
+      return (
+        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
+          <div className={style.myPDFContainer}>
+            <iframe src={message.message} frameBorder="0" className={style.filePDF}></iframe>
+          </div>
+        </div>
+      )
     else
       return (
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
@@ -47,14 +61,14 @@ export default function RenderMessage({ message, number, total, refMes, unread ,
         </div>
       );
   } else if (message.type === 2) {
-    if (message.image === true)
+    if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
       return (
         <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
           <div className={style.myImgContainer} style={{
-            background:"rgb(48, 48, 48)",
-            borderRadius:"8px 8px 8px 0px",
-            marginLeft:"12px",
-            marginRight:"0px"
+            background: "rgb(48, 48, 48)",
+            borderRadius: "8px 8px 8px 0px",
+            marginLeft: "12px",
+            marginRight: "0px"
           }}>
             <img
               src={message.message}
@@ -64,7 +78,7 @@ export default function RenderMessage({ message, number, total, refMes, unread ,
               layout="responsive"
               objectfit="contain"
               className={style.img}
-              onClick={()=> setFocusImage(message.message)}
+              onClick={() => setFocusImage(message.message)}
             />
             <p className={style.tailF}></p>
             {minutes >= 10 && <p className={style.messageTime}>{`${hours}:${minutes}`}</p>}
@@ -72,6 +86,20 @@ export default function RenderMessage({ message, number, total, refMes, unread ,
           </div>
         </div>
       );
+    else if (message.file === "text/plain")
+      return (
+        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
+          <a href={message.message} download>{message.fileName}</a>
+        </div>
+      )
+    else if (message.file === "application/pdf")
+      return (
+        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
+          <div className={style.friendPDFContainer}>
+            <iframe src={message.message} frameBorder="0" className={style.filePDF}></iframe>
+          </div>
+        </div>
+      )
     else
       return (
         <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
