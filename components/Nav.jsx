@@ -117,13 +117,40 @@ export default function Nav({
   useEffect(() => {
     const d = new Date();
     let time = d.getTime();
-    if ((time - user.get("time")) / 1000 / 60 / 60 >= 15 && (user.get("reCheck") === 2 || user.get("reCheck")=== undefined)) {
+    if ((time - user.get("time")) / 1000 / 60 / 60 >= 15 && (user.get("reCheck") === 2 || user.get("reCheck") === undefined)) {
       setUserData({
         reCheck: 1
       })
     }
     Moralis.LiveQuery.close()
   }, [])
+
+  useEffect(async () => {
+    if (isAuthenticated) {
+      const addressToTag = Moralis.Object.extend("Tags");
+      const query = new Moralis.Query(addressToTag);
+      query.equalTo("ethAddress", user.get("ethAddress"));
+      const result = await query.first();
+
+      const d = new Date();
+      let time = d.getTime();
+      window.addEventListener("beforeunload", () => {
+        const _d = new Date();
+        let timeUnLoad = _d.getTime();
+        result.set({
+          timeActive: timeUnLoad,
+          active: false
+        })
+        result.save();
+      })
+
+      result.set({
+        timeActive: time,
+        active: true
+      })
+      result.save();
+    }
+  }, [isAuthenticated]);
 
   return (
     <nav className="nav-in" id="nav">
