@@ -18,6 +18,7 @@ import { getFriendUnreadMessages } from "../../function/getFriendUnreadMessages"
 import Options from "../../components/Options";
 import { messageOrder } from "../../function/messageOrder";
 import Media from "../../components/Media";
+import ConfirmDelete from "../../components/ConfirmDelete";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -37,6 +38,7 @@ export default function Messages() {
   const [block, setBlock] = useState(false);
   const [myBlock, setMyBlock] = useState(false)
   const [openMedia, setOpenMedia] = useState(false);
+  const [openConfirm , setOpenConfirm] = useState(false);
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -473,12 +475,16 @@ export default function Messages() {
             <h2>{friendData.name} {friendData.name2}</h2>
           </Link>}
         </div>
-        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} />
+        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} setOpenConfirm={setOpenConfirm} />
       </div>
       {loading === true && <div className={style.loadingContainer}>
         <div className={style.loader}></div>
       </div>}
+      
       {openMedia === true && <Media setOpenMedia={setOpenMedia} messages={localMessages} friendData={friendData} setFocusImage={setFocusImage} />}
+
+      {openConfirm === true && <ConfirmDelete userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} setOpenConfirm={setOpenConfirm} />}
+
       <div className={style.messageContainer} onClick={() => setOpen(false)}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>

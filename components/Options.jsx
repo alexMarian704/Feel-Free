@@ -8,12 +8,11 @@ import { blockUser } from "../function/block.js"
 import { unblockUser } from "../function/unblock.js"
 import ConfirmDelete from "./ConfirmDelete";
 
-export default function Options({ open, setOpen, userAddress, friendAddress, getBlock, setOpenMedia }) {
+export default function Options({ open, setOpen, userAddress, friendAddress, getBlock, setOpenMedia, setOpenConfirm }) {
     const { setUserData, user } = useMoralis();
     const [error, setError] = useState("");
     const [mute, setMute] = useState(false);
     const [block, setBlock] = useState(false);
-    const [openConfirm , setOpenConfirm] = useState(false);
 
     const getMuteNotifications_blockUsers = async () => {
         const userNotification = Moralis.Object.extend("Tags");
@@ -82,9 +81,12 @@ export default function Options({ open, setOpen, userAddress, friendAddress, get
                 }}>Media</button>
                 {mute === false && <button onClick={muteNotifications}>Mute notifications</button>}
                 {mute === true && <button onClick={turnOnNotifications} >Turn on notifications</button>}
-                <button onClick={()=> setOpenConfirm(true)} >Delete chat</button>
+                <button onClick={() => {
+                    setOpenConfirm(true)
+                    setOpen(false);
+                }
+                } >Delete chat</button>
             </div>
-            {openConfirm === true && <ConfirmDelete userAddress={userAddress} friendAddress={friendAddress} setOpenConfirm={setOpenConfirm} /> }
         </div>
     );
 }

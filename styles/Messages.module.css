@@ -507,16 +507,16 @@
     transition: all 200ms ease-in-out;
 }
 
-.mediaRenderImage img:hover{
+.mediaRenderImage img:hover {
     opacity: 0.5;
 }
 
-.filePDF{
+.filePDF {
     width: 100%;
     height: 100%;
 }
 
-.myPDFContainer{
+.myPDFContainer {
     width: 75vw;
     height: 60vh;
     max-width: 800px;
@@ -530,7 +530,7 @@
     padding: 3px;
 }
 
-.friendPDFContainer{
+.friendPDFContainer {
     width: 75vw;
     height: 60vh;
     max-width: 800px;
@@ -547,7 +547,7 @@
     position: relative;
 }
 
-.painTextFile{
+.painTextFile {
     width: 30vw;
     background-color: white;
     height: calc(45px + 1vh);
@@ -566,13 +566,14 @@
     padding-right: 10px;
 }
 
-.painTextFile span , .painTextFileFriend span{
-    white-space: nowrap; 
+.painTextFile span,
+.painTextFileFriend span {
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.painTextFileFriend{
+.painTextFileFriend {
     width: 30vw;
     background-color: white;
     height: 60px;
@@ -590,6 +591,76 @@
     padding-left: 10px;
     padding-right: 10px;
     text-overflow: ellipsis;
-    white-space: nowrap; 
+    white-space: nowrap;
     overflow: hidden;
+}
+
+.deleteModule {
+    position: absolute;
+    z-index: 404;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    top: 0px;
+    background: rgba(18, 18, 18, 0.4);
+}
+
+.deleteContent {
+    width: 40vw;
+    min-width: 300px;
+    max-width: 600px;
+    min-height: 180px;
+    max-height: 300px;
+    background-color: rgb(48, 48, 48);
+    height: 15vh;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 0px 1px 2px rgba(35, 34, 34, 0.48);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.deleteContent h4{
+    width: 100%;
+    text-align: center;
+    font-size: calc(19px + 0.1vw);
+    margin-top: 12px;
+}
+
+.deleteContent div{
+    width: 100%;
+    margin-top: 15px;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.noButton{
+    width: calc(100px + 1vw);
+    height: calc(35px + 1vh);
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: calc(17px + 0.1vw);
+    background-color: #800040;
+    color: white;
+    transition: all 200ms ease-in-out;
+}
+
+.noButton:hover{
+    background-color: #460626;
+}
+
+.yesButton{
+    width: calc(100px + 1vw);
+    height: calc(35px + 1vh);
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: calc(17px + 0.1vw);
+    color: #800040;
+    transition: all 200ms ease-in-out;
 }
