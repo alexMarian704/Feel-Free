@@ -19,6 +19,8 @@ import Options from "../../components/Options";
 import { messageOrder } from "../../function/messageOrder";
 import Media from "../../components/Media";
 import ConfirmDelete from "../../components/ConfirmDelete";
+import { useOnlineFriend } from "../../function/hooks/useOnlineFriend.js"
+import { userStatus } from "../../function/userStatus";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -39,6 +41,9 @@ export default function Messages() {
   const [myBlock, setMyBlock] = useState(false)
   const [openMedia, setOpenMedia] = useState(false);
   const [openConfirm , setOpenConfirm] = useState(false);
+  const onlineStatus = useOnlineFriend(router.query.mesID);
+
+  console.log(onlineStatus);
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -462,7 +467,7 @@ export default function Messages() {
         <button onClick={() => setFocusImage("")} style={focusImage !== "" ? { display: "block" } : { display: "none" }}>
           <FontAwesomeIcon icon={faTimes} /></button>
       </div>
-      <div className={style.mesNav}>
+      <div className={style.mesNav} onClick={userStatus}>
         <div className={style.containers}>
           <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
           {friendData !== "" && <div className={style.alignImg} onClick={() => router.push(`/users/${router.query.mesID}`)}>
@@ -502,7 +507,7 @@ export default function Messages() {
             if (e.key === "Enter") {
               pushMessage("message","message", message);
             }
-          }} />
+          }} onClick={userStatus}/>
           <button onClick={() => pushMessage("message","message", message)}><FontAwesomeIcon icon={faPaperPlane} /></button>
           <button onClick={() => {
             fileRef.current.click();
@@ -514,6 +519,7 @@ export default function Messages() {
             style={{
               display: "none",
             }}
+            onClick={userStatus}
           />
         </div>}
         {block === true &&

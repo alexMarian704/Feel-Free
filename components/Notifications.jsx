@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faTimes, faCheck, faCircle } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Notifications.module.css"
 import { useRouter } from "next/router";
+import { userStatus } from '../function/userStatus';
 
 export default function Notifications() {
     const { user } = useMoralis();
@@ -97,7 +98,7 @@ export default function Notifications() {
     return (
         <div className={style.main}>
             {open === true &&
-                <div className={style.container}>
+                <div className={style.container} onClick={userStatus}>
                     {notArray.length === 0 && <p style={{
                         marginTop: "8px"
                     }}>0 notifications</p>}
@@ -125,7 +126,11 @@ export default function Notifications() {
                             })}
                         </div>}
                 </div>}
-            <button className={style.open} onClick={() => setOpen(!open)}>
+            <button className={style.open} onClick={() => {
+                setOpen(!open)
+                userStatus()
+            }
+            }>
                 <p className={style.notNumber}>{notArray.length}</p>
                 <FontAwesomeIcon icon={faBell} color="white" />
             </button>

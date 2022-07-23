@@ -10,6 +10,7 @@ import polygon from "../public/polygon.jpg";
 import binance from "../public/binance.png";
 import ethereum from "../public/ethereum.png";
 import { Moralis } from "moralis";
+import { userStatus } from "../function/userStatus";
 
 export default function Nav({
   getBalance,
@@ -125,33 +126,6 @@ export default function Nav({
     Moralis.LiveQuery.close()
   }, [])
 
-  useEffect(async () => {
-    if (isAuthenticated) {
-      const addressToTag = Moralis.Object.extend("Tags");
-      const query = new Moralis.Query(addressToTag);
-      query.equalTo("ethAddress", user.get("ethAddress"));
-      const result = await query.first();
-
-      const d = new Date();
-      let time = d.getTime();
-      window.addEventListener("beforeunload", () => {
-        const _d = new Date();
-        let timeUnLoad = _d.getTime();
-        result.set({
-          timeActive: timeUnLoad,
-          active: false
-        })
-        result.save();
-      })
-
-      result.set({
-        timeActive: time,
-        active: true
-      })
-      result.save();
-    }
-  }, [isAuthenticated]);
-
   return (
     <nav className="nav-in" id="nav">
       {width < 711 && navIn === "out" && (
@@ -166,7 +140,7 @@ export default function Nav({
         </button>
       )}
 
-      <div id="nav-container">
+      <div id="nav-container" onClick={userStatus}>
         <Link href="/">
           <h1>Feel Free</h1>
         </Link>

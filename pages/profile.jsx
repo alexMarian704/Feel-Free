@@ -13,6 +13,7 @@ import { getBalance } from "../function/balance";
 import ProfilePicture from "../public/profile.jpg";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
+import { userStatus } from "../function/userStatus";
 
 export default function profile() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -78,7 +79,7 @@ export default function profile() {
       />
       <div className="marginDiv"></div>
       <div className={style.main}>
-        <div className={style.imgProfile}>
+        <div className={style.imgProfile} onClick={userStatus}>
           {user.get("profilePhoto") !== undefined && (
             <Image
               src={user.get("profilePhoto")}
@@ -123,7 +124,7 @@ export default function profile() {
             display: "none",
           }}
         />
-        <div className={style.dataUser}>
+        <div className={style.dataUser} onClick={userStatus}>
           <h2 className={style.address}>Username: {user.get("username")}</h2>
           <h2 className={style.address}>Tag: @{user.get("userTag")}</h2>
           <h2 className={style.address}>Address: {userETHaddress}</h2>

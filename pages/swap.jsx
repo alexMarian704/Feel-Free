@@ -11,6 +11,7 @@ import { faTimes, faPercent, faSync } from "@fortawesome/free-solid-svg-icons";
 import data from "../data/swapdata";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
+import { userStatus } from "../function/userStatus";
 
 export default function swap() {
   const { isAuthenticated, user, isInitialized } = useMoralis();
@@ -339,6 +340,7 @@ export default function swap() {
               value={amount}
               onBlur={(e) => changeAmount(e.target.value)}
               onChange={(e) => setAmount(e.target.value)}
+              onClick={userStatus}
             />
             <button
               className={style.selectedToken}
@@ -364,6 +366,7 @@ export default function swap() {
               value={amount2}
               onBlur={(e) => changeAmount2(e.target.value)}
               onChange={(e) => setAmount2(e.target.value)}
+              onClick={userStatus}
             />
             <button
               className={style.selectedToken}
@@ -418,6 +421,7 @@ export default function swap() {
             className={style.searchInput}
             value={search}
             onChange={(e) => coinSearch(e.target.value)}
+            onClick={userStatus}
           />
           <div className={style.alignContainer}>
             {coins.length > 0 &&

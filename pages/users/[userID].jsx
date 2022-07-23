@@ -12,6 +12,7 @@ import { faUserPlus, faArrowRight, faUserSlash, faHourglass } from "@fortawesome
 import ProfilePicture from "../../public/profile.jpg";
 import Image from "next/image";
 import CheckPassword from "../../components/CheckPassword";
+import { userStatus } from '../../function/userStatus';
 
 export default function UserID() {
   const [userData, setUserData] = useState("");
@@ -184,16 +185,16 @@ export default function UserID() {
       </div>}
       {userData !== "" && loading === false &&
         <div>
-          <div className={style.dataDiv}>
+          <div className={style.dataDiv} >
             <br />
-            <div className={style.alignImg}>
+            <div className={style.alignImg} onClick={userStatus}>
               {userData.profilePhoto !== undefined && <Image src={userData.profilePhoto} alt="Profile Photo" width="90%"
               height="90%"
               layout="fill"
               objectFit="cover"/>}
               {userData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
             </div>
-            <div className={style.buttonDiv}>
+            <div className={style.buttonDiv} onClick={userStatus}>
               {isFriend === false && isSend === false && <button onClick={addFriend} className={style.redBut}>Add friend <FontAwesomeIcon icon={faUserPlus} /></button>}
               {isFriend === true && isSend === false && <button onClick={removeFriend} className={style.removeFriend}>Remove friend<FontAwesomeIcon icon={faUserSlash} className={style.butIcon} /></button>}
               {isSend === true && <button onClick={removeRequest} className={style.removeFriend}>Requested<FontAwesomeIcon icon={faHourglass} className={style.butIcon} /></button>}

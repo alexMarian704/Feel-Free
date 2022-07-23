@@ -13,6 +13,7 @@ import ProfilePicture from "../public/profile.jpg";
 import { useRouter } from "next/router";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
+import { userStatus } from "../function/userStatus";
 
 export default function search() {
   const { isAuthenticated, user } = useMoralis();
@@ -80,6 +81,7 @@ export default function search() {
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="Tag or name"
+            onClick={userStatus}
           />
           <button onClick={getUsers}>
             <FontAwesomeIcon

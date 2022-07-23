@@ -19,6 +19,7 @@ import TransferNFT from "../components/TransferNFT";
 import GetTransactions from "../components/GetTransactions";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
+import { userStatus } from "../function/userStatus";
 
 export default function Transfer({ tag }) {
   const [amount, setAmount] = useState("");
@@ -129,7 +130,7 @@ export default function Transfer({ tag }) {
         balance={true}
       />
       <div className="marginDiv"></div>
-      <div className={style.transferMode}>
+      <div className={style.transferMode} onClick={userStatus}>
         <div onClick={() => setTransferMode("Token")}><p>Transfer Coins</p></div>
         <div onClick={() => setTransferMode("NFT")}><p>Transfer NFTs</p></div>
       </div>
@@ -182,6 +183,7 @@ export default function Transfer({ tag }) {
             }
             min="0"
             autoComplete="off"
+            onClick={userStatus}
           />
         </div>
         <div className={style.align}>
@@ -196,6 +198,7 @@ export default function Transfer({ tag }) {
               placeholder="Address or tag"
               id={style.input}
               autoComplete="off"
+              onClick={userStatus}
             />
             <button className={style.deleteBut} onClick={() => setTo("")}>
               <FontAwesomeIcon

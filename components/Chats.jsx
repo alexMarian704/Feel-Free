@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import ChatMain from "./ChatMain";
 import style from "../styles/Chat.module.css"
+import { userStatus } from "../function/userStatus";
 
 export default function Chats() {
     const { user } = useMoralis();
@@ -15,7 +16,7 @@ export default function Chats() {
     return (
         <div>
             {chatsArray.length > 0 &&
-                <div className={style.chatsContainer}>
+                <div className={style.chatsContainer} onClick={userStatus}>
                     {chatsArray.map((chat , i) => (
                         <ChatMain key={i} lastMessage={chat.lastMessage} name={chat.name} name2={chat.name2} profilePhoto={chat.profilePhoto} address={chat.chat} time={chat.time} last={chat.last} file={chat.file}/>
                     ))}
