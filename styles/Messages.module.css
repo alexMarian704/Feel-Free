@@ -664,3 +664,15 @@
     color: #800040;
     transition: all 200ms ease-in-out;
 }
+
+.infoContainer{
+    margin-left: 5px;
+    display: flex;
+    align-items: left;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.infoContainer p{
+    color: white;
+}

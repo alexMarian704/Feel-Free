@@ -13,6 +13,5 @@ export const userStatus = async () => {
             timeActive: time,
         })
         result.save();
-        console.log("salut")
     }
 }
