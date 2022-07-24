@@ -12,9 +12,13 @@ import data from "../data/swapdata";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
 import { userStatus } from "../function/userStatus";
+import { useInternetConnection } from "../function/hooks/useInternetConnection";
+import OfflineNotification from "../components/OfflineNotification";
+
 
 export default function swap() {
   const { isAuthenticated, user, isInitialized } = useMoralis();
+  const internetStatus = useInternetConnection()
   const [coins, setCoins] = useState([]);
   const [to, setTo] = useState({
     address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
@@ -480,6 +484,7 @@ export default function swap() {
         </div>
       )}
       <Notifications />
+      {internetStatus === false && <OfflineNotification /> }
     </div>
   );
 }

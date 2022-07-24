@@ -14,6 +14,8 @@ import { useRouter } from "next/router";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
 import { userStatus } from "../function/userStatus";
+import { useInternetConnection } from "../function/hooks/useInternetConnection";
+import OfflineNotification from "../components/OfflineNotification";
 
 export default function search() {
   const { isAuthenticated, user } = useMoralis();
@@ -23,6 +25,7 @@ export default function search() {
   const [nameArray, setNameArray] = useState([]);
   const [error, setError] = useState("");
   const route = useRouter()
+  const internetStatus = useInternetConnection()
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -82,6 +85,11 @@ export default function search() {
             onChange={(e) => setValue(e.target.value)}
             placeholder="Tag or name"
             onClick={userStatus}
+            onKeyPress={e => {
+              if (e.key === "Enter") {
+                getUsers()
+              }
+            }} 
           />
           <button onClick={getUsers}>
             <FontAwesomeIcon
@@ -128,6 +136,7 @@ export default function search() {
         {error && <p className={style.errorSearch}>{error}</p>}
       </div>
       <Notifications />
+      {internetStatus === false && <OfflineNotification /> }
     </div>
   );
 }

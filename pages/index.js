@@ -13,11 +13,14 @@ import PasswordConfig from "../components/Password";
 import CheckPassword from "../components/CheckPassword";
 import Chats from "../components/Chats";
 import { userStatus } from "../function/userStatus";
+import { useInternetConnection } from "../function/hooks/useInternetConnection";
+import OfflineNotification from "../components/OfflineNotification";
 
 export default function Home({ name }) {
   const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
   const [info, setInfo] = useState(null);
   const [page, setPage] = useState("Messages");
+  const internetStatus = useInternetConnection()
 
   useEffect(() => {
     if (!isWeb3Enabled && !isWeb3EnableLoading) {
@@ -69,7 +72,7 @@ export default function Home({ name }) {
         )}
       {(user.get("info") === false ||
         info === false) && <Info setInfo={setInfo} />}
-
+      {internetStatus === false && <OfflineNotification /> }
     </div>
   );
 }

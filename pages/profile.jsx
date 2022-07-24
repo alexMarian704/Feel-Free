@@ -14,6 +14,8 @@ import ProfilePicture from "../public/profile.jpg";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
 import { userStatus } from "../function/userStatus";
+import { useInternetConnection } from "../function/hooks/useInternetConnection";
+import OfflineNotification from "../components/OfflineNotification";
 
 export default function profile() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -21,6 +23,7 @@ export default function profile() {
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const [fetchBalance, setFetchBalance] = useState(false);
+  const internetStatus = useInternetConnection()
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -139,6 +142,7 @@ export default function profile() {
         </div>
       </div>
       <Notifications />
+      {internetStatus === false && <OfflineNotification /> }
     </div>
   );
 }

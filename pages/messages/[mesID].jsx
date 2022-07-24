@@ -21,6 +21,8 @@ import Media from "../../components/Media";
 import ConfirmDelete from "../../components/ConfirmDelete";
 import { useOnlineFriend } from "../../function/hooks/useOnlineFriend.js"
 import { userStatus } from "../../function/userStatus";
+import { useInternetConnection } from "../../function/hooks/useInternetConnection";
+import OfflineNotification from "../../components/OfflineNotification";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();
@@ -42,6 +44,7 @@ export default function Messages() {
   const [openMedia, setOpenMedia] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
   const onlineStatus = useOnlineFriend(router.query.mesID);
+  const internetStatus = useInternetConnection()
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -541,6 +544,7 @@ export default function Messages() {
             <h4>You have blocked {friendData.name} {friendData.name2}</h4>
           </div>}
       </div>
+      {internetStatus === false && <OfflineNotification /> }
     </div>
   );
 }

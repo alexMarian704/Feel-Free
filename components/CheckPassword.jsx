@@ -43,12 +43,16 @@ export default function CheckPassword() {
           <label>Password</label>
           <br />
           <div className="checkDiv">
-            <input type={see === false ? "password" : "text"} value={password} onChange={(e) => setPassword(e.target.value)} className="setUpInput" />
-            <button className="checkBut" onClick={()=> setSee(!see)}>
+            <input type={see === false ? "password" : "text"} value={password} onChange={(e) => setPassword(e.target.value)} className="setUpInput" onKeyPress={e => {
+              if (e.key === "Enter") {
+                confirmPassword();
+              }
+            }} />
+            <button className="checkBut" onClick={() => setSee(!see)}>
               {see === false ? (
-                <FontAwesomeIcon icon={faEye} style={{fontSize:20}} />
+                <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
               ) : (
-                <FontAwesomeIcon icon={faEyeSlash} style={{fontSize:20}} />
+                <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
               )}
             </button>
           </div>

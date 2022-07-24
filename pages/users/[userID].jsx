@@ -13,6 +13,8 @@ import ProfilePicture from "../../public/profile.jpg";
 import Image from "next/image";
 import CheckPassword from "../../components/CheckPassword";
 import { userStatus } from '../../function/userStatus';
+import { useInternetConnection } from "../../function/hooks/useInternetConnection";
+import OfflineNotification from "../../components/OfflineNotification";
 
 export default function UserID() {
   const [userData, setUserData] = useState("");
@@ -22,6 +24,7 @@ export default function UserID() {
   const router = useRouter()
   const [isFriend, setIsFriend] = useState(false);
   const [isSend, setIsSend] = useState(false);
+  const internetStatus = useInternetConnection()
 
   if (user && router.query.userID === user.get("ethAddress")) router.push("/profile")
 
@@ -212,6 +215,7 @@ export default function UserID() {
           </div>
           <div></div>
         </div>}
+        {internetStatus === false && <OfflineNotification /> }
     </div>
   )
 }

@@ -20,6 +20,8 @@ import GetTransactions from "../components/GetTransactions";
 import CheckPassword from "../components/CheckPassword";
 import Notifications from "../components/Notifications";
 import { userStatus } from "../function/userStatus";
+import { useInternetConnection } from "../function/hooks/useInternetConnection";
+import OfflineNotification from "../components/OfflineNotification";
 
 export default function Transfer({ tag }) {
   const [amount, setAmount] = useState("");
@@ -32,6 +34,7 @@ export default function Transfer({ tag }) {
   const [fetchBalance, setFetchBalance] = useState(false);
   const [toTag, setToTag] = useState("");
   const [transferMode, setTransferMode] = useState("Token")
+  const internetStatus = useInternetConnection()
   let selectedChain;
   if (user) selectedChain = user.get("chain");
 
@@ -266,6 +269,7 @@ export default function Transfer({ tag }) {
       </div>}
       <GetTransactions chain={selectedChain} userETHaddress={userETHaddress} />
       <Notifications />
+      {internetStatus === false && <OfflineNotification /> }
     </div>
   );
 }
