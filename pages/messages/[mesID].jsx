@@ -141,7 +141,7 @@ export default function Messages() {
             main.messages = decryptedMessages.messages
             //console.log(decryptedMessages.messages)
           }
-          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName })
+          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName , tag: results[i].attributes.tag})
           const encryptedMessagesList = encrypt(main, user.id)
           localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
         }
@@ -156,7 +156,7 @@ export default function Messages() {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
           let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
-          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", results[i].attributes.file)
+          messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].tag);
         }
       }
     }
@@ -202,12 +202,12 @@ export default function Messages() {
           bufferText
         )
         const textMessage = dec.decode(decryptedText)
-        deleteNotification()
-
+        
         const deleteMessage = Moralis.Object.extend(ref);
         const query1 = new Moralis.Query(deleteMessage);
         query1.equalTo("time", mesObject.attributes.time);
         const results1 = await query1.first();
+        deleteNotification()
         if (textMessage !== "" && results1 !== undefined) {
           results1.destroy().then(() => {
             if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
@@ -216,12 +216,12 @@ export default function Messages() {
               main.messages = decryptedMessages.messages
               //console.log(decryptedMessages.messages)
             }
-            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, file: mesObject.attributes.file, fileName: mesObject.attributes.fileName })
+            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, file: mesObject.attributes.file, fileName: mesObject.attributes.fileName , tag: mesObject.attributes.tag})
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
 
-            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend", mesObject.attributes.file)
+            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend", mesObject.attributes.file, mesObject.attributes.tag)
 
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
@@ -319,13 +319,14 @@ export default function Messages() {
     return window.btoa(binary);
   }
 
-  const notification = async (friendId) => {
+  const notification = async (friendId , time) => {
     const userNotification = Moralis.Object.extend("Notification");
     const query = new Moralis.Query(userNotification);
     query.equalTo("to", user.get("ethAddress"));
     query.equalTo("tag", user.get("userTag"));
     query.equalTo("type", "New message");
     const results = await query.first();
+    console.log(results);
     if (results === undefined) {
       const Notification = Moralis.Object.extend("Notification");
       const noti = new Notification();
@@ -333,7 +334,8 @@ export default function Messages() {
         from: user.get("ethAddress"),
         to: router.query.mesID,
         type: "New message",
-        tag: user.get("userTag")
+        tag: user.get("userTag"),
+        time:time
       });
 
       const notificationsACL = new Moralis.ACL();
@@ -346,15 +348,15 @@ export default function Messages() {
     }
   }
 
-  const pushNotification = async (friendId) => {
+  const pushNotification = async (friendId , time) => {
     const userNotification = Moralis.Object.extend("Tags");
     const query = new Moralis.Query(userNotification);
     query.equalTo("ethAddress", router.query.mesID);
     const results = await query.first();
     if (results.attributes.muteNotification === undefined) {
-      notification(friendId)
+      notification(friendId, time)
     } else if (results.attributes.muteNotification.includes(user.get("ethAddress")) === false) {
-      notification(friendId)
+      notification(friendId, time)
     }
   }
 
@@ -404,7 +406,7 @@ export default function Messages() {
       console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you", file)
+      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you", file , friendData.userTag)
 
       let ref;
       if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
@@ -421,7 +423,8 @@ export default function Messages() {
         publicKey: JSON.stringify(publicKeyEncrypt),
         time: time,
         file: file,
-        fileName: fileName
+        fileName: fileName,
+        tag:user.get("userTag")
       });
       const messageACL = new Moralis.ACL();
       messageACL.setWriteAccess(user.id, true);
@@ -431,7 +434,7 @@ export default function Messages() {
       messageOriginPush.setACL(messageACL)
       messageOriginPush.save();
 
-      pushNotification(results.attributes.idUser);
+      pushNotification(results.attributes.idUser , time);
 
       if (main.messages.length > 0) {
         setLocalMessages(main.messages)

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage , faFile } from "@fortawesome/free-solid-svg-icons";
+import { faImage , faFile , faCircle } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 import style from "../styles/Chat.module.css"
 import ProfilePicture from "../public/profile.jpg";
 import Image from "next/image";
 import { Moralis } from "moralis";
 
-export default function ChatMain({ name, name2, address, lastMessage, time, last, file }) {
+export default function ChatMain({ name, name2, address, lastMessage, time, last, file, notification , tag }) {
     const [friendData, setFriendData] = useState("");
+    const [newMaessage , setNewMessage] = useState(false);
     const { user } = useMoralis();
     const router = useRouter();
     const d = new Date(time);
@@ -39,6 +40,19 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
         getData();
     },[])
 
+    useEffect(()=>{
+        let nr=0;
+        for(let i=0;i<notification.length;i++){
+            if(notification[i].attributes.tag === tag){
+                nr=1;
+            }
+        }
+        if(nr === 1)
+            setNewMessage(true);
+        else
+            setNewMessage(false);
+    },[notification])
+
     return (
         <div className={style.container}>
             <div className={style.imgContainer}>
@@ -59,14 +73,19 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
             </div>
             <div className={style.infoContainer} onClick={() => router.push(`/messages/${address}`)}>
                 {(file==="message") && <div className={style.mainData}>
-                    <p>{name} {name2}</p>
-                    {last === "you" && <p><span>You:</span> {lastMessage}</p>}
-                    {last === "friend" && <p><span>{name}:</span> {lastMessage}</p>}
+                    {newMaessage === false && <p>{name} {name2}</p>}
+                    {newMaessage === true && <p>{name} {name2} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                        "fontSize":"14px"
+                    }} /></p>}
+                    {newMaessage === false && last === "you" && <p><span>You:</span> {lastMessage}</p>}
+                    {newMaessage === false && last === "friend" && <p><span>{name}:</span> {lastMessage}</p>}
+                    {newMaessage === true && last === "friend" && <p><span>New message from </span>{name}</p>}
                 </div>}
                 {(file === "application/pdf" || file === "image/jpg" || file === "image/png" || file === "text/plain" || file=== "image/jpeg") && <div className={style.mainData}>
                     <p>{name} {name2}</p>
-                    {last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faFile} /> </p>}
-                    {last === "friend" && <p><span>{name}: </span><FontAwesomeIcon icon={faFile} /></p>}
+                    {newMaessage === false && last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faFile} /> </p>}
+                    {newMaessage === false && last === "friend" && <p><span>{name}: </span><FontAwesomeIcon icon={faFile} /></p>}
+                    {newMaessage === true && last === "friend" && <p><span>New message from </span>{name}</p>}
                 </div>}
                 <div>
                     {dataToday === data && month === monthToday && year === yearToday && minutes > 9 && <p>{hours}:{minutes}</p>}
