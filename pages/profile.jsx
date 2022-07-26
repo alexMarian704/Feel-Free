@@ -16,14 +16,25 @@ import Notifications from "../components/Notifications";
 import { userStatus } from "../function/userStatus";
 import { useInternetConnection } from "../function/hooks/useInternetConnection";
 import OfflineNotification from "../components/OfflineNotification";
+import { FiSettings } from 'react-icons/fi';
+import Settings from "../components/Settings";
+
 
 export default function profile() {
   const { isAuthenticated, user, setUserData } = useMoralis();
   const fileRef = useRef();
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
-  const [fetchBalance, setFetchBalance] = useState(false);
   const internetStatus = useInternetConnection()
+  const [settings , setSettings] = useState(false);
+
+  useEffect(()=>{
+    if (isAuthenticated) {
+      getBalance(userETHaddress).then((result) => {
+        setBalance(result);
+      });
+    }
+  },[isAuthenticated])
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -62,12 +73,6 @@ export default function profile() {
 
   const userETHaddress = user.get("ethAddress");
   const selectedChain = user.get("chain");
-  if (fetchBalance === false) {
-    getBalance(userETHaddress).then((result) => {
-      setBalance(result);
-      setFetchBalance(true);
-    });
-  }
 
   return (
     <div>
@@ -81,7 +86,7 @@ export default function profile() {
         balance={true}
       />
       <div className="marginDiv"></div>
-      <div className={style.main}>
+      {settings === false && <div className={style.main}>
         <div className={style.imgProfile} onClick={userStatus}>
           {user.get("profilePhoto") !== undefined && (
             <Image
@@ -139,8 +144,10 @@ export default function profile() {
               : "MATIC"}{" "}
             Balance: {balance}
           </h2>
+          <button onClick={()=> setSettings(true)} className={style.settingButton}><FiSettings /></button>
         </div>
-      </div>
+      </div>}
+      {settings === true && <Settings setSettings={setSettings} />}
       <Notifications />
       {internetStatus === false && <OfflineNotification /> }
     </div>

@@ -79,6 +79,7 @@
     padding-left: 15px;
     border: 1px solid rgb(98, 98, 98);
     border-radius: 18px;
+    position: relative;
 }
 .address {
     white-space: nowrap;
@@ -86,4 +87,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: calc(18px + 0.2vw);
+  }
+
+  .settingButton{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    font-size: calc(27px + 0.2vw);
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #800040;
   }

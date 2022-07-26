@@ -1,0 +1,52 @@
+.main{
+    width: 90vw;
+    max-width: 800px;
+    min-width: 240px;
+    height: 80vh;
+    border-radius: 6px;
+    background-color: rgb(32 , 32 ,32);
+    margin: auto;
+    margin-top: 60px;
+    padding-left: 20px;
+    padding-top: 20px;
+    position: relative;
+}
+
+.checkDiv{
+    position: relative;
+    width: calc(175px + 10vw);
+    height: calc(30px + 1vh);
+    min-width: 200px;
+    min-height: 40px;
+    margin-bottom: 20px;
+}
+
+.closeButton{
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: calc(30px + 0.1vw);
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+.change{
+    width: calc(130px);
+    cursor: pointer;
+    height: 32px;
+    border-radius: 30px;
+    border: 2px solid #800040;
+    background-color: transparent;
+    color: white;
+    font-size: calc(17px + 0.1vw);
+    transition: all 200ms ease-in-out;
+}
+
+.change:hover{
+    background-color: white;
+    color: black;
+    border: 2px solid white;
+}
