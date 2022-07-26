@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
-import { Moralis } from "moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import SHA256 from 'crypto-js/sha256';
