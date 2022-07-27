@@ -5,6 +5,7 @@ import style from "../styles/Settings.module.css"
 import SHA256 from 'crypto-js/sha256';
 import Hex from "crypto-js/enc-hex"
 import { useMoralis } from "react-moralis";
+import { Moralis } from "moralis";
 
 const Settings = ({ setSettings }) => {
     const { setUserData, user } = useMoralis();
@@ -15,6 +16,8 @@ const Settings = ({ setSettings }) => {
     const [password, setPassword] = useState("");
     const [confrimPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const [errorTag, setErrorTag] = useState("");
+    const [newTag, setNewTag] = useState("")
 
     const chnagePassword = () => {
         const hashDigest = SHA256(password + user.id);
@@ -23,11 +26,11 @@ const Settings = ({ setSettings }) => {
         const oldPasswordHash = Hex.stringify(oldHash);
 
         if (oldPasswordHash === user.get("passwordHash")) {
-            if (password === confrimPassword) {
+            if (password === confrimPassword && password.length >= 8) {
                 setUserData({
                     passwordHash: passwordHash
                 })
-            } else if (password < 8) {
+            } else if (password.length < 8) {
                 setError("The password should be at least 8 characters")
             }
             else {
@@ -39,6 +42,34 @@ const Settings = ({ setSettings }) => {
         setOldPassword("")
         setPassword("")
         setConfirmPassword("")
+    }
+
+    const changeTag = async () => {
+        const Tags = Moralis.Object.extend("Tags");
+        const query = new Moralis.Query(Tags);
+        query.equalTo("userTag", newTag);
+        const results = await query.first();
+
+        const userTag = Moralis.Object.extend("Tags");
+        const queryUser = new Moralis.Query(userTag);
+        queryUser.equalTo("ethAddress", user.get("ethAddress"));
+        const resultTag = await queryUser.first();
+
+        if (results === undefined && newTag.length > 3) {
+            resultTag.set({
+                userTag: newTag
+            })
+            resultTag.save();
+            setUserData({
+                userTag:newTag
+            })
+            setErrorTag("");
+            setNewTag("")
+        } else if (newTag.length <= 3) {
+            setErrorTag("Tag too short")
+        } else if (results !== undefined) {
+            setErrorTag("Tag already in use");
+        }
     }
 
     return (
@@ -98,7 +129,23 @@ const Settings = ({ setSettings }) => {
                     </div>
                 </section>
                 <section>
-
+                    <h2 style={{
+                        "width": "100%",
+                        "marginBottom": "10px",
+                        "textAlign": "center",
+                        "marginTop": "60px"
+                    }}>Change tag</h2>
+                    <div className={style.inputContainer}>
+                        <label>New tag</label>
+                        <br />
+                        <div className={style.checkDiv}>
+                            <input type="text" value={newTag} onChange={(e) => setNewTag(e.target.value)} className="setUpInput" />
+                        </div>
+                    </div>
+                    <div className={style.changeDiv}>
+                        <button className={style.change} onClick={changeTag}>Change tag</button>
+                    </div>
+                    <p>{errorTag}</p>
                 </section>
                 <section>
 

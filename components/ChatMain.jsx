@@ -73,19 +73,19 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
             </div>
             <div className={style.infoContainer} onClick={() => router.push(`/messages/${address}`)}>
                 {(file==="message") && <div className={style.mainData}>
-                    {newMaessage === false && <p>{name} {name2}</p>}
-                    {newMaessage === true && <p>{name} {name2} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                    {newMaessage === false && <p>{friendData.name} {friendData.name2}</p>}
+                    {newMaessage === true && <p>{friendData.name} {friendData.name2} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize":"14px"
                     }} /></p>}
                     {newMaessage === false && last === "you" && <p><span>You:</span> {lastMessage}</p>}
-                    {newMaessage === false && last === "friend" && <p><span>{name}:</span> {lastMessage}</p>}
-                    {newMaessage === true && last === "friend" && <p><span>New message from </span>{name}</p>}
+                    {newMaessage === false && last === "friend" && <p><span>{friendData.name}:</span> {lastMessage}</p>}
+                    {newMaessage === true && last === "friend" && <p><span>New message from </span>{friendData.name}</p>}
                 </div>}
                 {(file === "application/pdf" || file === "image/jpg" || file === "image/png" || file === "text/plain" || file=== "image/jpeg") && <div className={style.mainData}>
-                    <p>{name} {name2}</p>
+                    <p>{friendData.name} {friendData.name2}</p>
                     {newMaessage === false && last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faFile} /> </p>}
-                    {newMaessage === false && last === "friend" && <p><span>{name}: </span><FontAwesomeIcon icon={faFile} /></p>}
-                    {newMaessage === true && last === "friend" && <p><span>New message from </span>{name}</p>}
+                    {newMaessage === false && last === "friend" && <p><span>{friendData.name}: </span><FontAwesomeIcon icon={faFile} /></p>}
+                    {newMaessage === true && last === "friend" && <p><span>New message from </span>{friendData.name}</p>}
                 </div>}
                 <div>
                     {dataToday === data && month === monthToday && year === yearToday && minutes > 9 && <p>{hours}:{minutes}</p>}
