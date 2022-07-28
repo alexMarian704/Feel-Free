@@ -43,6 +43,8 @@ export default function Messages() {
   const [myBlock, setMyBlock] = useState(false)
   const [openMedia, setOpenMedia] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [reply , setReply] = useState("");
+  const [openReply, setOpenReply] = useState(-1);
   const onlineStatus = useOnlineFriend(router.query.mesID);
   const internetStatus = useInternetConnection()
 
@@ -513,7 +515,7 @@ export default function Messages() {
         {localMessages.length > 0 && localMessages.map((message, i) => {
           if (i >= localMessages.length - render - 1)
             return (
-              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} />
+              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} />
             )
         })}
       </div>

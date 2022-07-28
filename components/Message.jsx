@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
-import { faCheckDouble } from "@fortawesome/free-solid-svg-icons";
+import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage }) {
+export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply }) {
   const d = new Date(message.time);
   let time = d.getHours();
   let minutes = d.getMinutes();
@@ -57,6 +57,15 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             {minutes < 10 && <p className={style.myMessageTime}>{`${hours}:0${minutes}`}</p>}
             {number > total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>}
             {number <= total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} color="#00e600" /></p>}
+            <button className={style.messageOptions} onClick={() => {
+              if (openReply !== number)
+                setOpenReply(number)
+              else
+                setOpenReply(-1)
+            }}><FontAwesomeIcon icon={faCaretDown} /></button>
+            {openReply === number && <div className={style.messageOptionsContainer}>
+              <button>Reply</button>
+            </div>}
           </div>
         </div>
       );
@@ -89,7 +98,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
     else if (message.file === "text/plain")
       return (
         <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
-          <a  className={style.painTextFileFriend}  href={message.message} download><span>{message.fileName}</span></a>
+          <a className={style.painTextFileFriend} href={message.message} download><span>{message.fileName}</span></a>
         </div>
       )
     else if (message.file === "application/pdf")
@@ -108,6 +117,15 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             <p className={style.tailF}></p>
             {minutes >= 10 && <p className={style.messageTime}>{`${hours}:${minutes}`}</p>}
             {minutes < 10 && <p className={style.messageTime}>{`${hours}:0${minutes}`}</p>}
+            <button className={style.messageOptions} onClick={() => {
+              if (openReply !== number)
+                setOpenReply(number)
+              else
+                setOpenReply(-1)
+            }}><FontAwesomeIcon icon={faCaretDown} /></button>
+            {openReply === number && <div className={style.messageOptionsContainer}>
+              <button>Reply</button>
+            </div>}
           </div>
         </div>
       )

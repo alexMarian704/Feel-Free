@@ -188,6 +188,33 @@
     padding-bottom: 19px;
 }
 
+.messageOptions{
+    position: absolute;
+    right: 3px;
+    height: 20px;
+    width: 20px;
+    top: 3px;
+    border-radius: 50%;
+    background-color: rgb(34, 34, 34);
+    border: none;
+    outline: none;
+    color: rgb(184, 184, 184);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    display: none;
+}
+
+.myMessageContainer:hover .messageOptions{
+    display: inline-block;
+}
+
+.friendContainer:hover .messageOptions{
+    display: inline-block;
+}
+
 .myText,
 .friendText {
     font-size: 22px;
@@ -484,6 +511,7 @@
     justify-content: center;
     padding-left: 5px;
     padding-top: 5px;
+    overflow-x: hidden;
 }
 
 .mediaContent h4 {
@@ -675,4 +703,32 @@
 
 .infoContainer p{
     color: white;
+}
+
+.messageOptionsContainer{
+    position: absolute;
+    top: 26px;
+    background-color: red;
+    width: 120px;
+    right: 6px;
+    background-color: rgb(31, 31, 31);
+    z-index: 399;
+    box-shadow: 0px 0px 1px 1px rgba(22, 22, 22, 0.28);
+    border-radius: 6px;
+}
+
+.messageOptionsContainer button{
+    width: 100%;
+    height: 50px;
+    background-color: transparent;
+    color: white;
+    font-size: calc(16px + 0.1vw);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.messageOptionsContainer button:hover{
+    background-color: #0a0a0a;
 }
