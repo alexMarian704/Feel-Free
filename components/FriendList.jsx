@@ -84,7 +84,7 @@ export default function FriendList() {
                                 )}
                             </div>
                             <div className={style.friendData}>
-                                <p onClick={() => goToProfile(friend.ethAddress)}>{friend.name}</p>
+                                <p onClick={() => goToProfile(friend.ethAddress)}>{friend.username}</p>
                                 <p onClick={() => goToProfile(friend.ethAddress)}>@{friend.userTag}</p>
                             </div>
                             <div className={style.buttonContainer}>

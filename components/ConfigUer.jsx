@@ -99,7 +99,8 @@ export default function ConfigUser({ setInfo }) {
           name: char[0].toLowerCase(),
           name2: char[1].toLowerCase() ? char[1].toLowerCase() : "",
           idUser: user.id,
-          formatPublicKey:formatPublicKey
+          formatPublicKey:formatPublicKey,
+          username: username,
         });
 
         const tagACL = new Moralis.ACL();
@@ -115,7 +116,8 @@ export default function ConfigUser({ setInfo }) {
           name: char[0].toLowerCase(),
           name2: "",
           idUser: user.id,
-          formatPublicKey:formatPublicKey
+          formatPublicKey:formatPublicKey,
+          username: username,
         });
 
         const tagACL = new Moralis.ACL();

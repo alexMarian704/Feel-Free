@@ -208,7 +208,7 @@ export default function UserID() {
                   : "MATIC"} <FontAwesomeIcon icon={faArrowRight} /></button>
             </div>
             <div className={style.mainData}>
-              <p className={style.dataText}>Username: {userData.name} {userData.name2}</p>
+              <p className={style.dataText}>Username: {userData.username}</p>
               <p className={style.dataText}>Tag: @{userData.userTag}</p>
               <p className={style.dataText}>Adress: {router.query.userID}</p>
             </div>

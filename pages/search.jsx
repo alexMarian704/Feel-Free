@@ -128,7 +128,7 @@ export default function search() {
               )}
             </div>
             <div className={style.nameCon}>
-              <p>Username: {tag.searchName}</p>
+              <p>Username: {tag.username}</p>
               <p>Tag: @{tag.userTag}</p>
             </div>
           </div>

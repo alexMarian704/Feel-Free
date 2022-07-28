@@ -18,6 +18,7 @@ const Settings = ({ setSettings }) => {
     const [error, setError] = useState("");
     const [errorTag, setErrorTag] = useState("");
     const [newTag, setNewTag] = useState("")
+    const [name, setName] = useState("");
 
     const chnagePassword = () => {
         const hashDigest = SHA256(password + user.id);
@@ -57,11 +58,11 @@ const Settings = ({ setSettings }) => {
 
         if (results === undefined && newTag.length > 3) {
             resultTag.set({
-                userTag: newTag
+                userTag: newTag.toLowerCase().replace(/ /g, "")
             })
             resultTag.save();
             setUserData({
-                userTag:newTag
+                userTag: newTag.toLowerCase().replace(/ /g, "")
             })
             setErrorTag("");
             setNewTag("")
@@ -69,6 +70,31 @@ const Settings = ({ setSettings }) => {
             setErrorTag("Tag too short")
         } else if (results !== undefined) {
             setErrorTag("Tag already in use");
+        }
+    }
+
+    const chnageName = async () => {
+        const userTag = Moralis.Object.extend("Tags");
+        const queryUser = new Moralis.Query(userTag);
+        queryUser.equalTo("ethAddress", user.get("ethAddress"));
+        const resultTag = await queryUser.first();
+
+        let splitName = name.split(" ")
+        if (name !== "") {
+            setUserData({
+                username: name,
+                searchName: name.toLowerCase(),
+                name: splitName[0].toLowerCase(),
+                name2: splitName[1].toLowerCase() ? splitName[1].toLowerCase() : "",
+            })
+            resultTag.set({
+                username: name,
+                searchName: name.toLowerCase(),
+                name: splitName[0].toLowerCase(),
+                name2: splitName[1].toLowerCase() ? splitName[1].toLowerCase() : "",
+            })
+            resultTag.save();
+            setName("");
         }
     }
 
@@ -148,7 +174,22 @@ const Settings = ({ setSettings }) => {
                     <p>{errorTag}</p>
                 </section>
                 <section>
-
+                    <h2 style={{
+                        "width": "100%",
+                        "marginBottom": "10px",
+                        "textAlign": "center",
+                        "marginTop": "60px"
+                    }}>Change name</h2>
+                    <div className={style.inputContainer}>
+                        <label>Name</label>
+                        <br />
+                        <div className={style.checkDiv}>
+                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="setUpInput" />
+                        </div>
+                    </div>
+                    <div className={style.changeDiv}>
+                        <button className={style.change} onClick={chnageName}>Change name</button>
+                    </div>
                 </section>
             </div>
         </div>

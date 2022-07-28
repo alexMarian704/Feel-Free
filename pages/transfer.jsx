@@ -44,6 +44,14 @@ export default function Transfer({ tag }) {
     type: "native",
   });
 
+  useEffect(()=>{
+    if (isAuthenticated) {
+      getBalance(userETHaddress).then((result) => {
+        setBalance(result);
+      });
+    }
+  },[isAuthenticated])
+
   useEffect(() => {
     setAmount("");
     setTo("");
@@ -69,12 +77,6 @@ export default function Transfer({ tag }) {
   if (user.get("reCheck") === 1) return <CheckPassword />
 
   const userETHaddress = user.get("ethAddress");
-  if (fetchBalance === false) {
-    getBalance(userETHaddress).then((result) => {
-      setBalance(result);
-      setFetchBalance(true);
-    });
-  }
 
   const CopyFunction = () => {
     navigator.clipboard.writeText(userETHaddress);
