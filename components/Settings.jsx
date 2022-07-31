@@ -85,13 +85,13 @@ const Settings = ({ setSettings }) => {
                 username: name,
                 searchName: name.toLowerCase(),
                 name: splitName[0].toLowerCase(),
-                name2: splitName[1].toLowerCase() ? splitName[1].toLowerCase() : "",
+                name2: splitName[1] ? splitName[1].toLowerCase() : "",
             })
             resultTag.set({
                 username: name,
                 searchName: name.toLowerCase(),
                 name: splitName[0].toLowerCase(),
-                name2: splitName[1].toLowerCase() ? splitName[1].toLowerCase() : "",
+                name2: splitName[1] ? splitName[1].toLowerCase() : "",
             })
             resultTag.save();
             setName("");

@@ -72,7 +72,7 @@ export default function UserID() {
       getFriends();
       getRequest();
     }
-  }, [isInitialized, router.query.userID])
+  }, [isInitialized, router.query.userID , isAuthenticated])
 
   let selectedChain
   if (user)

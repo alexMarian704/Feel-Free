@@ -77,9 +77,9 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     {newMaessage === true && <p>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize":"14px"
                     }} /></p>}
-                    {newMaessage === false && last === "you" && <p><span>You:</span> {lastMessage}</p>}
-                    {newMaessage === false && last === "friend" && <p><span>{friendData.username}:</span> {lastMessage}</p>}
-                    {newMaessage === true && last === "friend" && <p><span>New message from </span>{friendData.name}</p>}
+                    {newMaessage === false && last === "you" && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
+                    {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{friendData.username}:</span> {lastMessage}</p>}
+                    {newMaessage === true && last === "friend" && <p className={style.lastMessage}><span>New message from </span>{friendData.name}</p>}
                 </div>}
                 {(file === "application/pdf" || file === "image/jpg" || file === "image/png" || file === "text/plain" || file=== "image/jpeg") && <div className={style.mainData}>
                     <p>{friendData.name} {friendData.name2}</p>

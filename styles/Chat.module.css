@@ -40,10 +40,18 @@
 
 .mainData span{
     color: rgb(150, 150, 150);
+    margin-right: 6px;
 }
 
 .infoContainer p{
     font-size: calc(16px + 0.1vw);
+}
+
+.lastMessage{
+    width: 60vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
 }
 
 .chatsContainer{

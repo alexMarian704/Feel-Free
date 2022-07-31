@@ -324,7 +324,7 @@ export default function Messages() {
   const notification = async (friendId , time) => {
     const userNotification = Moralis.Object.extend("Notification");
     const query = new Moralis.Query(userNotification);
-    query.equalTo("to", user.get("ethAddress"));
+    query.equalTo("to", router.query.mesID);
     query.equalTo("tag", user.get("userTag"));
     query.equalTo("type", "New message");
     const results = await query.first();
