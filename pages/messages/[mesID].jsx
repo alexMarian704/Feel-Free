@@ -43,7 +43,7 @@ export default function Messages() {
   const [myBlock, setMyBlock] = useState(false)
   const [openMedia, setOpenMedia] = useState(false);
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [reply , setReply] = useState("");
+  const [reply, setReply] = useState("");
   const [openReply, setOpenReply] = useState(-1);
   const onlineStatus = useOnlineFriend(router.query.mesID);
   const internetStatus = useInternetConnection()
@@ -137,13 +137,23 @@ export default function Messages() {
             bufferText
           )
           const textMessage = dec.decode(decryptedText)
+
+          const bufferReply = _base64ToArrayBuffer(results[i].attributes.reply)
+          const decryptedReply = await window.crypto.subtle.decrypt({
+            name: "RSA-OAEP"
+          },
+            originPrivateKey,
+            bufferReply
+          )
+          const textReply = dec.decode(decryptedReply)
+
           if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
             const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
             const decryptedMessages = decrypt(encryptedMessages, user.id);
             main.messages = decryptedMessages.messages
             //console.log(decryptedMessages.messages)
           }
-          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName , tag: results[i].attributes.tag})
+          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName, tag: results[i].attributes.tag, reply:JSON.parse(textReply) })
           const encryptedMessagesList = encrypt(main, user.id)
           localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
         }
@@ -204,7 +214,16 @@ export default function Messages() {
           bufferText
         )
         const textMessage = dec.decode(decryptedText)
-        
+
+        const bufferReply = _base64ToArrayBuffer(mesObject.attributes.reply)
+        const decryptedReply = await window.crypto.subtle.decrypt({
+          name: "RSA-OAEP"
+        },
+          originPrivateKey,
+          bufferReply
+        )
+        const textReply = dec.decode(decryptedReply)
+
         const deleteMessage = Moralis.Object.extend(ref);
         const query1 = new Moralis.Query(deleteMessage);
         query1.equalTo("time", mesObject.attributes.time);
@@ -218,7 +237,8 @@ export default function Messages() {
               main.messages = decryptedMessages.messages
               //console.log(decryptedMessages.messages)
             }
-            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, file: mesObject.attributes.file, fileName: mesObject.attributes.fileName , tag: mesObject.attributes.tag})
+            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, file: mesObject.attributes.file, fileName: mesObject.attributes.fileName, tag: mesObject.attributes.tag, reply: JSON.parse(textReply) })
+
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
             let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
@@ -272,6 +292,12 @@ export default function Messages() {
     }
   }
 
+  useEffect(()=>{
+    if(isAuthenticated && messageRef.current !== undefined){
+      messageRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  },[reply])
+
   useEffect(() => {
     if (messageRef.current !== undefined) {
       messageRef.current.scrollIntoView({ behavior: 'instant' })
@@ -321,7 +347,7 @@ export default function Messages() {
     return window.btoa(binary);
   }
 
-  const notification = async (friendId , time) => {
+  const notification = async (friendId, time) => {
     const userNotification = Moralis.Object.extend("Notification");
     const query = new Moralis.Query(userNotification);
     query.equalTo("to", router.query.mesID);
@@ -337,7 +363,7 @@ export default function Messages() {
         to: router.query.mesID,
         type: "New message",
         tag: user.get("userTag"),
-        time:time
+        time: time
       });
 
       const notificationsACL = new Moralis.ACL();
@@ -350,7 +376,7 @@ export default function Messages() {
     }
   }
 
-  const pushNotification = async (friendId , time) => {
+  const pushNotification = async (friendId, time) => {
     const userNotification = Moralis.Object.extend("Tags");
     const query = new Moralis.Query(userNotification);
     query.equalTo("ethAddress", router.query.mesID);
@@ -379,6 +405,7 @@ export default function Messages() {
 
       const enc = new TextEncoder();
       const encodedMessage = enc.encode(message);
+      const encodeReply = enc.encode(JSON.stringify(reply));
       const originPublicKey = await window.crypto.subtle.importKey(
         "jwk",
         publicKeyEncrypt,
@@ -397,6 +424,14 @@ export default function Messages() {
         originPublicKey,
         encodedMessage
       )
+      const encryptedReply = await window.crypto.subtle.encrypt({
+        name: "RSA-OAEP"
+      },
+        originPublicKey,
+        encodeReply
+      )
+
+      const base64Reply = _arrayBufferToBase64(encryptedReply)
       const base64Text = _arrayBufferToBase64(encryptedText)
 
       if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
@@ -404,11 +439,11 @@ export default function Messages() {
         const decryptedMessages = decrypt(encryptedMessages, user.id);
         main.messages = decryptedMessages.messages
       }
-      main.messages.push({ type: 1, message: message, time: time, seen: false, file: file, fileName: fileName })
+      main.messages.push({ type: 1, message: message, time: time, seen: false, file: file, fileName: fileName, reply: reply })
       console.log(main.messages)
       const encryptedMessagesList = encrypt(main, user.id)
       localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you", file , friendData.userTag)
+      messageOrder(user.get("ethAddress"), router.query.mesID, message, friendData.name, friendData.name2, time, "you", file, friendData.userTag)
 
       let ref;
       if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
@@ -426,7 +461,8 @@ export default function Messages() {
         time: time,
         file: file,
         fileName: fileName,
-        tag:user.get("userTag")
+        tag: user.get("userTag"),
+        reply: base64Reply
       });
       const messageACL = new Moralis.ACL();
       messageACL.setWriteAccess(user.id, true);
@@ -436,7 +472,7 @@ export default function Messages() {
       messageOriginPush.setACL(messageACL)
       messageOriginPush.save();
 
-      pushNotification(results.attributes.idUser , time);
+      pushNotification(results.attributes.idUser, time);
 
       if (main.messages.length > 0) {
         setLocalMessages(main.messages)
@@ -468,8 +504,6 @@ export default function Messages() {
   let minutes = _d.getMinutes();
   let hours = _d.getHours();
   const lastConnected = minutes <= 9 ? `last seen: ${data}.${month}.${year}, ${hours}:0${minutes}` : `last seen: ${data}.${month}.${year}, ${hours}:${minutes}`;
-  
-  console.log(reply)
 
   return (
     <div className={style.body}>
@@ -496,8 +530,8 @@ export default function Messages() {
             {friendData !== "" && <Link href={`/users/${router.query.mesID}`}>
               <h2>{friendData.username}</h2>
             </Link>}
-            {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time)/1000/60 <= 1 && <p>connected</p>}
-            {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time)/1000/60 > 1 && <p>{lastConnected}</p>}
+            {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 <= 1 && <p>connected</p>}
+            {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 > 1 && <p>{lastConnected}</p>}
           </div>
         </div>
         <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} setOpenConfirm={setOpenConfirm} />
@@ -510,7 +544,7 @@ export default function Messages() {
 
       {openConfirm === true && <ConfirmDelete userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} setOpenConfirm={setOpenConfirm} />}
 
-      <div className={style.messageContainer} onClick={() => setOpen(false)}>
+      <div className={style.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height:"calc(97.2vh - 125px)" } : {height:"calc(95.4vh - 162px)" }}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>
         </div>}
@@ -524,15 +558,16 @@ export default function Messages() {
       <div>
         {block === false && myBlock === false && reply && <div className={style.replyContainer}>
           <p>{reply.message}</p>
-          <button onClick={()=> setReply("")}>x</button>
+          <button onClick={() => setReply("")}>x</button>
         </div>}
         {block === false && myBlock === false && <div className={style.sendContainer} onClick={() => setOpen(false)}>
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
             if (e.key === "Enter") {
               pushMessage("message", "message", message);
+              setReply("");
             }
           }} onClick={userStatus} />
-          <button onClick={() => pushMessage("message", "message", message)}><FontAwesomeIcon icon={faPaperPlane} /></button>
+          <button onClick={() => {pushMessage("message", "message", message), setReply("")}}><FontAwesomeIcon icon={faPaperPlane} /></button>
           <button onClick={() => {
             fileRef.current.click();
           }}><FontAwesomeIcon icon={faPaperclip} /></button>
@@ -555,7 +590,7 @@ export default function Messages() {
             <h4>You have blocked {friendData.name} {friendData.name2}</h4>
           </div>}
       </div>
-      {internetStatus === false && <OfflineNotification /> }
+      {internetStatus === false && <OfflineNotification />}
     </div>
   );
 }

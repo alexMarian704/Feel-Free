@@ -50,6 +50,7 @@
     overflow: hidden;
     color: rgb(180, 179, 179);
     border-left: 4px solid #800040;
+    padding-right: 10px;
 }
 
 .sendContainer h4 {
