@@ -328,7 +328,7 @@ export default function Messages() {
     query.equalTo("tag", user.get("userTag"));
     query.equalTo("type", "New message");
     const results = await query.first();
-    console.log(results);
+    // console.log(results);
     if (results === undefined) {
       const Notification = Moralis.Object.extend("Notification");
       const noti = new Notification();
@@ -468,6 +468,8 @@ export default function Messages() {
   let minutes = _d.getMinutes();
   let hours = _d.getHours();
   const lastConnected = minutes <= 9 ? `last seen: ${data}.${month}.${year}, ${hours}:0${minutes}` : `last seen: ${data}.${month}.${year}, ${hours}:${minutes}`;
+  
+  console.log(reply)
 
   return (
     <div className={style.body}>
@@ -520,6 +522,10 @@ export default function Messages() {
         })}
       </div>
       <div>
+        {block === false && myBlock === false && reply && <div className={style.replyContainer}>
+          <p>{reply.message}</p>
+          <button onClick={()=> setReply("")}>x</button>
+        </div>}
         {block === false && myBlock === false && <div className={style.sendContainer} onClick={() => setOpen(false)}>
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
             if (e.key === "Enter") {

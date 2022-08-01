@@ -64,7 +64,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainer}>
-              <button>Reply</button>
+              <button onClick={()=> {setReply({message:message.message, time:message.time}), setOpenReply(-1)}}>Reply</button>
             </div>}
           </div>
         </div>
@@ -123,8 +123,8 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
               else
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
-            {openReply === number && <div className={style.messageOptionsContainer}>
-              <button>Reply</button>
+            {openReply === number && <div className={style.messageOptionsContainerFriend}>
+              <button onClick={()=>{setReply({message:message.message, time:message.time}), setOpenReply(-1)}}>Reply</button>
             </div>}
           </div>
         </div>
