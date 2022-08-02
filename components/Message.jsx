@@ -51,6 +51,9 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
       return (
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
           <div className={style.myMessageContainer}>
+            {message.reply && <div className={style.replyMessage}>
+              <p>{message.reply.message}</p>
+            </div>}
             <p className={style.myText}>{message.message}</p>
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime}>{`${hours}:${minutes}`}</p>}
@@ -64,7 +67,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainer}>
-              <button onClick={()=> {setReply({message:message.message, time:message.time}), setOpenReply(-1)}}>Reply</button>
+              <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
             </div>}
           </div>
         </div>
@@ -124,7 +127,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
-              <button onClick={()=>{setReply({message:message.message, time:message.time}), setOpenReply(-1)}}>Reply</button>
+              <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
             </div>}
           </div>
         </div>
