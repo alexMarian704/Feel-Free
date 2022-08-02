@@ -1,39 +1,61 @@
-.main{
+.main {
     width: 100%;
     height: 100%;
     max-width: 1600px;
     border-radius: 6px;
     margin: auto;
-    margin-top: 20px;
+    margin-top: 10px;
     position: relative;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 60px 10px 20px 10px;
+    padding: 30px 10px 50px 10px;
 }
 
-.main section{
-    box-shadow: 0px 0px 2px 2px rgba(177, 177, 177, 0.18);
-    border-radius: 8px;
-    width: calc(285px + 10vw);
-    height: calc(300px + 10vh);
-    padding-top: calc(25px + 1vh);
-    margin-top: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
+.main section {
+    width: 100%;
+    min-width: 250px;
+    max-width: 1000px;
+    margin: auto;
+    box-shadow: 0px 15px 10px -15px rgba(177, 177, 177, 0.18);
+    border-radius: 2px;
+    border-bottom: 2px solid rgb(125, 125, 125);
+    padding-bottom: 10px;
+    padding-top: calc(0.5vh);
+
 }
 
-.checkDiv{
+.sectionTitle {
+    width: 100%;
+    min-width: 250px;
+    max-width: 1000px;
+    margin: auto;
+    font-size: calc(27px + 0.5vw);
+    border-bottom: 3px solid #800040;
+    margin-top: 30px;
+}
+
+.checkDiv {
     position: relative;
-    width: calc(175px + 10vw);
+    width: calc(245px + 10vw);
     height: calc(30px + 1vh);
-    min-width: 200px;
     min-height: 40px;
     margin-bottom: 20px;
 }
 
-.closeButton{
+.category {
+    width: 80%;
+    min-width: 250px;
+    max-width: 1000px;
+    margin: auto;
+    border-left: 3px solid #800040;
+    padding-left: 10px;
+}
+
+@media only screen and (max-width: 560px) {
+    .category {
+        width: 95%;
+    }
+}
+
+.closeButton {
     position: absolute;
     right: 20px;
     top: 10px;
@@ -52,30 +74,61 @@
     padding-bottom: 2px;
 }
 
-.change{
+.change {
     width: calc(130px + 0.1vw);
     cursor: pointer;
     height: calc(32px + 0.2vh);
-    border-radius: 30px;
+    border-radius: 6px;
     border: 2px solid #800040;
-    background-color: transparent;
+    background-color: #800040;
     color: white;
     font-size: calc(17px + 0.1vw);
     transition: all 200ms ease-in-out;
 }
 
-.changeDiv{
+.changeDiv {
     width: calc(130px + 0.1vw);
-    margin: auto;
 }
 
-.change:hover{
+.change:hover {
     background-color: white;
     color: black;
     border: 2px solid white;
 }
 
-.inputContainer{
-    width: calc(175px + 10vw);
-    margin: auto;
+.inputContainer input {
+    width: calc(245px + 10vw);
+    height: calc(25px + 1vh);
+    min-height: 34px;
+    border-radius: 5px;
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+    transition: all 300ms ease-in-out;
+    cursor: pointer;
+    font-size: 19px;
+    text-align: start;
+    outline: none;
+    margin-bottom: 20px;
+    box-shadow: 0px 0px 6px 2px rgba(88, 87, 87, 0.24);
+    padding: 0px 45px 3px 10px;
+}
+
+.inputContainer input:focus {
+    border: 2px solid #800040;
+}
+
+.inputContainer button {
+    width: 27px;
+    height: 27px;
+    position: absolute;
+    right: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: calc(0.45vh);
+    border-radius: 30px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 0px 5px 2px rgba(77, 77, 77, 0.22);
 }

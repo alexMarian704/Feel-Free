@@ -102,95 +102,101 @@ const Settings = ({ setSettings }) => {
         <div>
             <div className={style.main}>
                 <button className={style.closeButton} onClick={() => setSettings(false)}><FontAwesomeIcon icon={faTimes} /></button>
-                <section>
-                    <h2 style={{
-                        "width": "100%",
-                        "marginBottom": "10px",
-                        "textAlign": "center"
-                    }}>Change password</h2>
-                    <div className={style.inputContainer}>
-                        <label>Old password</label>
-                        <br />
-                        <div className={style.checkDiv}>
-                            <input type={see === false ? "password" : "text"} value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} className="setUpInput" />
-                            <button className="checkBut" onClick={() => setSee(!see)}>
-                                {see === false ? (
-                                    <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
-                                ) : (
-                                    <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
-                                )}
-                            </button>
+                <div className={style.category}>
+                    <h2 className={style.sectionTitle} >Security</h2>
+                    <section>
+                        <h2 style={{
+                            "width": "100%",
+                            "marginBottom": "10px",
+                            "textAlign": "left",
+                        }}>Change password</h2>
+                        <div className={style.inputContainer}>
+                            <label>Old password</label>
+                            <br />
+                            <div className={style.checkDiv}>
+                                <input type={see === false ? "password" : "text"} value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+                                <button onClick={() => setSee(!see)}>
+                                    {see === false ? (
+                                        <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
+                                    ) : (
+                                        <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
+                                    )}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div className={style.inputContainer}>
-                        <label>New password</label>
-                        <br />
-                        <div className={style.checkDiv}>
-                            <input type={see1 === false ? "password" : "text"} value={password} onChange={(e) => setPassword(e.target.value)} className="setUpInput" />
-                            <button className="checkBut" onClick={() => setSee1(!see1)}>
-                                {see1 === false ? (
-                                    <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
-                                ) : (
-                                    <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
-                                )}
-                            </button>
+                        <div className={style.inputContainer}>
+                            <label>New password</label>
+                            <br />
+                            <div className={style.checkDiv}>
+                                <input type={see1 === false ? "password" : "text"} value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <button onClick={() => setSee1(!see1)}>
+                                    {see1 === false ? (
+                                        <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
+                                    ) : (
+                                        <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
+                                    )}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div className={style.inputContainer}>
-                        <label>Confirm password</label>
-                        <br />
-                        <div className={style.checkDiv}>
-                            <input type={see2 === false ? "password" : "text"} value={confrimPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="setUpInput" />
-                            <button className="checkBut" onClick={() => setSee2(!see2)}>
-                                {see2 === false ? (
-                                    <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
-                                ) : (
-                                    <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
-                                )}
-                            </button>
+                        <div className={style.inputContainer}>
+                            <label>Confirm password</label>
+                            <br />
+                            <div className={style.checkDiv}>
+                                <input type={see2 === false ? "password" : "text"} value={confrimPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                                <button onClick={() => setSee2(!see2)}>
+                                    {see2 === false ? (
+                                        <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
+                                    ) : (
+                                        <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
+                                    )}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div className={style.changeDiv}>
-                        <button className={style.change} onClick={chnagePassword}>Change</button>
-                    </div>
-                </section>
-                <section>
-                    <h2 style={{
-                        "width": "100%",
-                        "marginBottom": "10px",
-                        "textAlign": "center",
-                        "marginTop": "60px"
-                    }}>Change tag</h2>
-                    <div className={style.inputContainer}>
-                        <label>New tag</label>
-                        <br />
-                        <div className={style.checkDiv}>
-                            <input type="text" value={newTag} onChange={(e) => setNewTag(e.target.value)} className="setUpInput" />
+                        <div className={style.changeDiv}>
+                            <button className={style.change} onClick={chnagePassword}>Change</button>
                         </div>
-                    </div>
-                    <div className={style.changeDiv}>
-                        <button className={style.change} onClick={changeTag}>Change tag</button>
-                    </div>
-                    <p>{errorTag}</p>
-                </section>
-                <section>
-                    <h2 style={{
-                        "width": "100%",
-                        "marginBottom": "10px",
-                        "textAlign": "center",
-                        "marginTop": "60px"
-                    }}>Change name</h2>
-                    <div className={style.inputContainer}>
-                        <label>Name</label>
-                        <br />
-                        <div className={style.checkDiv}>
-                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="setUpInput" />
+                    </section>
+                </div>
+                <div className={style.category}>
+                    <h2 className={style.sectionTitle}>Public profile</h2>
+                    <section>
+                        <h2 style={{
+                            "width": "100%",
+                            "marginBottom": "10px",
+                            "textAlign": "left",
+                            "marginTop": "10px"
+                        }}>Change tag</h2>
+                        <div className={style.inputContainer}>
+                            <label>New tag</label>
+                            <br />
+                            <div className={style.checkDiv}>
+                                <input type="text" value={newTag} onChange={(e) => setNewTag(e.target.value)} />
+                            </div>
                         </div>
-                    </div>
-                    <div className={style.changeDiv}>
-                        <button className={style.change} onClick={chnageName}>Change name</button>
-                    </div>
-                </section>
+                        <div className={style.changeDiv}>
+                            <button className={style.change} onClick={changeTag}>Change tag</button>
+                        </div>
+                        <p>{errorTag}</p>
+                    </section>
+                    <section>
+                        <h2 style={{
+                            "width": "100%",
+                            "marginBottom": "10px",
+                            "textAlign": "left",
+                            "marginTop": "10px"
+                        }}>Change name</h2>
+                        <div className={style.inputContainer}>
+                            <label>Name</label>
+                            <br />
+                            <div className={style.checkDiv}>
+                                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                            </div>
+                        </div>
+                        <div className={style.changeDiv}>
+                            <button className={style.change} onClick={chnageName}>Change name</button>
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
     )

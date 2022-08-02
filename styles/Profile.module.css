@@ -81,6 +81,13 @@
     border-radius: 18px;
     position: relative;
 }
+
+@media only screen and (max-width: 560px) {
+  .dataUser{
+      width: 95%;
+  }
+}
+
 .address {
     white-space: nowrap;
     width: 95%;

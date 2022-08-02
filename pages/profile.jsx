@@ -148,7 +148,7 @@ export default function profile() {
         </div>
       </div>}
       {settings === true && <Settings setSettings={setSettings} />}
-      <Notifications />
+      {settings === false &&<Notifications />}
       {internetStatus === false && <OfflineNotification /> }
     </div>
   );
