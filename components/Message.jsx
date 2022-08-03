@@ -116,6 +116,9 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
       return (
         <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
           <div className={style.friendContainer}>
+            {message.reply && <div className={style.replyMessage}>
+              <p>{message.reply.message}</p>
+            </div>}
             <p className={style.friendText}>{message.message}</p>
             <p className={style.tailF}></p>
             {minutes >= 10 && <p className={style.messageTime}>{`${hours}:${minutes}`}</p>}

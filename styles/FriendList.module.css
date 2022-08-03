@@ -44,7 +44,8 @@
 .friendContainer{
   width: 87%;
   height: 68px;
-  background-color: rgb(57, 53, 53);
+  background-color: rgb(41, 41, 41);
+  box-shadow: 0px 0px 1px 1px rgba(27, 27, 27, 0.18);
   border-radius: 5px;
   margin: auto;
   margin-top: 15px;
@@ -83,4 +84,27 @@
   justify-content: right;
   position: absolute;
   right: 26px;
+}
+
+.searchFriends{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.searchFriends button{
+  background-color: #800040;
+  color: white;
+  font-size: calc(17px + 0.1vw);
+  padding: 5px 10px 5px 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 200ms ease-in-out;
+}
+
+.searchFriends button:hover{
+  background-color: #5c022f;
 }
