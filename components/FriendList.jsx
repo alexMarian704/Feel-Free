@@ -19,7 +19,6 @@ export default function FriendList() {
         const query = new Moralis.Query(UserFriends);
         query.equalTo("ethAddress", user.get("ethAddress"));
         const result = await query.first();
-        console.log(result);
             if (result.attributes.friendsArray.length > 0) {
                 let array = []
                 for (let i = 0; i < result.attributes.friendsArray.length; i++) {

@@ -36,7 +36,7 @@ export default function search() {
   ) {
     return <ConfigAccount />;
   }
-  if(user.get("reCheck") === 1) return <CheckPassword />
+  if (user.get("reCheck") === 1) return <CheckPassword />
 
   const getUsers = async () => {
     const UserTagData = Moralis.Object.extend("Tags");
@@ -44,30 +44,38 @@ export default function search() {
     query.equalTo("userTag", value);
     const results = await query.first();
     if (results) {
-      // console.log(results.attributes);
       setTag(results.attributes);
       setError("")
-    } else {
-      // setError("No results found")
-      const UserNameData = Moralis.Object.extend("Tags");
-      const queryName = new Moralis.Query(UserNameData);
-      queryName.equalTo("name", value);
-      const resultsName = await queryName.find();
-      if (resultsName) {
-        for (let i = 0; i < resultsName.length; i++) {
-          const object = resultsName[i];
-          setTag(object.attributes);
-          setError("")
-        }
-      } else {
-        setError("No results found")
-      }
     }
+    //else {
+    const UserNameData = Moralis.Object.extend("Tags");
+    const queryName = new Moralis.Query(UserNameData);
+    queryName.equalTo("name", value);
+    const queryName2 = new Moralis.Query(UserNameData);
+    queryName2.equalTo("name2", value);
+    const MainQuery = Moralis.Query.or(queryName, queryName2);
+    const resultsName = await MainQuery.find();
+    if (resultsName.length > 0) {
+      let array = []
+      for (let i = 0; i < resultsName.length; i++) {
+        const object = resultsName[i];
+        array.push(object.attributes)
+      }
+      if (array.length > 0) {
+        setNameArray([...array]);
+        setError("")
+      }
+    } else {
+      setError("No results found")
+    }
+    // }
   };
 
   const goToProfile = (eth) => {
     route.push(`/users/${eth}`)
   }
+
+  console.log(nameArray)
 
   return (
     <div>
@@ -89,7 +97,7 @@ export default function search() {
               if (e.key === "Enter") {
                 getUsers()
               }
-            }} 
+            }}
           />
           <button onClick={getUsers}>
             <FontAwesomeIcon
@@ -133,10 +141,45 @@ export default function search() {
             </div>
           </div>
         )}
+        {nameArray.length > 0 &&
+          <div>
+            {nameArray.map((name, i) => (
+              <div className={style.resultUser} onClick={() => goToProfile(tag.ethAddress)} key={i}>
+                <div className={style.imgProfile}>
+                  {name.profilePhoto !== undefined && (
+                    <Image
+                      src={name.profilePhoto}
+                      alt="profilePhoto"
+                      width="50%"
+                      height="50%"
+                      layout="fill"
+                      objectFit="cover"
+                      className={style.img}
+                    />
+                  )}
+                  {name.profilePhoto === undefined && (
+                    <Image
+                      src={ProfilePicture}
+                      alt="profilePhoto"
+                      width="50%"
+                      height="50%"
+                      layout="responsive"
+                      objectFit="contain"
+                      className={style.img}
+                    />
+                  )}
+                </div>
+                <div className={style.nameCon}>
+                  <p>Username: {name.username}</p>
+                  <p>Tag: @{name.userTag}</p>
+                </div>
+              </div>
+            ))}
+          </div>}
         {error && <p className={style.errorSearch}>{error}</p>}
       </div>
       <Notifications />
-      {internetStatus === false && <OfflineNotification /> }
+      {internetStatus === false && <OfflineNotification />}
     </div>
   );
 }
