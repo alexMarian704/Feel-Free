@@ -23,6 +23,7 @@ import { useOnlineFriend } from "../../function/hooks/useOnlineFriend.js"
 import { userStatus } from "../../function/userStatus";
 import { useInternetConnection } from "../../function/hooks/useInternetConnection";
 import OfflineNotification from "../../components/OfflineNotification";
+import CheckPassword from "../../components/CheckPassword";
 
 export default function Messages() {
   const { isAuthenticated, user, setUserData } = useMoralis();

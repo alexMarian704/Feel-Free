@@ -80,54 +80,73 @@ export default function swap() {
   //0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2 eth
   //0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c bnb
 
-  const getTokenPrice = async () => {
-    // if (isInitialized) {
-    //   if (to.symbol === "MATIC" || to.symbol === "ETH" || to.symbol === "BNB") {
-    //     let price = await Moralis.Web3API.token.getTokenPrice({
-    //       address: to.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : to.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
-    //         ? "eth"
-    //         : selectedChain === "bsc"
-    //           ? "bsc"
-    //           : "polygon",
-    //     })
-    //     setPriceTo(price.usdPrice.toFixed(2))
-    //   } else {
-    //     let price = await Moralis.Web3API.token.getTokenPrice({
-    //       address: to.address, chain: selectedChain === "eth"
-    //         ? "eth"
-    //         : selectedChain === "bsc"
-    //           ? "bsc"
-    //           : "polygon",
-    //     })
-    //     setPriceTo(price.usdPrice.toFixed(2))
-    //   }
-
-    //   if (from.symbol === "MATIC" || from.symbol === "ETH" || from.symbol === "BNB") {
-    //     let price2 = await Moralis.Web3API.token.getTokenPrice({
-    //       address: from.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : from.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
-    //         ? "eth"
-    //         : selectedChain === "bsc"
-    //           ? "bsc"
-    //           : "polygon",
-    //     })
-    //     setPriceFrom(price2.usdPrice.toFixed(2));
-    //   } else {
-    //     let price2 = await Moralis.Web3API.token.getTokenPrice({
-    //       address: from.address, chain: selectedChain === "eth"
-    //         ? "eth"
-    //         : selectedChain === "bsc"
-    //           ? "bsc"
-    //           : "polygon",
-    //     })
-    //     setPriceFrom(price2.usdPrice.toFixed(2));
-    //   }
-
-    // }
+  const getToPrice = async () => {
+    if (isInitialized && isAuthenticated) {
+      if (to.symbol === "MATIC" || to.symbol === "ETH" || to.symbol === "BNB") {
+        let price = await Moralis.Web3API.token.getTokenPrice({
+          address: to.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : to.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        }).then((x) => {
+          setPriceTo(x.usdPrice.toFixed(2))
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else {
+        let price = await Moralis.Web3API.token.getTokenPrice({
+          address: to.address, chain: selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        }).then((x) => {
+          setPriceTo(x.usdPrice.toFixed(2))
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+    }
   }
 
-  // useEffect(() => {
-  //   getTokenPrice();
-  // }, [from, to])
+  const getFromPrice = async () => {
+    if (isInitialized && isAuthenticated) {
+      if (from.symbol === "MATIC" || from.symbol === "ETH" || from.symbol === "BNB") {
+        let price2 = await Moralis.Web3API.token.getTokenPrice({
+          address: from.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : from.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        }).then((x) => {
+          setPriceFrom(x.usdPrice.toFixed(2));
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else {
+        let price2 = await Moralis.Web3API.token.getTokenPrice({
+          address: from.address, chain: selectedChain === "eth"
+            ? "eth"
+            : selectedChain === "bsc"
+              ? "bsc"
+              : "polygon",
+        }).then((x) => {
+          setPriceFrom(x.usdPrice.toFixed(2));
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+    }
+  }
+
+  useEffect(() => {
+    getFromPrice();
+  }, [from])
+
+  useEffect(() => {
+    getToPrice();
+  }, [to])
 
   useEffect(() => {
     if (user) {
@@ -178,9 +197,9 @@ export default function swap() {
 
   const changeAmount = async (e) => {
     if (Number(e) !== 0) {
-      console.log(e);
-      console.log(to);
-      console.log(from);
+      // console.log(e);
+      // console.log(to);
+      // console.log(from);
       const quote = await Moralis.Plugins.oneInch.quote({
         chain:
           selectedChain === "eth"
@@ -236,7 +255,7 @@ export default function swap() {
   ) {
     return <ConfigAccount />;
   }
-  if(user.get("reCheck") === 1) return <CheckPassword />
+  if (user.get("reCheck") === 1) return <CheckPassword />
 
   const userETHaddress = user.get("ethAddress");
 
@@ -398,8 +417,8 @@ export default function swap() {
             <img src="https://tokens.1inch.io/0x111111111117dc0aa78b770fa6a738034120c302.png" alt="1inch" className={style.tokenImage} />
           </div>
           <div className={style.priceContainer}>
-            {priceTo !== "" && <p>{to.symbol}: ~${priceTo}</p>}
             {priceFrom !== "" && <p>{from.symbol}: ~${priceFrom}</p>}
+            {priceTo !== "" && <p>{to.symbol}: ~${priceTo}</p>}
           </div>
           <p className={style.details}>Slippage: {slippage}
             <FontAwesomeIcon icon={faPercent} color="white" style={{
@@ -484,7 +503,7 @@ export default function swap() {
         </div>
       )}
       <Notifications />
-      {internetStatus === false && <OfflineNotification /> }
+      {internetStatus === false && <OfflineNotification />}
     </div>
   );
 }
