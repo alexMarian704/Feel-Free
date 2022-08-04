@@ -46,6 +46,7 @@ export default function Messages() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [reply, setReply] = useState("");
   const [openReply, setOpenReply] = useState(-1);
+  const [scrollIntoViewIndicator , setScrollIntoViewIndicator] = useState("");
   const onlineStatus = useOnlineFriend(router.query.mesID);
   const internetStatus = useInternetConnection()
 
@@ -499,12 +500,12 @@ export default function Messages() {
   const d = new Date();
   const _d = new Date(onlineStatus.time);
   let time = d.getTime();
-  let data = _d.getDate();
+  let day = _d.getDate();
   let month = _d.getMonth()
   let year = _d.getFullYear()
   let minutes = _d.getMinutes();
   let hours = _d.getHours();
-  const lastConnected = minutes <= 9 ? `last seen: ${data}.${month}.${year}, ${hours}:0${minutes}` : `last seen: ${data}.${month}.${year}, ${hours}:${minutes}`;
+  const lastConnected = minutes <= 9 ? `last seen: ${day}.${month+1}.${year}, ${hours}:0${minutes}` : `last seen: ${day}.${month+1}.${year}, ${hours}:${minutes}`;
 
   return (
     <div className={style.body}>
@@ -552,7 +553,7 @@ export default function Messages() {
         {localMessages.length > 0 && localMessages.map((message, i) => {
           if (i >= localMessages.length - render - 1)
             return (
-              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} />
+              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator}/>
             )
         })}
       </div>

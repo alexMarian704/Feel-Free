@@ -138,6 +138,7 @@
     width: 100%;
     scrollbar-color: rgb(35, 34, 34);
     scrollbar-width: thin;
+    padding-top: 40px;
 }
 
 .messageContainer::-webkit-scrollbar {
@@ -202,6 +203,7 @@
     justify-content: right;
     align-items: center;
     margin-bottom: 5px;
+    transition: background 200ms ease-in-out;
 }
 
 .friendMessage {
@@ -211,6 +213,7 @@
     display: flex;
     justify-content: left;
     align-items: center;
+    transition: background 200ms ease-in-out;
 }
 
 .myMessageContainer {
@@ -801,9 +804,11 @@
     padding-right: 5px;
     margin-bottom: 2px;
     box-shadow: 0px 0px 1px 1px rgba(27, 27, 27, 0.18);
+    cursor: pointer;
 }
 
 .replyMessage p{
     overflow-wrap: break-word;
     width: 100%;
+    cursor: pointer;
 }
