@@ -34,6 +34,8 @@ export default function Transfer({ tag }) {
   const [fetchBalance, setFetchBalance] = useState(false);
   const [toTag, setToTag] = useState("");
   const [transferMode, setTransferMode] = useState("Token")
+  const [tagList, setTagList] = useState([]);
+  const [openTagList, setOpenTagList] = useState(false);
   const internetStatus = useInternetConnection()
   let selectedChain;
   if (user) selectedChain = user.get("chain");
@@ -44,13 +46,14 @@ export default function Transfer({ tag }) {
     type: "native",
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     if (isAuthenticated) {
       getBalance(userETHaddress).then((result) => {
         setBalance(result);
       });
+      getFriend();
     }
-  },[isAuthenticated])
+  }, [isAuthenticated])
 
   useEffect(() => {
     setAmount("");
@@ -59,11 +62,11 @@ export default function Transfer({ tag }) {
     setErrorSend("");
   }, [isFetching, error]);
 
-  useEffect(()=>{
-    if(tag !== undefined){
-      setTo("@"+tag);
+  useEffect(() => {
+    if (tag !== undefined) {
+      setTo("@" + tag);
     }
-  },[tag])
+  }, [tag])
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -123,6 +126,26 @@ export default function Transfer({ tag }) {
     }
   }
 
+  const getFriend = async () => {
+    const UserFriends = Moralis.Object.extend("Friends");
+    const query = new Moralis.Query(UserFriends);
+    query.equalTo("ethAddress", user.get("ethAddress"));
+    const result = await query.first();
+    if (result.attributes.friendsArray.length > 0) {
+      let array = []
+      for (let i = 0; i < result.attributes.friendsArray.length; i++) {
+        const addressToTag = Moralis.Object.extend("Tags");
+        const query = new Moralis.Query(addressToTag);
+        query.equalTo("ethAddress", result.attributes.friendsArray[i]);
+        const results = await query.first();
+        if (results !== undefined) {
+          array.push(results.attributes);
+        }
+      }
+      setTagList(array);
+    }
+  }
+
   return (
     <div>
       <Head>
@@ -137,11 +160,11 @@ export default function Transfer({ tag }) {
       <div className="marginDiv"></div>
       <div className={style.transferMode} onClick={userStatus}>
         <div onClick={() => setTransferMode("Token")}><p>Transfer Coins</p></div>
-        <div onClick={() => setTransferMode("NFT")}><p>Transfer NFTs</p></div>
+        <div onClick={() => {setTransferMode("NFT") , setOpenTagList(false)}}><p>Transfer NFTs</p></div>
       </div>
       {transferMode === "NFT" && <TransferNFT userETH={userETHaddress} selectedChain={selectedChain} style={style} />}
       {transferMode === "Token" && <div className={style.transfer}>
-        <div className={style.align}>
+        <div className={style.align} onClick={()=> setOpenTagList(false)}> 
           <p className={style.label}>
             Your{" "}
             {selectedChain === "eth"
@@ -171,7 +194,7 @@ export default function Transfer({ tag }) {
           </p>
         </div>
         <br />
-        <div className={style.align}>
+        <div className={style.align} onClick={()=> setOpenTagList(false)}>
           <label className={style.label}>Amount</label>
           <br />
           <input
@@ -199,13 +222,18 @@ export default function Transfer({ tag }) {
               type="text"
               value={to}
               onChange={(e) => setTo(e.target.value)}
-              // className="setUpInput"
               placeholder="Address or tag"
               id={style.input}
               autoComplete="off"
               onClick={userStatus}
+              onFocus={() => setOpenTagList(true)}
+              onKeyPress={e => {
+                if (e.key === "Enter") {
+                  setOpenTagList(false);
+                }
+              }} 
             />
-            <button className={style.deleteBut} onClick={() => setTo("")}>
+            <button className={style.deleteBut} onClick={() => {setTo(""), setOpenTagList(false)}}>
               <FontAwesomeIcon
                 icon={faTimes}
                 color="#800040"
@@ -213,6 +241,14 @@ export default function Transfer({ tag }) {
               />
             </button>
           </div>
+          {openTagList === true && tagList.length > 0 &&
+            <div className={style.listContainer}>
+              {tagList.map((friend)=>(
+                <div key={friend.userTag} className={style.listElement} onClick={()=>{ setTo(`@${friend.userTag}`), setOpenTagList(false)}}>
+                  <p>@{friend.userTag}</p>
+                </div>
+              ))}
+            </div>}
         </div>
         <div className={style.alignButton}>
           <button
@@ -271,7 +307,7 @@ export default function Transfer({ tag }) {
       </div>}
       <GetTransactions chain={selectedChain} userETHaddress={userETHaddress} />
       <Notifications />
-      {internetStatus === false && <OfflineNotification /> }
+      {internetStatus === false && <OfflineNotification />}
     </div>
   );
 }
