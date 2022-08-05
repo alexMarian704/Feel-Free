@@ -11,9 +11,10 @@ export const useOnlineFriend = (address) => {
             query.equalTo("ethAddress", address);
             const subscription = await query.subscribe()
             const result = await query.first();
-
+            if(result){
             setOnline(result.attributes.active);
             setTime(result.attributes.timeActive)
+            }
 
             subscription.on("update", (obj) => {
                 setOnline(obj.attributes.active);

@@ -46,7 +46,7 @@ export default function Messages() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [reply, setReply] = useState("");
   const [openReply, setOpenReply] = useState(-1);
-  const [scrollIntoViewIndicator , setScrollIntoViewIndicator] = useState("");
+  const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
   const onlineStatus = useOnlineFriend(router.query.mesID);
   const internetStatus = useInternetConnection()
 
@@ -155,7 +155,7 @@ export default function Messages() {
             main.messages = decryptedMessages.messages
             //console.log(decryptedMessages.messages)
           }
-          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName, tag: results[i].attributes.tag, reply:JSON.parse(textReply) })
+          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName, tag: results[i].attributes.tag, reply: JSON.parse(textReply) })
           const encryptedMessagesList = encrypt(main, user.id)
           localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
         }
@@ -276,29 +276,31 @@ export default function Messages() {
       const query = new Moralis.Query(friendBlock);
       query.equalTo("ethAddress", address);
       const results = await query.first();
-      if (type === "friend") {
-        if (results.attributes.blockUsers !== undefined) {
-          if (results.attributes.blockUsers.includes(userAddress))
-            setBlock(true);
-          else
-            setBlock(false);
-        }
-      } else {
-        if (results.attributes.blockUsers !== undefined) {
-          if (results.attributes.blockUsers.includes(router.query.mesID))
-            setMyBlock(true);
-          else
-            setMyBlock(false);
+      if (results) {
+        if (type === "friend") {
+          if (results.attributes.blockUsers !== undefined) {
+            if (results.attributes.blockUsers.includes(userAddress))
+              setBlock(true);
+            else
+              setBlock(false);
+          }
+        } else {
+          if (results.attributes.blockUsers !== undefined) {
+            if (results.attributes.blockUsers.includes(router.query.mesID))
+              setMyBlock(true);
+            else
+              setMyBlock(false);
+          }
         }
       }
     }
   }
 
-  useEffect(()=>{
-    if(isAuthenticated && messageRef.current !== undefined){
+  useEffect(() => {
+    if (isAuthenticated && messageRef.current !== undefined) {
       messageRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  },[reply])
+  }, [reply])
 
   useEffect(() => {
     if (messageRef.current !== undefined) {
@@ -335,6 +337,32 @@ export default function Messages() {
   ) {
     return <ConfigAccount />;
   }
+  if (error === "User was not found") return (
+    <div>
+      <h1 style={{
+        "width": "100%",
+        "textAlign": "center",
+        "paddingTop": "40px"
+      }}>User was not found</h1>
+      <div style={{
+        "width":"100%",
+        "display":"flex",
+        "justifyContent":"center",
+        "marginTop":"20px"
+      }}>
+        <button style={{
+          "background": "#800040",
+          "color": "white",
+          "cursor": "pointer",
+          "border": "none",
+          "outline": "none",
+          "fontSize": "calc(19px + 0.1vw)",
+          "padding": "4px 10px 4px 10px",
+          "borderRadius": "6px"
+        }} onClick={()=> router.push("/")}>Home page</button>
+      </div>
+    </div>
+  )
   if (user.get("reCheck") === 1) return <CheckPassword />
 
   if (user && router.query.mesID === user.get("ethAddress")) router.push("/")
@@ -505,7 +533,7 @@ export default function Messages() {
   let year = _d.getFullYear()
   let minutes = _d.getMinutes();
   let hours = _d.getHours();
-  const lastConnected = minutes <= 9 ? `last seen: ${day}.${month+1}.${year}, ${hours}:0${minutes}` : `last seen: ${day}.${month+1}.${year}, ${hours}:${minutes}`;
+  const lastConnected = minutes <= 9 ? `last seen: ${day}.${month + 1}.${year}, ${hours}:0${minutes}` : `last seen: ${day}.${month + 1}.${year}, ${hours}:${minutes}`;
 
   return (
     <div className={style.body}>
@@ -546,14 +574,14 @@ export default function Messages() {
 
       {openConfirm === true && <ConfirmDelete userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} setOpenConfirm={setOpenConfirm} />}
 
-      <div className={style.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height:"calc(97.2vh - 125px)" } : {height:"calc(95.4vh - 162px)" }}>
+      <div className={style.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>
         </div>}
         {localMessages.length > 0 && localMessages.map((message, i) => {
           if (i >= localMessages.length - render - 1)
             return (
-              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator}/>
+              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
             )
         })}
       </div>
@@ -569,7 +597,7 @@ export default function Messages() {
               setReply("");
             }
           }} onClick={userStatus} />
-          <button onClick={() => {pushMessage("message", "message", message), setReply("")}}><FontAwesomeIcon icon={faPaperPlane} /></button>
+          <button onClick={() => { pushMessage("message", "message", message), setReply("") }}><FontAwesomeIcon icon={faPaperPlane} /></button>
           <button onClick={() => {
             fileRef.current.click();
           }}><FontAwesomeIcon icon={faPaperclip} /></button>

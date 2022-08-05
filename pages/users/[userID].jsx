@@ -87,6 +87,33 @@ export default function UserID() {
   ) {
     return <ConfigAccount />;
   }
+  if (error === "User was not found") return (
+    <div>
+      <h1 style={{
+        "width": "100%",
+        "textAlign": "center",
+        "paddingTop": "40px"
+      }}>User was not found</h1>
+      <div style={{
+        "width":"100%",
+        "display":"flex",
+        "justifyContent":"center",
+        "marginTop":"20px"
+      }}>
+        <button style={{
+          "background": "#800040",
+          "color": "white",
+          "cursor": "pointer",
+          "border": "none",
+          "outline": "none",
+          "fontSize": "calc(19px + 0.1vw)",
+          "padding": "4px 10px 4px 10px",
+          "borderRadius": "6px"
+        }} onClick={()=> router.push("/")}>Home page</button>
+      </div>
+    </div>
+  )
+
   if (user.get("reCheck") === 1) return <CheckPassword />
 
   const addFriend = async () => {
