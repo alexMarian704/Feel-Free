@@ -49,6 +49,7 @@ export default function Messages() {
   const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
   const onlineStatus = useOnlineFriend(router.query.mesID);
   const internetStatus = useInternetConnection()
+  const [positionScroll, setPositionScroll] = useState(1);
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -250,13 +251,18 @@ export default function Messages() {
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
               setRender(++render);
-              messageRef.current.scrollIntoView({ behavior: 'smooth' })
+              const scrollMessage = sessionStorage.getItem(router.query.mesID + user.get("ethAddress")+ "scrollPosition")
+              if (scrollMessage >= 0.64) {
+                messageRef.current.scrollIntoView({ behavior: 'smooth' })
+              }
             }
           })
         }
       })
     }
   }
+
+  console.log(positionScroll)
 
   const deleteNotification = async () => {
     const userNotification = Moralis.Object.extend("Notification");
@@ -327,6 +333,8 @@ export default function Messages() {
     if (isAuthenticated) {
       getFriendUnreadMessages(router.query.mesID, user.get("ethAddress"), setFriendUnreadMessages)
     }
+    if (isAuthenticated && router.query.mesID)
+    sessionStorage.setItem(router.query.mesID + user.get("ethAddress") + "scrollPosition", 1)
   }, [isAuthenticated, router.query.mesID])
 
   if (!isAuthenticated) {
@@ -345,10 +353,10 @@ export default function Messages() {
         "paddingTop": "40px"
       }}>User was not found</h1>
       <div style={{
-        "width":"100%",
-        "display":"flex",
-        "justifyContent":"center",
-        "marginTop":"20px"
+        "width": "100%",
+        "display": "flex",
+        "justifyContent": "center",
+        "marginTop": "20px"
       }}>
         <button style={{
           "background": "#800040",
@@ -359,7 +367,7 @@ export default function Messages() {
           "fontSize": "calc(19px + 0.1vw)",
           "padding": "4px 10px 4px 10px",
           "borderRadius": "6px"
-        }} onClick={()=> router.push("/")}>Home page</button>
+        }} onClick={() => router.push("/")}>Home page</button>
       </div>
     </div>
   )
@@ -535,6 +543,13 @@ export default function Messages() {
   let hours = _d.getHours();
   const lastConnected = minutes <= 9 ? `last seen: ${day}.${month + 1}.${year}, ${hours}:0${minutes}` : `last seen: ${day}.${month + 1}.${year}, ${hours}:${minutes}`;
 
+  const handleScroll = (e) => {
+    const element = e.currentTarget;
+    const position = element.scrollTop / (element.scrollHeight - element.clientHeight);
+    sessionStorage.setItem(router.query.mesID + user.get("ethAddress") + "scrollPosition", Number(position.toPrecision(2)))
+    setPositionScroll(Number(position.toPrecision(2)))
+  };
+
   return (
     <div className={style.body}>
       <Head>
@@ -558,7 +573,7 @@ export default function Messages() {
           </div>}
           <div className={style.infoContainer}>
             {friendData !== "" && <Link href={`/users/${router.query.mesID}`}>
-              <h2>{friendData.username}</h2>
+              <h2>{friendData.username}{positionScroll} </h2>
             </Link>}
             {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 <= 1 && <p>connected</p>}
             {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 > 1 && <p>{lastConnected}</p>}
@@ -574,7 +589,7 @@ export default function Messages() {
 
       {openConfirm === true && <ConfirmDelete userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} setOpenConfirm={setOpenConfirm} />}
 
-      <div className={style.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }}>
+      <div className={style.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll}>
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>
         </div>}
