@@ -79,13 +79,19 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     }} /></p>}
                     {newMaessage === false && last === "you" && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
                     {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{friendData.username}:</span> {lastMessage}</p>}
-                    {newMaessage === true && <p><span>New message</span></p>}
+                    {newMaessage === true && <p><span>New messages</span></p>}
                 </div>}
-                {(file === "application/pdf" || file === "image/jpg" || file === "image/png" || file === "text/plain" || file=== "image/jpeg") && <div className={style.mainData}>
+                {(file === "application/pdf" || file === "text/plain") && <div className={style.mainData}>
                     <p>{friendData.name} {friendData.name2}</p>
                     {newMaessage === false && last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faFile} /> </p>}
                     {newMaessage === false && last === "friend" && <p><span>{friendData.username}: </span><FontAwesomeIcon icon={faFile} /></p>}
-                    {newMaessage === true && last === "friend" && <p><span>New message</span></p>}
+                    {newMaessage === true && last === "friend" && <p><span>New messages</span></p>}
+                </div>}
+                {(file === "image/jpg" || file === "image/png" || file=== "image/jpeg") && <div className={style.mainData}>
+                    <p>{friendData.name} {friendData.name2}</p>
+                    {newMaessage === false && last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faImage} /> </p>}
+                    {newMaessage === false && last === "friend" && <p><span>{friendData.username}: </span><FontAwesomeIcon icon={faImage} /></p>}
+                    {newMaessage === true && last === "friend" && <p><span>New messages</span></p>}
                 </div>}
                 <div>
                     {dataToday === data && month === monthToday && year === yearToday && minutes > 9 && <p>{hours}:{minutes}</p>}

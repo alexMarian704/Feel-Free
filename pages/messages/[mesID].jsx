@@ -7,7 +7,7 @@ import { Moralis } from "moralis";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfilePicture from "../../public/profile.jpg";
-import { faPaperPlane, faPaperclip, faArrowLeft, faTimes, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faPaperclip, faArrowLeft, faTimes, faChevronDown, faImage } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
 import style from "../../styles/Messages.module.css"
 import AES from 'crypto-js/aes';
@@ -251,7 +251,6 @@ export default function Messages() {
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
               setRender(++render);
-              const scrollMessage = sessionStorage.getItem(router.query.mesID + user.get("ethAddress") + "scrollPosition")
               const elementId = document.getElementById("scrollID");
               const scroll = elementId.scrollTop / (elementId.scrollHeight - elementId.clientHeight);
               if (Number(scroll.toPrecision(2)) >= 0.92) {
@@ -333,8 +332,6 @@ export default function Messages() {
     if (isAuthenticated) {
       getFriendUnreadMessages(router.query.mesID, user.get("ethAddress"), setFriendUnreadMessages)
     }
-    if (isAuthenticated && router.query.mesID)
-      sessionStorage.setItem(router.query.mesID + user.get("ethAddress") + "scrollPosition", 1)
   }, [isAuthenticated, router.query.mesID])
 
   if (!isAuthenticated) {
@@ -546,7 +543,8 @@ export default function Messages() {
   const handleScroll = (e) => {
     const element = e.currentTarget;
     const position = element.scrollTop / (element.scrollHeight - element.clientHeight);
-    setPositionScroll(Number(position.toPrecision(2)))
+    if (Math.abs(positionScroll - position) >= 0.02)
+      setPositionScroll(Number(position.toPrecision(2)))
   };
 
   return (
@@ -572,7 +570,7 @@ export default function Messages() {
           </div>}
           <div className={style.infoContainer}>
             {friendData !== "" && <Link href={`/users/${router.query.mesID}`}>
-              <h2>{friendData.username}{positionScroll} </h2>
+              <h2>{friendData.username}{positionScroll}</h2>
             </Link>}
             {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 <= 1 && <p>connected</p>}
             {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 > 1 && <p>{lastConnected}</p>}
@@ -604,8 +602,25 @@ export default function Messages() {
           </button>}
       </div>
       <div>
-        {block === false && myBlock === false && reply && <div className={style.replyContainer}>
+        {block === false && myBlock === false && reply && reply.image !== true && <div className={style.replyContainer}>
           <p>{reply.message}</p>
+          <button onClick={() => setReply("")}>x</button>
+        </div>}
+        {block === false && myBlock === false && reply && reply.image === true && <div className={style.replyContainer}>
+          <div className={style.imgMainReply}>
+            <div>
+              You: <FontAwesomeIcon icon={faImage} />
+            </div>
+            <div className={style.replyImage}>
+              <Image
+                width="100%"
+                height="100%"
+                layout="fill"
+                objectFit="cover"
+                src={reply.message}
+                alt="Profile Photo" />
+            </div>
+          </div>
           <button onClick={() => setReply("")}>x</button>
         </div>}
         {block === false && myBlock === false && <div className={style.sendContainer} onClick={() => setOpen(false)}>

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply,scrollIntoViewIndicator,setScrollIntoViewIndicator }) {
+export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator }) {
   const d = new Date(message.time);
   let time = d.getHours();
   let minutes = d.getMinutes();
@@ -30,6 +30,18 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             {minutes < 10 && <p className={style.myMessageTime}>{`${hours}:0${minutes}`}</p>}
             {number > total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>}
             {number <= total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} color="#00e600" /></p>}
+            <button className={style.messageOptions} style={{
+              right: "10px",
+              top: "10px"
+            }} onClick={() => {
+              if (openReply !== number)
+                setOpenReply(number)
+              else
+                setOpenReply(-1)
+            }}><FontAwesomeIcon icon={faCaretDown} /></button>
+            {openReply === number && <div className={style.messageOptionsContainer}>
+              <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
+            </div>}
           </div>
         </div>
       );
@@ -50,13 +62,13 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
     else
       return (
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time} style={{
-          background:scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
+          background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
         }}>
           <div className={style.myMessageContainer}>
             {message.reply && <div className={style.replyMessage} onClick={() => {
               document.getElementById(message.reply.time).scrollIntoView()
               setScrollIntoViewIndicator(message.reply.time)
-              setTimeout(()=>{
+              setTimeout(() => {
                 setScrollIntoViewIndicator("")
               }, 2000)
             }}>
@@ -103,6 +115,18 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             <p className={style.tailF}></p>
             {minutes >= 10 && <p className={style.messageTime}>{`${hours}:${minutes}`}</p>}
             {minutes < 10 && <p className={style.messageTime}>{`${hours}:0${minutes}`}</p>}
+            <button className={style.messageOptions} style={{
+              right: "10px",
+              top: "10px"
+            }} onClick={() => {
+              if (openReply !== number)
+                setOpenReply(number)
+              else
+                setOpenReply(-1)
+            }}><FontAwesomeIcon icon={faCaretDown} /></button>
+            {openReply === number && <div className={style.messageOptionsContainerFriend}>
+              <button onClick={() => { setReply({ message: message.message, time: message.time,image:true }), setOpenReply(-1) }}>Reply</button>
+            </div>}
           </div>
         </div>
       );
@@ -123,13 +147,13 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
     else
       return (
         <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined} id={message.time} style={{
-          background:scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
+          background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
         }}>
           <div className={style.friendContainer}>
             {message.reply && <div className={style.replyMessage} onClick={() => {
               document.getElementById(message.reply.time).scrollIntoView()
               setScrollIntoViewIndicator(message.reply.time)
-              setTimeout(()=>{
+              setTimeout(() => {
                 setScrollIntoViewIndicator("")
               }, 2000)
             }}>

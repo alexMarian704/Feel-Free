@@ -365,6 +365,10 @@
     padding: 4px;
 }
 
+.myImgContainer:hover .messageOptions{
+    display: inline-block;
+}
+
 @media only screen and (min-width: 1200px) {
     .myImgContainer {
         max-width: 1000px;
@@ -831,4 +835,33 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.replyImage{
+    position: relative;
+    height: calc(32px + 1.8vh);
+    width: calc(32px + 1.8vh);
+}
+
+.replyImage img{
+    border-radius: 6px;
+}
+
+.imgMainReply{
+    background-color: rgb(40, 39, 39);
+    width: calc(80% + 80px + 2vw);
+    max-width: calc(90%);
+    height: 94%;
+    font-size: 19px;
+    margin: auto;
+    margin-top: 4px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10px;
+    overflow: hidden;
+    color: rgb(180, 179, 179);
+    border-left: 4px solid #800040;
+    padding-right: 20px;
 }

@@ -119,7 +119,7 @@ export default function Notifications() {
                                 } else if (data.type === "New message") {
                                     return (
                                         <div className={style.newMessage} onClick={() => route.push(`/messages/${data.from}`)} key={data.from}>
-                                            <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New message from <span>@{data.tag}</span></p>
+                                            <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New messages from <span>@{data.tag}</span></p>
                                         </div>
                                     )
                                 }
