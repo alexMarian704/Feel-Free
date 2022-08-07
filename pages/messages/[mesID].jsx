@@ -7,7 +7,7 @@ import { Moralis } from "moralis";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfilePicture from "../../public/profile.jpg";
-import { faPaperPlane, faPaperclip, faArrowLeft, faTimes, faChevronDown} from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faPaperclip, faArrowLeft, faTimes, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from 'next/router';
 import style from "../../styles/Messages.module.css"
 import AES from 'crypto-js/aes';
@@ -251,8 +251,10 @@ export default function Messages() {
             if (main.messages.length > 0) {
               setLocalMessages(main.messages)
               setRender(++render);
-              const scrollMessage = sessionStorage.getItem(router.query.mesID + user.get("ethAddress")+ "scrollPosition")
-              if (scrollMessage >= 0.92) {
+              const scrollMessage = sessionStorage.getItem(router.query.mesID + user.get("ethAddress") + "scrollPosition")
+              const elementId = document.getElementById("scrollID");
+              const scroll = elementId.scrollTop / (elementId.scrollHeight - elementId.clientHeight);
+              if (Number(scroll.toPrecision(2)) >= 0.92) {
                 messageRef.current.scrollIntoView({ behavior: 'smooth' })
               }
             }
@@ -332,7 +334,7 @@ export default function Messages() {
       getFriendUnreadMessages(router.query.mesID, user.get("ethAddress"), setFriendUnreadMessages)
     }
     if (isAuthenticated && router.query.mesID)
-    sessionStorage.setItem(router.query.mesID + user.get("ethAddress") + "scrollPosition", 1)
+      sessionStorage.setItem(router.query.mesID + user.get("ethAddress") + "scrollPosition", 1)
   }, [isAuthenticated, router.query.mesID])
 
   if (!isAuthenticated) {
@@ -544,7 +546,6 @@ export default function Messages() {
   const handleScroll = (e) => {
     const element = e.currentTarget;
     const position = element.scrollTop / (element.scrollHeight - element.clientHeight);
-    sessionStorage.setItem(router.query.mesID + user.get("ethAddress") + "scrollPosition", Number(position.toPrecision(2)))
     setPositionScroll(Number(position.toPrecision(2)))
   };
 
@@ -587,7 +588,7 @@ export default function Messages() {
 
       {openConfirm === true && <ConfirmDelete userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} setOpenConfirm={setOpenConfirm} />}
 
-      <div className={style.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll}>
+      <div className={style.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll} id="scrollID">
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>
         </div>}
@@ -597,10 +598,10 @@ export default function Messages() {
               <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
             )
         })}
-        {localMessages.length >0 && positionScroll < 0.92 && 
-        <button className={style.scrollToBottom} style={reply === "" ? { bottom: "calc(65px + 1.8vh)" } : { bottom: "calc(105px + 3.6vh)" }} onClick={()=> messageRef.current.scrollIntoView({ behavior: 'smooth' })}>
-          <FontAwesomeIcon icon={faChevronDown} />
-        </button> }
+        {localMessages.length > 0 && positionScroll < 0.92 &&
+          <button className={style.scrollToBottom} style={reply === "" ? { bottom: "calc(65px + 1.8vh)" } : { bottom: "calc(105px + 3.6vh)" }} onClick={() => messageRef.current.scrollIntoView({ behavior: 'smooth' })}>
+            <FontAwesomeIcon icon={faChevronDown} />
+          </button>}
       </div>
       <div>
         {block === false && myBlock === false && reply && <div className={style.replyContainer}>
