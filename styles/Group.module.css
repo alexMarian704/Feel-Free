@@ -1,22 +1,23 @@
-.nav{
+.nav {
     width: 100%;
     height: calc(45px + 1vh);
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: rgb(34, 34, 34);
-    margin-bottom: 8px;
+    margin-bottom: 15px;
     padding-right: 30px;
 }
-.nav h4{
+
+.nav h4 {
     font-size: calc(22px + 0.2vw);
 }
 
-.nav div{
+.nav div {
     display: flex;
 }
 
-.nav input{
+.nav input {
     background-color: transparent;
     color: white;
     border: none;
@@ -26,7 +27,8 @@
     margin-left: 5px;
 }
 
-.backBut,.search{
+.backBut,
+.search {
     border: none;
     width: calc(35px + 1vw);
     height: calc(25px + 1vh);
@@ -43,10 +45,40 @@
     transition: all 100ms ease-in-out;
 }
 
-.search:hover{
+.search:hover {
     color: rgb(140, 140, 140);
 }
 
-.backBut:hover{
+.backBut:hover {
     background-color: black;
+}
+
+.imgProfile {
+    width: calc(40px + 1vw);
+    height: calc(40px + 1vw);
+    border: 2px solid #800040;
+    border-radius: 50%;
+    position: relative;
+}
+
+.img {
+    border-radius: 50%;
+}
+
+.friendContainer{
+    width: 100vw;
+    display: flex;
+    height: calc(54px + 1vw);
+    align-items: center;
+    padding-left: 16px;
+    cursor: pointer;
+    margin-bottom: 3px;
+    border-bottom: 1px solid rgb(38, 38, 38);
+}
+
+.data{
+    margin-left: 10px;
+}
+.data p{
+    font-size: calc(17px + 0.1vw);
 }

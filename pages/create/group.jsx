@@ -16,7 +16,7 @@ import { faArrowLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Group = () => {
     const [openSearch, setOpenSearch] = useState(false);
-    const [friendList, setFriendList] = useState([]);
+    const [friendList, setFriendList] = useState(0);
     const { isAuthenticated, user, isInitialized } = useMoralis();
     const router = useRouter()
     const internetStatus = useInternetConnection()
@@ -40,11 +40,9 @@ const Group = () => {
             setFriendList(array);
         }
         else {
-            setFriendList("No friends");
+            setFriendList(1);
         }
     }
-
-    console.log(friendList)
 
     useEffect(() => {
         if (isAuthenticated && user)
@@ -75,6 +73,44 @@ const Group = () => {
                 </div>
                 <button className={style.search} onClick={() => { setOpenSearch(!openSearch) }}
                 ><FontAwesomeIcon icon={faSearch} /></button>
+            </div>
+            <div>
+                {friendList !== 0 && friendList !== 1 &&
+                    <div>
+                        {friendList.map((friend) => (
+                            <div key={friend.userTag} className={style.friendContainer}>
+                                <div className={style.imgProfile}>
+                                    {friend.profilePhoto !== undefined && (
+                                        <Image
+                                            src={friend.profilePhoto}
+                                            alt="profilePhoto"
+                                            width="50%"
+                                            height="50%"
+                                            layout="fill"
+                                            objectFit="cover"
+                                            className={style.img}
+                                            onClick={() => goToProfile(friend.ethAddress)} />
+                                    )}
+                                    {friend.profilePhoto === undefined && (
+                                        <Image
+                                            src={ProfilePicture}
+                                            alt="profilePhoto"
+                                            width="50%"
+                                            height="50%"
+                                            layout="responsive"
+                                            objectFit="contain"
+                                            className={style.img}
+                                            onClick={() => goToProfile(friend.ethAddress)} />
+                                    )}
+                                </div>
+                                <div className={style.data}>
+                                    <p>{friend.username}</p>
+                                    <p>{friend.userTag}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                }
             </div>
             {internetStatus === false && <OfflineNotification />}
         </div>

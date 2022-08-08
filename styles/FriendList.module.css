@@ -44,16 +44,22 @@
 .friendContainer{
   width: 87%;
   height: 68px;
-  background-color: rgb(41, 41, 41);
+  background-color: rgb(32, 32, 32);
   box-shadow: 0px 0px 1px 1px rgba(27, 27, 27, 0.18);
   border-radius: 5px;
   margin: auto;
-  margin-top: 15px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
   padding-left: 10px;
   cursor: pointer;
   position: relative;
+}
+
+@media only screen and (max-width: 510px) {
+  .friendContainer{
+    width: 96%;
+  }
 }
 
 .friendData{
