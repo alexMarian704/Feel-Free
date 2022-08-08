@@ -68,7 +68,7 @@
 .friendContainer{
     width: 100vw;
     display: flex;
-    height: calc(54px + 1vw);
+    height: calc(57px + 1vw);
     align-items: center;
     padding-left: 16px;
     cursor: pointer;
@@ -81,4 +81,18 @@
 }
 .data p{
     font-size: calc(17px + 0.1vw);
+}
+
+.includes{
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background-color: green;
+    transition: all ease-in-out 200ms;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

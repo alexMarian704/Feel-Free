@@ -12,10 +12,11 @@ import ProfilePicture from "../../public/profile.jpg";
 import Image from "next/image";
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faSearch , faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const Group = () => {
     const [openSearch, setOpenSearch] = useState(false);
+    const [selectFriend, setSelectFriend] = useState([])
     const [friendList, setFriendList] = useState(0);
     const { isAuthenticated, user, isInitialized } = useMoralis();
     const router = useRouter()
@@ -60,6 +61,14 @@ const Group = () => {
     }
     if (user.get("reCheck") === 1) return <CheckPassword />
 
+    const select = (eth) => {
+        if (selectFriend.includes(eth) === false) {
+            setSelectFriend([...selectFriend, eth])
+        } else {
+            setSelectFriend(selectFriend.filter((x) => x !== eth))
+        }
+    }
+
     return (
         <div>
             <Head>
@@ -78,7 +87,7 @@ const Group = () => {
                 {friendList !== 0 && friendList !== 1 &&
                     <div>
                         {friendList.map((friend) => (
-                            <div key={friend.userTag} className={style.friendContainer}>
+                            <div key={friend.userTag} className={style.friendContainer} onClick={() => select(friend.ethAddress)}>
                                 <div className={style.imgProfile}>
                                     {friend.profilePhoto !== undefined && (
                                         <Image
@@ -89,7 +98,7 @@ const Group = () => {
                                             layout="fill"
                                             objectFit="cover"
                                             className={style.img}
-                                            onClick={() => goToProfile(friend.ethAddress)} />
+                                        />
                                     )}
                                     {friend.profilePhoto === undefined && (
                                         <Image
@@ -100,8 +109,15 @@ const Group = () => {
                                             layout="responsive"
                                             objectFit="contain"
                                             className={style.img}
-                                            onClick={() => goToProfile(friend.ethAddress)} />
+                                        />
                                     )}
+                                    <div style={{ 
+                                        "opacity": selectFriend.includes(friend.ethAddress) ? 1 : 0,
+                                        "width":selectFriend.includes(friend.ethAddress) ? "23px" : "17px",
+                                        "right":selectFriend.includes(friend.ethAddress) ? "-4px" : "10px"
+                                }} className={style.includes}>
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    </div>
                                 </div>
                                 <div className={style.data}>
                                     <p>{friend.username}</p>
