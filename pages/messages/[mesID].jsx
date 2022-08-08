@@ -570,7 +570,7 @@ export default function Messages() {
           </div>}
           <div className={style.infoContainer}>
             {friendData !== "" && <Link href={`/users/${router.query.mesID}`}>
-              <h2>{friendData.username}{positionScroll}</h2>
+              <h2>{friendData.username}</h2>
             </Link>}
             {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 <= 1 && <p>connected</p>}
             {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 > 1 && <p>{lastConnected}</p>}

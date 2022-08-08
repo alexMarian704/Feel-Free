@@ -15,12 +15,16 @@ import Chats from "../components/Chats";
 import { userStatus } from "../function/userStatus";
 import { useInternetConnection } from "../function/hooks/useInternetConnection";
 import OfflineNotification from "../components/OfflineNotification";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/router";
 
-export default function Home({ name }) {
+export default function Home() {
   const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
   const [info, setInfo] = useState(null);
   const [page, setPage] = useState("Messages");
   const internetStatus = useInternetConnection()
+  const route = useRouter()
 
   useEffect(() => {
     if (!isWeb3Enabled && !isWeb3EnableLoading) {
@@ -60,6 +64,9 @@ export default function Home({ name }) {
             {page === "FriendList" && <FriendList />}
             {page === "Messages" && <Chats />}
             <Notifications />
+            <button className={style.createGroup} onClick={()=>route.push("/create/group") }>
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
           </div>
         )}
       {(user.get("userNameChange") === undefined ||
