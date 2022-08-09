@@ -120,3 +120,20 @@
 .next:hover{
     background-color: #4c0428;
 }
+
+.noResults{
+    color: #800040;
+    font-size: calc(60px + 1vw);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.noResults p{
+    color: white;
+    font-size: calc(22px + 0.1vw);
+    margin-top: 10px;
+}

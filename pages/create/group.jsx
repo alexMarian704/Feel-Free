@@ -8,11 +8,10 @@ import Reject from "../../components/Reject";
 import ConfigAccount from "../../components/ConfigAccount";
 import { Moralis } from "moralis";
 import style from "../../styles/Group.module.css"
-import ProfilePicture from "../../public/profile.jpg";
-import Image from "next/image";
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faSearch, faCheck, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faSearch, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import FriendData from '../../components/Group/FriendData';
 
 const Group = () => {
     const [openSearch, setOpenSearch] = useState(false);
@@ -50,13 +49,13 @@ const Group = () => {
     const filteredFriends = useMemo(() => {
         if (friendList !== 0 && friendList !== 1) {
            return friendList.filter((friend) => {
-                if (friend.userTag.includes(search) || friend.username.includes(search))
+                if (friend.userTag.includes(search))
                     return true;
                 else
                     return false;
             })
         } else
-            return "No friends";
+            return [];
     }, [search])
 
     useEffect(() => {
@@ -104,45 +103,19 @@ const Group = () => {
             <div>
                 {friendList !== 0 && friendList !== 1 &&
                     <div>
-                        {friendList.map((friend) => (
-                            <div key={friend.userTag} className={style.friendContainer} onClick={() => select(friend.ethAddress)}>
-                                <div className={style.imgProfile}>
-                                    {friend.profilePhoto !== undefined && (
-                                        <Image
-                                            src={friend.profilePhoto}
-                                            alt="profilePhoto"
-                                            width="50%"
-                                            height="50%"
-                                            layout="fill"
-                                            objectFit="cover"
-                                            className={style.img}
-                                        />
-                                    )}
-                                    {friend.profilePhoto === undefined && (
-                                        <Image
-                                            src={ProfilePicture}
-                                            alt="profilePhoto"
-                                            width="50%"
-                                            height="50%"
-                                            layout="responsive"
-                                            objectFit="contain"
-                                            className={style.img}
-                                        />
-                                    )}
-                                    <div style={{
-                                        "opacity": selectFriend.includes(friend.ethAddress) ? 1 : 0,
-                                        "width": selectFriend.includes(friend.ethAddress) ? "23px" : "17px",
-                                        "right": selectFriend.includes(friend.ethAddress) ? "-4px" : "10px"
-                                    }} className={style.includes}>
-                                        <FontAwesomeIcon icon={faCheck} />
-                                    </div>
-                                </div>
-                                <div className={style.data}>
-                                    <p>{friend.username}</p>
-                                    <p>@{friend.userTag}</p>
-                                </div>
-                            </div>
+                        {search === "" && friendList.map((friend) => (
+                            <FriendData friend={friend} style={style} select={select} selectFriend={selectFriend} key={friend.userTag}/>
                         ))}
+                         {search !== "" && filteredFriends.length > 0 &&  filteredFriends.map((friend) => (
+                            <FriendData friend={friend} style={style} select={select} selectFriend={selectFriend} key={friend.userTag}/>
+                        ))}
+                        {search !== "" && filteredFriends.length === 0 &&
+                        <div>
+                            <div className={style.noResults}>
+                                <FontAwesomeIcon icon={faSearch} />
+                                <p>No results!</p>
+                            </div>
+                        </div> }
                     </div>
                 }
             </div>
