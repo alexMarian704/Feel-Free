@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useInternetConnection } from "../../function/hooks/useInternetConnection";
 import OfflineNotification from "../../components/OfflineNotification";
 import { useRouter } from 'next/router';
@@ -12,12 +12,14 @@ import ProfilePicture from "../../public/profile.jpg";
 import Image from "next/image";
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faSearch , faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faSearch, faCheck, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const Group = () => {
     const [openSearch, setOpenSearch] = useState(false);
     const [selectFriend, setSelectFriend] = useState([])
     const [friendList, setFriendList] = useState(0);
+    const [search, setSearch] = useState("")
+    const [step, setStep] = useState(0)
     const { isAuthenticated, user, isInitialized } = useMoralis();
     const router = useRouter()
     const internetStatus = useInternetConnection()
@@ -45,6 +47,18 @@ const Group = () => {
         }
     }
 
+    const filteredFriends = useMemo(() => {
+        if (friendList !== 0 && friendList !== 1) {
+           return friendList.filter((friend) => {
+                if (friend.userTag.includes(search) || friend.username.includes(search))
+                    return true;
+                else
+                    return false;
+            })
+        } else
+            return "No friends";
+    }, [search])
+
     useEffect(() => {
         if (isAuthenticated && user)
             getFriend();
@@ -69,6 +83,10 @@ const Group = () => {
         }
     }
 
+    const nextStep = () => {
+
+    }
+
     return (
         <div>
             <Head>
@@ -78,7 +96,7 @@ const Group = () => {
                 <div>
                     <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
                     {openSearch === false && <h4>Create group</h4>}
-                    {openSearch === true && <input type="text" placeholder='Search' />}
+                    {openSearch === true && <input type="text" placeholder='Search' value={search} onChange={(e) => setSearch(e.target.value)} />}
                 </div>
                 <button className={style.search} onClick={() => { setOpenSearch(!openSearch) }}
                 ><FontAwesomeIcon icon={faSearch} /></button>
@@ -111,23 +129,26 @@ const Group = () => {
                                             className={style.img}
                                         />
                                     )}
-                                    <div style={{ 
+                                    <div style={{
                                         "opacity": selectFriend.includes(friend.ethAddress) ? 1 : 0,
-                                        "width":selectFriend.includes(friend.ethAddress) ? "23px" : "17px",
-                                        "right":selectFriend.includes(friend.ethAddress) ? "-4px" : "10px"
-                                }} className={style.includes}>
+                                        "width": selectFriend.includes(friend.ethAddress) ? "23px" : "17px",
+                                        "right": selectFriend.includes(friend.ethAddress) ? "-4px" : "10px"
+                                    }} className={style.includes}>
                                         <FontAwesomeIcon icon={faCheck} />
                                     </div>
                                 </div>
                                 <div className={style.data}>
                                     <p>{friend.username}</p>
-                                    <p>{friend.userTag}</p>
+                                    <p>@{friend.userTag}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 }
             </div>
+            <button className={style.next}>
+                <FontAwesomeIcon icon={faArrowRight} />
+            </button>
             {internetStatus === false && <OfflineNotification />}
         </div>
     )

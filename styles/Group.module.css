@@ -25,6 +25,7 @@
     font-size: calc(20px + 0.1vw);
     outline: none;
     margin-left: 5px;
+    width: 70vw;
 }
 
 .backBut,
@@ -95,4 +96,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.next{
+    position: fixed;
+    bottom: calc(25px + 1vw);
+    right: calc(25px + 1vw);
+    background-color: #800040;
+    color: white;
+    cursor: pointer;
+    outline: none;
+    height: calc(35px + 0.6vh);
+    width: calc(70px + 0.6vw);
+    border-radius: 30px;
+    border: none;
+    font-size: calc(19px + 0.1vw);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 200ms ease-in-out;
+}
+
+.next:hover{
+    background-color: #4c0428;
 }
