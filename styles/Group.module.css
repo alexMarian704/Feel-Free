@@ -66,7 +66,7 @@
     border-radius: 50%;
 }
 
-.friendContainer{
+.friendContainer {
     width: 100vw;
     display: flex;
     height: calc(57px + 1vw);
@@ -77,14 +77,15 @@
     border-bottom: 1px solid rgb(38, 38, 38);
 }
 
-.data{
+.data {
     margin-left: 10px;
 }
-.data p{
+
+.data p {
     font-size: calc(17px + 0.1vw);
 }
 
-.includes{
+.includes {
     position: absolute;
     bottom: -4px;
     right: -4px;
@@ -98,7 +99,7 @@
     justify-content: center;
 }
 
-.next{
+.next {
     position: fixed;
     bottom: calc(25px + 1vw);
     right: calc(25px + 1vw);
@@ -117,11 +118,11 @@
     transition: all 200ms ease-in-out;
 }
 
-.next:hover{
+.next:hover {
     background-color: #4c0428;
 }
 
-.noResults{
+.noResults {
     color: #800040;
     font-size: calc(60px + 1vw);
     width: 100%;
@@ -132,8 +133,95 @@
     margin-top: 60px;
 }
 
-.noResults p{
+.noResults p {
     color: white;
     font-size: calc(22px + 0.1vw);
     margin-top: 10px;
+}
+
+.imageContainer {
+    position: relative;
+    width: calc(160px + 4vw);
+    height: calc(160px + 4vw);
+    box-shadow: 0px 0px 2px 3px rgba(26, 26, 26, 0.28);
+    margin: auto;
+    margin-bottom: 8px;
+    border-radius: 200px;
+    margin-top: 25px;
+    background-color: rgb(0, 0, 0);
+}
+
+.imageContainer div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imageContainer div p {
+    font-size: calc(18px + 0.1vw);
+}
+
+.imageContainer button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: calc(45px + 0.2vw);
+    height: calc(45px + 0.2vw);
+    border-radius: 50%;
+    background-color: #800040;
+    border: none;
+    cursor: pointer;
+    font-size: calc(19px + 0.1vw);
+    box-shadow: 0px 0px 2px 3px rgba(30, 30, 30, 0.28);
+    transition: all 200ms ease-in-out;
+}
+
+.imageContainer button:hover {
+    background-color: #4c0428;
+}
+
+.info {
+    width: calc(220px + 25vw);
+    margin: auto;
+}
+
+.info input {
+    width: 100%;
+    height: calc(20px + 1vh);
+    border-radius: 6px;
+    background-color: rgb(0, 0, 0);
+    outline: none;
+    color: white;
+    padding: 14px;
+    padding-left: 6px;
+    border: 2px solid rgb(0, 0, 0);
+    box-shadow: 0px 0px 2px 3px rgba(30, 30, 30, 0.28);
+    font-size: calc(16px + 0.1vw);
+    font-family: "Padauk", sans-serif;
+    transition: all 200ms ease-in-out;
+}
+
+.info textarea {
+    min-width: calc(220px + 25vw);
+    max-width: calc(220px + 25vw);
+    min-height: 200px;
+    max-height: 600px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 6px;
+    outline: none;
+    color: white;
+    padding: 6px;
+    border: none;
+    box-shadow: 0px 0px 2px 3px rgba(30, 30, 30, 0.28);
+    font-size: calc(16px + 0.1vw);
+    font-family: "Padauk", sans-serif;
+    border: none;
+    transition: all 200ms ease-in-out;
+    border: 2px solid rgb(0, 0, 0);
+}
+
+.info input:focus,.info textarea:focus{
+    border: 2px solid #800040;
 }

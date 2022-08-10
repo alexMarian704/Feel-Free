@@ -12,6 +12,7 @@ import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faSearch, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import FriendData from '../../components/Group/FriendData';
+import GroupData from '../../components/Group/GroupData';
 
 const Group = () => {
     const [openSearch, setOpenSearch] = useState(false);
@@ -19,7 +20,7 @@ const Group = () => {
     const [friendList, setFriendList] = useState(0);
     const [search, setSearch] = useState("")
     const [step, setStep] = useState(0)
-    const { isAuthenticated, user, isInitialized } = useMoralis();
+    const { isAuthenticated, user } = useMoralis();
     const router = useRouter()
     const internetStatus = useInternetConnection()
 
@@ -48,7 +49,7 @@ const Group = () => {
 
     const filteredFriends = useMemo(() => {
         if (friendList !== 0 && friendList !== 1) {
-           return friendList.filter((friend) => {
+            return friendList.filter((friend) => {
                 if (friend.userTag.includes(search))
                     return true;
                 else
@@ -82,10 +83,6 @@ const Group = () => {
         }
     }
 
-    const nextStep = () => {
-
-    }
-
     return (
         <div>
             <Head>
@@ -93,35 +90,45 @@ const Group = () => {
             </Head>
             <div className={style.nav}>
                 <div>
-                    <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
+                    <button onClick={() => step === 0 ? router.push("/") : setStep(0)} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
                     {openSearch === false && <h4>Create group</h4>}
                     {openSearch === true && <input type="text" placeholder='Search' value={search} onChange={(e) => setSearch(e.target.value)} />}
                 </div>
-                <button className={style.search} onClick={() => { setOpenSearch(!openSearch) }}
-                ><FontAwesomeIcon icon={faSearch} /></button>
+                {step === 0 && <button className={style.search} onClick={() => {
+                    setOpenSearch(!openSearch)
+                    setSearch("")
+                }}
+                ><FontAwesomeIcon icon={faSearch} /></button>}
             </div>
-            <div>
+            {step === 0 && <div>
                 {friendList !== 0 && friendList !== 1 &&
                     <div>
                         {search === "" && friendList.map((friend) => (
-                            <FriendData friend={friend} style={style} select={select} selectFriend={selectFriend} key={friend.userTag}/>
+                            <FriendData friend={friend} style={style} select={select} selectFriend={selectFriend} key={friend.userTag} />
                         ))}
-                         {search !== "" && filteredFriends.length > 0 &&  filteredFriends.map((friend) => (
-                            <FriendData friend={friend} style={style} select={select} selectFriend={selectFriend} key={friend.userTag}/>
+                        {search !== "" && filteredFriends.length > 0 && filteredFriends.map((friend) => (
+                            <FriendData friend={friend} style={style} select={select} selectFriend={selectFriend} key={friend.userTag} />
                         ))}
                         {search !== "" && filteredFriends.length === 0 &&
-                        <div>
-                            <div className={style.noResults}>
-                                <FontAwesomeIcon icon={faSearch} />
-                                <p>No results!</p>
-                            </div>
-                        </div> }
+                            <div>
+                                <div className={style.noResults}>
+                                    <FontAwesomeIcon icon={faSearch} />
+                                    <p>No results!</p>
+                                </div>
+                            </div>}
                     </div>
                 }
-            </div>
-            <button className={style.next}>
+            </div>}
+            {step === 1 && <GroupData selectFriend={selectFriend} />}
+            {step === 0 && <button className={style.next} onClick={() => {
+                if (selectFriend.length > 0) {
+                    setStep(1)
+                    setOpenSearch(false)
+                }
+            }
+            }>
                 <FontAwesomeIcon icon={faArrowRight} />
-            </button>
+            </button>}
             {internetStatus === false && <OfflineNotification />}
         </div>
     )
