@@ -6,7 +6,6 @@ import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator }) {
   const d = new Date(message.time);
-  let time = d.getHours();
   let minutes = d.getMinutes();
   let hours = d.getHours();
 
@@ -125,7 +124,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
-              <button onClick={() => { setReply({ message: message.message, time: message.time,image:true }), setOpenReply(-1) }}>Reply</button>
+              <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
             </div>}
           </div>
         </div>

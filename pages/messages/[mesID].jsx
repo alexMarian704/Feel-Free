@@ -591,9 +591,37 @@ export default function Messages() {
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>
         </div>}
         {localMessages.length > 0 && localMessages.map((message, i) => {
+          const d = new Date(message.time);
+          let day = d.getDate()
+          let month = d.getMonth();
+          let year = d.getFullYear()
+          const prevTime = new Date(i > 0 ? localMessages[i - 1].time : null);
+          let dayP = prevTime.getDate()
+          let monthP = prevTime.getMonth();
+          let yearP = prevTime.getFullYear()
+
           if (i >= localMessages.length - render - 1)
             return (
-              <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
+              <div>
+                {(day !== dayP || month !== monthP || year !== yearP) &&
+                  <div>
+                    <p style={{
+                       "width":"60%",
+                       "textAlign":"center",
+                       "height":"30px",
+                       "background":"rgba(128, 0, 64 , 0.5)",
+                       "display":"flex",
+                       "margin":"auto",
+                       "marginTop":"10px",
+                       "alignItems":"center",
+                       "justifyContent":"center",
+                       "fontSize":"calc(18px + 0.1vw)",
+                       "marginBottom":"10px",
+                       "borderRadius":"20px"
+                    }}>{day}.{month+1}.{year}</p>
+                  </div>}
+                <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
+              </div>
             )
         })}
         {localMessages.length > 0 && positionScroll < 0.92 &&

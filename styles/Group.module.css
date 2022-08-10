@@ -148,7 +148,8 @@
     margin-bottom: 8px;
     border-radius: 200px;
     margin-top: 25px;
-    background-color: rgb(0, 0, 0);
+    background-color: var(--input-bg-group);
+    border: 1px solid var(--input-border-group);
 }
 
 .imageContainer div {
@@ -191,13 +192,13 @@
     width: 100%;
     height: calc(20px + 1vh);
     border-radius: 6px;
-    background-color: rgb(0, 0, 0);
+    background-color: var(--input-bg-group);
     outline: none;
     color: white;
     padding: 14px;
     padding-left: 6px;
-    border: 2px solid rgb(0, 0, 0);
-    box-shadow: 0px 0px 2px 3px rgba(30, 30, 30, 0.28);
+    border: 1px solid var(--input-border-group);
+    /* box-shadow: 0px 0px 2px 3px rgba(30, 30, 30, 0.28); */
     font-size: calc(16px + 0.1vw);
     font-family: "Padauk", sans-serif;
     transition: all 200ms ease-in-out;
@@ -208,20 +209,22 @@
     max-width: calc(220px + 25vw);
     min-height: 200px;
     max-height: 600px;
-    background-color: rgb(0, 0, 0);
+    background-color: var(--input-bg-group);
     border-radius: 6px;
     outline: none;
     color: white;
     padding: 6px;
-    border: none;
-    box-shadow: 0px 0px 2px 3px rgba(30, 30, 30, 0.28);
     font-size: calc(16px + 0.1vw);
     font-family: "Padauk", sans-serif;
     border: none;
     transition: all 200ms ease-in-out;
-    border: 2px solid rgb(0, 0, 0);
+    border: 1px solid var(--input-border-group);
 }
 
 .info input:focus,.info textarea:focus{
     border: 2px solid #800040;
+}
+
+.img{
+    border-radius: 50%;
 }

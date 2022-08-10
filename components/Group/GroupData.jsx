@@ -7,7 +7,9 @@ import style from "../../styles/Group.module.css"
 
 const GroupData = () => {
     const fileRef = useRef();
-    const [imageGroup, setImageGroup] = useState("")
+    const [image, setImage] = useState("")
+    const [name, setName] = useState("")
+    const [description, setDescription] = useState("")
 
     const changePhoto = async (e) => {
         const file = e.target.files[0];
@@ -15,17 +17,17 @@ const GroupData = () => {
         const name = `profile.${type}`;
         const groupImage = new Moralis.File(name, file);
         await groupImage.saveIPFS();
-        setImageGroup(groupImage.ipfs())
-        console.log(profileFile.ipfs());
+        setImage(groupImage.ipfs())
+        console.log(groupImage.ipfs());
     };
 
     return (
         <div>
             <div>
                 <div className={style.imageContainer}>
-                    {imageGroup !== "" && (
+                    {image !== "" && (
                         <Image
-                            src={imageGroup}
+                            src={image}
                             alt="group image"
                             width="90%"
                             height="90%"
@@ -34,7 +36,7 @@ const GroupData = () => {
                             className={style.img}
                         />
                     )}
-                    {imageGroup === "" &&
+                    {image === "" &&
                         <div>
                             <p>Select group image</p>
                         </div>}
@@ -58,13 +60,13 @@ const GroupData = () => {
                 <div className={style.info}>
                     <div>
                         <label>Name</label>
-                        <input type="text" />
+                        <input type="text" value={name} onChange={(e)=>setName(e.target.value) } />
                     </div>
                 </div>
                 <div className={style.info}>
                     <div>
                         <label>Description</label>
-                        <textarea name="description" cols="30" rows="10"></textarea>
+                        <textarea name="description" cols="30" rows="10" value={description} onChange={(e)=>setDescription(e.target.value) }></textarea>
                     </div>
                 </div>
             </div>
