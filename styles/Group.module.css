@@ -118,7 +118,7 @@
     transition: all 200ms ease-in-out;
 }
 
-.next:hover {
+.next:hover,.createButton:hover {
     background-color: #4c0428;
 }
 
@@ -149,7 +149,7 @@
     border-radius: 200px;
     margin-top: 25px;
     background-color: var(--input-bg-group);
-    border: 1px solid var(--input-border-group);
+    border: 2px solid var(--input-border-group);
 }
 
 .imageContainer div {
@@ -186,19 +186,19 @@
 .info {
     width: calc(220px + 25vw);
     margin: auto;
+    margin-top: 10px;
 }
 
 .info input {
     width: 100%;
     height: calc(20px + 1vh);
-    border-radius: 6px;
+    border-radius: 5px;
     background-color: var(--input-bg-group);
     outline: none;
     color: white;
     padding: 14px;
     padding-left: 6px;
-    border: 1px solid var(--input-border-group);
-    /* box-shadow: 0px 0px 2px 3px rgba(30, 30, 30, 0.28); */
+    border: 2px solid var(--input-border-group);
     font-size: calc(16px + 0.1vw);
     font-family: "Padauk", sans-serif;
     transition: all 200ms ease-in-out;
@@ -210,15 +210,15 @@
     min-height: 200px;
     max-height: 600px;
     background-color: var(--input-bg-group);
-    border-radius: 6px;
+    border-radius: 5px;
     outline: none;
     color: white;
     padding: 6px;
     font-size: calc(16px + 0.1vw);
     font-family: "Padauk", sans-serif;
     border: none;
-    transition: all 200ms ease-in-out;
-    border: 1px solid var(--input-border-group);
+    transition: border 200ms ease-in-out;
+    border: 2px solid var(--input-border-group);
 }
 
 .info input:focus,.info textarea:focus{
@@ -227,4 +227,23 @@
 
 .img{
     border-radius: 50%;
+}
+
+.createButton{
+    position: fixed;
+    bottom: calc(25px + 1vw);
+    right: calc(25px + 1vw);
+    background-color: #800040;
+    color: white;
+    cursor: pointer;
+    outline: none;
+    height: calc(50px + 0.6vw);
+    width: calc(50px + 0.6vw);
+    border-radius: 50%;
+    border: none;
+    font-size: calc(19px + 0.1vw);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 200ms ease-in-out;
 }
