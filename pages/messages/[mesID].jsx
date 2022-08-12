@@ -128,71 +128,96 @@ export default function Messages() {
       const unread = Moralis.Object.extend(ref);
       const query = new Moralis.Query(unread);
       query.equalTo("from", router.query.mesID);
+      query.notEqualTo("delete", "Delete")
       const results = await query.find();
       deleteNotification();
       if (results !== undefined) {
         for (let i = 0; i < results.length; i++) {
-          if (results[i].attributes.message !== "Delete") {
-            const bufferText = _base64ToArrayBuffer(results[i].attributes.message)
-            const decryptedText = await window.crypto.subtle.decrypt({
-              name: "RSA-OAEP"
-            },
-              originPrivateKey,
-              bufferText
-            )
-            const textMessage = dec.decode(decryptedText)
+          const bufferText = _base64ToArrayBuffer(results[i].attributes.message)
+          const decryptedText = await window.crypto.subtle.decrypt({
+            name: "RSA-OAEP"
+          },
+            originPrivateKey,
+            bufferText
+          )
+          const textMessage = dec.decode(decryptedText)
 
-            const bufferReply = _base64ToArrayBuffer(results[i].attributes.reply)
-            const decryptedReply = await window.crypto.subtle.decrypt({
-              name: "RSA-OAEP"
-            },
-              originPrivateKey,
-              bufferReply
-            )
-            const textReply = dec.decode(decryptedReply)
+          const bufferReply = _base64ToArrayBuffer(results[i].attributes.reply)
+          const decryptedReply = await window.crypto.subtle.decrypt({
+            name: "RSA-OAEP"
+          },
+            originPrivateKey,
+            bufferReply
+          )
+          const textReply = dec.decode(decryptedReply)
 
-            if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
-              const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
-              const decryptedMessages = decrypt(encryptedMessages, user.id);
-              main.messages = decryptedMessages.messages
-              //console.log(decryptedMessages.messages)
-            }
-            main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName, tag: results[i].attributes.tag, reply: JSON.parse(textReply) })
-            const encryptedMessagesList = encrypt(main, user.id)
-            localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-          } else if (results[i].attributes.message === "Delete") {
+          if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
             const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
             const decryptedMessages = decrypt(encryptedMessages, user.id);
             main.messages = decryptedMessages.messages
-
-            main.messages.map((x) => {
-              if (x.time === results[i].attributes.time) {
-                x.message = "This message was deleted"
-                x.file = ""
-                x.fileName = ""
-                x.delete = true
-              }
-            })
-
-            const encryptedMessagesList = encrypt(main, user.id)
-            localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+            //console.log(decryptedMessages.messages)
           }
+          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName, tag: results[i].attributes.tag, reply: JSON.parse(textReply) })
+          const encryptedMessagesList = encrypt(main, user.id)
+          localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
         }
         for (let i = 0; i < results.length; i++) {
           const query1 = new Moralis.Query(unread);
           query1.equalTo("time", results[i].attributes.time);
+          query1.notEqualTo("delete", "Delete")
           const results1 = await query1.first();
+          console.log(results1)
           if (results1 !== undefined)
             results1.destroy()
         }
-        if (main.messages.length > 0 && main.messages[main.messages.length - 1].message !== "Delete") {
+        if (main.messages.length > 0) {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
           let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
           messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].tag);
-        } else if (main.messages.length > 0) {
+        }
+      }
+      main.messages = []
+      const deleteRequest = Moralis.Object.extend(ref);
+      const queryDelete = new Moralis.Query(deleteRequest);
+      queryDelete.equalTo("from", router.query.mesID);
+      queryDelete.equalTo("delete", "Delete")
+      const _results = await queryDelete.find();
+      console.log(_results)
+      if (_results !== undefined) {
+        for (let i = 0; i < _results.length; i++) {
+          if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+            const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+            const decryptedMessages = decrypt(encryptedMessages, user.id);
+            main.messages = decryptedMessages.messages
+          }
+          let poz = 0;
+          main.messages.map((x, j) => {
+            if (x.time === _results[i].attributes.time) {
+              x.message = "This message was deleted"
+              x.file = ""
+              x.fileName = ""
+              x.delete = true
+              poz = j;
+            }
+          })
+          const encryptedMessagesList = encrypt(main, user.id)
+          localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+        }
+        for (let i = 0; i < _results.length; i++) {
+          const query1 = new Moralis.Query(unread);
+          query1.equalTo("time", _results[i].attributes.time);
+          query1.equalTo("delete", "Delete")
+          const results1 = await query1.first();
+          console.log(results1)
+          if (results1 !== undefined)
+            results1.destroy()
+        }
+        if (main.messages.length > 0) {
           setLocalMessages(main.messages)
-          messageRef.current.scrollIntoView({ behavior: 'instant' })
+          // messageRef.current.scrollIntoView({ behavior: 'instant' })
+          let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
+          messageOrder(user.get("ethAddress"), router.query.mesID, "Deleted message", data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", "message", main.messages[main.messages.length - 1].tag);
         }
       }
     }
@@ -614,16 +639,16 @@ export default function Messages() {
     const decryptedMessages = decrypt(encryptedMessages, user.id);
     main.messages = decryptedMessages.messages
     let poz
-    main.messages.map((x,i) => {
+    main.messages.map((x, i) => {
       if (x.time === time) {
         x.message = "This message was deleted"
         x.file = ""
         x.fileName = ""
         x.delete = true
-        poz=i
+        poz = i
       }
     })
-    if(poz === main.messages.length -1){
+    if (poz === main.messages.length - 1) {
       messageOrder(user.get("ethAddress"), router.query.mesID, "Deleted message", friendData.name, friendData.name2, time, "you", "message", friendData.userTag)
     }
 
@@ -715,7 +740,7 @@ export default function Messages() {
 
           if (i >= localMessages.length - render - 1)
             return (
-              <div key={message.time}>
+              <div key={i}>
                 {(day !== dayP || month !== monthP || year !== yearP) &&
                   <div>
                     <p style={{
@@ -733,7 +758,7 @@ export default function Messages() {
                       "borderRadius": "20px"
                     }}>{day}.{month + 1}.{year}</p>
                   </div>}
-                <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} />
+                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} />
               </div>
             )
         })}
