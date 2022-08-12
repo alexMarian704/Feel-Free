@@ -519,6 +519,59 @@ export default function Messages() {
     }
   }
 
+  const deleteRequest = async (time) => {
+    let messageList = []
+    let main = {
+      userAddress: user.get("ethAddress"),
+      messages: messageList
+    }
+
+    const addressToTag = Moralis.Object.extend("Tags");
+    const query = new Moralis.Query(addressToTag);
+    query.equalTo("ethAddress", router.query.mesID);
+    const results = await query.first();
+
+    let ref;
+    if (router.query.mesID.localeCompare(user.get("ethAddress")) === 1) {
+      ref = `a${router.query.mesID.slice(2)}${user.get("ethAddress").slice(2)}`
+    } else {
+      ref = `a${user.get("ethAddress").slice(2)}${router.query.mesID.slice(2)}`
+    }
+    const MessageOrigin = Moralis.Object.extend(ref);
+    const messageOriginPush = new MessageOrigin();
+    messageOriginPush.save({
+      from: user.get("ethAddress"),
+      to: router.query.userID,
+      message: "Delete",
+      time: time,
+      tag: user.get("userTag"),
+      delete: "Delete"
+    });
+    const messageACL = new Moralis.ACL();
+    messageACL.setWriteAccess(user.id, true);
+    messageACL.setReadAccess(user.id, true)
+    messageACL.setWriteAccess(results.attributes.idUser, true);
+    messageACL.setReadAccess(results.attributes.idUser, true);
+    messageOriginPush.setACL(messageACL)
+    messageOriginPush.save();
+
+    const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+    const decryptedMessages = decrypt(encryptedMessages, user.id);
+    main.messages = decryptedMessages.messages
+    main.messages.map((x)=>{
+      if(x.time === time){
+        x.message = "This message was deleted"
+        x.file=""
+        x.fileName=""
+        x.delete=true
+      }
+    })
+
+    setLocalMessages(main.messages)
+    const encryptedMessagesList = encrypt(main, user.id)
+    localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+  }
+
   const sendImage = async (e) => {
     const file = e.target.files[0];
     console.log(file)
@@ -602,25 +655,25 @@ export default function Messages() {
 
           if (i >= localMessages.length - render - 1)
             return (
-              <div>
+              <div key={message.time}>
                 {(day !== dayP || month !== monthP || year !== yearP) &&
                   <div>
                     <p style={{
-                       "width":"60%",
-                       "textAlign":"center",
-                       "height":"30px",
-                       "background":"rgba(128, 0, 64 , 0.5)",
-                       "display":"flex",
-                       "margin":"auto",
-                       "marginTop":"10px",
-                       "alignItems":"center",
-                       "justifyContent":"center",
-                       "fontSize":"calc(18px + 0.1vw)",
-                       "marginBottom":"10px",
-                       "borderRadius":"20px"
-                    }}>{day}.{month+1}.{year}</p>
+                      "width": "60%",
+                      "textAlign": "center",
+                      "height": "30px",
+                      "background": "rgba(128, 0, 64 , 0.5)",
+                      "display": "flex",
+                      "margin": "auto",
+                      "marginTop": "10px",
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                      "fontSize": "calc(18px + 0.1vw)",
+                      "marginBottom": "10px",
+                      "borderRadius": "20px"
+                    }}>{day}.{month + 1}.{year}</p>
                   </div>}
-                <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
+                <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest}/>
               </div>
             )
         })}
