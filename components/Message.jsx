@@ -73,18 +73,25 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             }}>
               <p>{message.reply.message}</p>
             </div>}
-            <p className={style.myText}>{message.message}</p>
+            <p className={style.myText} style={{
+              "fontStyle":message.delete !== true ? "normal" : "italic",
+              "color":message.delete !== true ? "white" : "rgb(170,170,170)"
+            }}>{message.message}</p>
             <p className={style.tailM}></p>
-            {minutes >= 10 && <p className={style.myMessageTime}>{`${hours}:${minutes}`}</p>}
-            {minutes < 10 && <p className={style.myMessageTime}>{`${hours}:0${minutes}`}</p>}
-            {number > total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>}
-            {number <= total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} color="#00e600" /></p>}
-            <button className={style.messageOptions} onClick={() => {
+            {minutes >= 10 && <p className={style.myMessageTime} style={{
+              "right":message.delete !== true ? "27px" : "6px"
+            }}>{`${hours}:${minutes}`}</p>}
+            {minutes < 10 && <p className={style.myMessageTime} style={{
+              "right":message.delete !== true ? "27px" : "6px"
+            }}>{`${hours}:0${minutes}`}</p>}
+            {number > total - 1 - unread && message.delete !== true && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>}
+            {number <= total - 1 - unread && message.delete !== true && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} color="#00e600" /></p>}
+            {message.delete !== true && <button className={style.messageOptions} onClick={() => {
               if (openReply !== number)
                 setOpenReply(number)
               else
                 setOpenReply(-1)
-            }}><FontAwesomeIcon icon={faCaretDown} /></button>
+            }}><FontAwesomeIcon icon={faCaretDown} /></button>}
             {openReply === number && <div className={style.messageOptionsContainer}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time) , setOpenReply(-1) }}>Delete</button>

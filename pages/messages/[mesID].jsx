@@ -132,33 +132,51 @@ export default function Messages() {
       deleteNotification();
       if (results !== undefined) {
         for (let i = 0; i < results.length; i++) {
-          const bufferText = _base64ToArrayBuffer(results[i].attributes.message)
-          const decryptedText = await window.crypto.subtle.decrypt({
-            name: "RSA-OAEP"
-          },
-            originPrivateKey,
-            bufferText
-          )
-          const textMessage = dec.decode(decryptedText)
+          if (results[i].attributes.message !== "Delete") {
+            const bufferText = _base64ToArrayBuffer(results[i].attributes.message)
+            const decryptedText = await window.crypto.subtle.decrypt({
+              name: "RSA-OAEP"
+            },
+              originPrivateKey,
+              bufferText
+            )
+            const textMessage = dec.decode(decryptedText)
 
-          const bufferReply = _base64ToArrayBuffer(results[i].attributes.reply)
-          const decryptedReply = await window.crypto.subtle.decrypt({
-            name: "RSA-OAEP"
-          },
-            originPrivateKey,
-            bufferReply
-          )
-          const textReply = dec.decode(decryptedReply)
+            const bufferReply = _base64ToArrayBuffer(results[i].attributes.reply)
+            const decryptedReply = await window.crypto.subtle.decrypt({
+              name: "RSA-OAEP"
+            },
+              originPrivateKey,
+              bufferReply
+            )
+            const textReply = dec.decode(decryptedReply)
 
-          if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+            if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+              const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+              const decryptedMessages = decrypt(encryptedMessages, user.id);
+              main.messages = decryptedMessages.messages
+              //console.log(decryptedMessages.messages)
+            }
+            main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName, tag: results[i].attributes.tag, reply: JSON.parse(textReply) })
+            const encryptedMessagesList = encrypt(main, user.id)
+            localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+          } else if (results[i].attributes.message === "Delete") {
             const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
             const decryptedMessages = decrypt(encryptedMessages, user.id);
             main.messages = decryptedMessages.messages
-            //console.log(decryptedMessages.messages)
+
+            main.messages.map((x) => {
+              if (x.time === results[i].attributes.time) {
+                x.message = "This message was deleted"
+                x.file = ""
+                x.fileName = ""
+                x.delete = true
+              }
+            })
+
+            const encryptedMessagesList = encrypt(main, user.id)
+            localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
           }
-          main.messages.push({ type: 2, message: textMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName, tag: results[i].attributes.tag, reply: JSON.parse(textReply) })
-          const encryptedMessagesList = encrypt(main, user.id)
-          localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
         }
         for (let i = 0; i < results.length; i++) {
           const query1 = new Moralis.Query(unread);
@@ -167,11 +185,14 @@ export default function Messages() {
           if (results1 !== undefined)
             results1.destroy()
         }
-        if (main.messages.length > 0) {
+        if (main.messages.length > 0 && main.messages[main.messages.length - 1].message !== "Delete") {
           setLocalMessages(main.messages)
           messageRef.current.scrollIntoView({ behavior: 'instant' })
           let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
           messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].tag);
+        } else if (main.messages.length > 0) {
+          setLocalMessages(main.messages)
+          messageRef.current.scrollIntoView({ behavior: 'instant' })
         }
       }
     }
@@ -209,57 +230,91 @@ export default function Messages() {
       query.equalTo("from", router.query.mesID);
       const subscription = await query.subscribe()
       subscription.on("create", async (mesObject) => {
-        const bufferText = _base64ToArrayBuffer(mesObject.attributes.message)
-        const decryptedText = await window.crypto.subtle.decrypt({
-          name: "RSA-OAEP"
-        },
-          originPrivateKey,
-          bufferText
-        )
-        const textMessage = dec.decode(decryptedText)
+        if (mesObject.attributes.message !== "Delete") {
+          const bufferText = _base64ToArrayBuffer(mesObject.attributes.message)
+          const decryptedText = await window.crypto.subtle.decrypt({
+            name: "RSA-OAEP"
+          },
+            originPrivateKey,
+            bufferText
+          )
+          const textMessage = dec.decode(decryptedText)
 
-        const bufferReply = _base64ToArrayBuffer(mesObject.attributes.reply)
-        const decryptedReply = await window.crypto.subtle.decrypt({
-          name: "RSA-OAEP"
-        },
-          originPrivateKey,
-          bufferReply
-        )
-        const textReply = dec.decode(decryptedReply)
+          const bufferReply = _base64ToArrayBuffer(mesObject.attributes.reply)
+          const decryptedReply = await window.crypto.subtle.decrypt({
+            name: "RSA-OAEP"
+          },
+            originPrivateKey,
+            bufferReply
+          )
+          const textReply = dec.decode(decryptedReply)
 
-        const deleteMessage = Moralis.Object.extend(ref);
-        const query1 = new Moralis.Query(deleteMessage);
-        query1.equalTo("time", mesObject.attributes.time);
-        const results1 = await query1.first();
-        deleteNotification()
-        if (textMessage !== "" && results1 !== undefined) {
-          results1.destroy().then(() => {
-            if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+          const deleteMessage = Moralis.Object.extend(ref);
+          const query1 = new Moralis.Query(deleteMessage);
+          query1.equalTo("time", mesObject.attributes.time);
+          const results1 = await query1.first();
+          deleteNotification()
+          if (textMessage !== "" && results1 !== undefined) {
+            results1.destroy().then(() => {
+              if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
+                const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+                const decryptedMessages = decrypt(encryptedMessages, user.id);
+                main.messages = decryptedMessages.messages
+                //console.log(decryptedMessages.messages)
+              }
+              main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, file: mesObject.attributes.file, fileName: mesObject.attributes.fileName, tag: mesObject.attributes.tag, reply: JSON.parse(textReply) })
+
+              const encryptedMessagesList = encrypt(main, user.id)
+              localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+              let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
+
+              messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend", mesObject.attributes.file, mesObject.attributes.tag)
+
+              if (main.messages.length > 0) {
+                setLocalMessages(main.messages)
+                setRender(++render);
+                const elementId = document.getElementById("scrollID");
+                const scroll = elementId.scrollTop / (elementId.scrollHeight - elementId.clientHeight);
+                if (Number(scroll.toPrecision(2)) >= 0.92) {
+                  messageRef.current.scrollIntoView({ behavior: 'smooth' })
+                }
+              }
+            })
+          }
+        } else if (mesObject.attributes.message === "Delete") {
+          const deleteMessage = Moralis.Object.extend(ref);
+          const query1 = new Moralis.Query(deleteMessage);
+          query1.equalTo("time", mesObject.attributes.time);
+          const results1 = await query1.first();
+
+          if (results1 !== undefined) {
+            results1.destroy().then(() => {
               const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
               const decryptedMessages = decrypt(encryptedMessages, user.id);
               main.messages = decryptedMessages.messages
-              //console.log(decryptedMessages.messages)
-            }
-            main.messages.push({ type: 2, message: textMessage, time: mesObject.attributes.time, file: mesObject.attributes.file, fileName: mesObject.attributes.fileName, tag: mesObject.attributes.tag, reply: JSON.parse(textReply) })
-
-            const encryptedMessagesList = encrypt(main, user.id)
-            localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
-            let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
-
-            messageOrder(user.get("ethAddress"), router.query.mesID, textMessage, data.name, data.name2, mesObject.attributes.time, "friend", mesObject.attributes.file, mesObject.attributes.tag)
-
-            if (main.messages.length > 0) {
-              setLocalMessages(main.messages)
-              setRender(++render);
-              const elementId = document.getElementById("scrollID");
-              const scroll = elementId.scrollTop / (elementId.scrollHeight - elementId.clientHeight);
-              if (Number(scroll.toPrecision(2)) >= 0.92) {
-                messageRef.current.scrollIntoView({ behavior: 'smooth' })
+              let poz = 0
+              main.messages.map((x, i) => {
+                if (x.time === mesObject.attributes.time) {
+                  x.message = "This message was deleted"
+                  x.file = ""
+                  x.fileName = ""
+                  x.delete = true
+                  poz = i;
+                }
+              })
+              if (poz === main.messages.length - 1) {
+                let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
+                messageOrder(user.get("ethAddress"), router.query.mesID, "Deleted message", data.name, data.name2, mesObject.attributes.time, "friend", "message", mesObject.attributes.tag)
               }
-            }
-          })
+
+              setLocalMessages(main.messages)
+              const encryptedMessagesList = encrypt(main, user.id)
+              localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+            })
+          }
         }
-      })
+      }
+      )
     }
   }
 
@@ -558,14 +613,19 @@ export default function Messages() {
     const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
     const decryptedMessages = decrypt(encryptedMessages, user.id);
     main.messages = decryptedMessages.messages
-    main.messages.map((x)=>{
-      if(x.time === time){
+    let poz
+    main.messages.map((x,i) => {
+      if (x.time === time) {
         x.message = "This message was deleted"
-        x.file=""
-        x.fileName=""
-        x.delete=true
+        x.file = ""
+        x.fileName = ""
+        x.delete = true
+        poz=i
       }
     })
+    if(poz === main.messages.length -1){
+      messageOrder(user.get("ethAddress"), router.query.mesID, "Deleted message", friendData.name, friendData.name2, time, "you", "message", friendData.userTag)
+    }
 
     setLocalMessages(main.messages)
     const encryptedMessagesList = encrypt(main, user.id)
@@ -673,7 +733,7 @@ export default function Messages() {
                       "borderRadius": "20px"
                     }}>{day}.{month + 1}.{year}</p>
                   </div>}
-                <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest}/>
+                <RenderMessage message={message} key={i} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} />
               </div>
             )
         })}

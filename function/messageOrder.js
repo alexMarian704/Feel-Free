@@ -15,6 +15,7 @@ export const messageOrder = (address, chat, lastMessage, name, name2, time , las
             file,
             tag
         };
+        console.log(filterArray)
         localStorage.setItem(`${address}Order`, JSON.stringify(filterArray));
     } else {
         localStorage.setItem(`${address}Order`, JSON.stringify([
