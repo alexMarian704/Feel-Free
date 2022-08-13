@@ -15,7 +15,7 @@ const GroupData = ({ selectFriend }) => {
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
     const [error, setError] = useState("")
-    const [friendsData , setFriendsData] = useState([])
+    const [friendsData, setFriendsData] = useState([])
 
     const changePhoto = async (e) => {
         const file = e.target.files[0];
@@ -41,6 +41,18 @@ const GroupData = ({ selectFriend }) => {
         setFriendsData(array);
     }, [])
 
+    function _arrayBufferToBase64(buffer) {
+        let binary = '';
+        let bytes = new Uint8Array(buffer);
+        let len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+      }
+
+    //console.log(friendsData)
+
     const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
     const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
 
@@ -49,22 +61,10 @@ const GroupData = ({ selectFriend }) => {
             setError("")
             const d = new Date();
             let time = d.getTime();
-            const ref = `a${user.get("ethAddress").slice(2)}${time}`
-            const keyPair = window.crypto.subtle.generateKey({
-                name: "RSA-OAEP",
-                modulusLength: 4096,
-                publicExponent: new Uint8Array([1, 0, 1]),
-                hash: "SHA-256"
-            },
-                true,
-                ["encrypt", "decrypt"]
-            );
-            const { privateKey } = await keyPair;
-            const privateKeyJwk = await window.crypto.subtle.exportKey(
-                "jwk",
-                privateKey
-            );
-            const stringKey = JSON.stringify(privateKeyJwk)
+            const ref = `Group${user.get("ethAddress").slice(2)}${time}`
+            const stringKey = self.crypto.randomUUID()
+            const enc = new TextEncoder();
+            const encodedKey = enc.encode(stringKey);
 
             const GroupOrigin = Moralis.Object.extend(ref);
             const groupData = new GroupOrigin();
@@ -76,23 +76,84 @@ const GroupData = ({ selectFriend }) => {
                 image: image,
                 time: time,
             });
-            const messageACL = new Moralis.ACL();
-            messageACL.setWriteAccess(user.id, true);
-            messageACL.setReadAccess(user.id, true)
+            const originACL = new Moralis.ACL();
+            originACL.setWriteAccess(user.id, true);
+            originACL.setReadAccess(user.id, true)
             for (let i = 0; i < friendsData.length; i++) {
-                messageACL.setReadAccess(friendsData[i].idUser, true);
+                originACL.setReadAccess(friendsData[i].idUser, true);
             }
-            console.log(messageACL)
-            groupData.setACL(messageACL)
+            groupData.setACL(originACL)
             groupData.save();
+            for (let i = 0; i < friendsData.length; i++) {
+                const publicKeyFriend = JSON.parse(friendsData[i].formatPublicKey)
+                const publicKey = await window.crypto.subtle.importKey(
+                    "jwk",
+                    publicKeyFriend,
+                    {
+                        name: "RSA-OAEP",
+                        modulusLength: 4096,
+                        hash: "SHA-256"
+                    },
+                    true,
+                    ["encrypt"]
+                );
 
+                const encryptedKey = await window.crypto.subtle.encrypt({
+                    name: "RSA-OAEP"
+                },
+                    publicKey,
+                    encodedKey
+                ).catch((err) => {
+                    console.log(err)
+                })
+                const GroupKey = Moralis.Object.extend(ref);
+                const groupData = new GroupKey();
+                groupData.save({
+                    from: user.get("ethAddress"),
+                    to: friendsData[i].ethAddress,
+                    type: "Encryption key",
+                    time: time,
+                    key: _arrayBufferToBase64(encryptedKey)
+                });
+                const groupACL = new Moralis.ACL();
+                groupACL.setWriteAccess(user.id, true);
+                groupACL.setReadAccess(user.id, true)
+                groupACL.setWriteAccess(friendsData[i].idUser, true);
+                groupACL.setReadAccess(friendsData[i].idUser, true)
+                groupData.setACL(groupACL)
+                groupData.save();
+
+                const Notification = Moralis.Object.extend("Notification");
+                const noti = new Notification();
+                noti.save({
+                    from: user.get("ethAddress"),
+                    to: friendsData[i].ethAddress,
+                    type: "New group",
+                    time: time,
+                    name: name
+                });
+
+                const notificationsACL = new Moralis.ACL();
+                notificationsACL.setWriteAccess(user.id, true);
+                notificationsACL.setReadAccess(user.id, true)
+                notificationsACL.setWriteAccess(friendsData[i].idUser, true);
+                notificationsACL.setReadAccess(friendsData[i].idUser, true);
+                noti.setACL(notificationsACL)
+                noti.save();
+            }
+            const encryptedLocalKey = encrypt(stringKey, user.id)
+            localStorage.setItem(`Group${user.get("ethAddress").slice(2)}${time}Key`, encryptedLocalKey);
+            const groupsList = localStorage.getItem("GroupsList")
+            if (groupsList !== null)
+                localStorage.setItem("GroupsList", [...groupsList, `Group${user.get("ethAddress").slice(2)}${time}`]);
+            else
+                localStorage.setItem("GroupsList", [`Group${user.get("ethAddress").slice(2)}${time}`]);
         } else if (name.length <= 3) {
             setError("Name is too short")
         } else {
             setError("Description is too short")
         }
     }
-
 
 
     return (
