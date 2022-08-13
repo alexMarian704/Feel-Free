@@ -65,24 +65,26 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
         }}>
           <div className={style.myMessageContainer}>
             {message.reply && <div className={style.replyMessage} onClick={() => {
-              document.getElementById(message.reply.time).scrollIntoView()
-              setScrollIntoViewIndicator(message.reply.time)
-              setTimeout(() => {
-                setScrollIntoViewIndicator("")
-              }, 2000)
+              if (document.getElementById(message.reply.time).innerHTML.includes("color: rgb(170, 170, 170)") === false) {
+                document.getElementById(message.reply.time).scrollIntoView()
+                setScrollIntoViewIndicator(message.reply.time)
+                setTimeout(() => {
+                  setScrollIntoViewIndicator("")
+                }, 2000)
+              }
             }}>
               <p>{message.reply.message}</p>
             </div>}
             <p className={style.myText} style={{
-              "fontStyle":message.delete !== true ? "normal" : "italic",
-              "color":message.delete !== true ? "white" : "rgb(170,170,170)"
+              "fontStyle": message.delete !== true ? "normal" : "italic",
+              "color": message.delete !== true ? "white" : "rgb(170,170,170)"
             }}>{message.message}</p>
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime} style={{
-              "right":message.delete !== true ? "27px" : "6px"
+              "right": message.delete !== true ? "27px" : "6px"
             }}>{`${hours}:${minutes}`}</p>}
             {minutes < 10 && <p className={style.myMessageTime} style={{
-              "right":message.delete !== true ? "27px" : "6px"
+              "right": message.delete !== true ? "27px" : "6px"
             }}>{`${hours}:0${minutes}`}</p>}
             {number > total - 1 - unread && message.delete !== true && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>}
             {number <= total - 1 - unread && message.delete !== true && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} color="#00e600" /></p>}
@@ -94,7 +96,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             }}><FontAwesomeIcon icon={faCaretDown} /></button>}
             {openReply === number && <div className={style.messageOptionsContainer}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
-              <button onClick={() => { deleteRequest(message.time) , setOpenReply(-1) }}>Delete</button>
+              <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
             </div>}
           </div>
         </div>
@@ -166,16 +168,19 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             }}>
               <p>{message.reply.message}</p>
             </div>}
-            <p className={style.friendText}>{message.message}</p>
+            <p className={style.friendText} style={{
+              "fontStyle": message.delete !== true ? "normal" : "italic",
+              "color": message.delete !== true ? "white" : "rgb(170,170,170)"
+            }}>{message.message}</p>
             <p className={style.tailF}></p>
             {minutes >= 10 && <p className={style.messageTime}>{`${hours}:${minutes}`}</p>}
             {minutes < 10 && <p className={style.messageTime}>{`${hours}:0${minutes}`}</p>}
-            <button className={style.messageOptions} onClick={() => {
+            {message.delete !== true && <button className={style.messageOptions} onClick={() => {
               if (openReply !== number)
                 setOpenReply(number)
               else
                 setOpenReply(-1)
-            }}><FontAwesomeIcon icon={faCaretDown} /></button>
+            }}><FontAwesomeIcon icon={faCaretDown} /></button>}
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
             </div>}

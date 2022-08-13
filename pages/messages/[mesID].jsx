@@ -215,7 +215,6 @@ export default function Messages() {
         }
         if (main.messages.length > 0) {
           setLocalMessages(main.messages)
-          // messageRef.current.scrollIntoView({ behavior: 'instant' })
           let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
           messageOrder(user.get("ethAddress"), router.query.mesID, "Deleted message", data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", "message", main.messages[main.messages.length - 1].tag);
         }
