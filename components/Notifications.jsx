@@ -95,6 +95,10 @@ export default function Notifications() {
         results1.destroy();
     }
 
+    const goToGroup = (eth , time)=>{
+        route.push(`/group/${eth}${time}`)
+    }
+
     return (
         <div className={style.main}>
             {open === true &&
@@ -120,6 +124,12 @@ export default function Notifications() {
                                     return (
                                         <div className={style.newMessage} onClick={() => route.push(`/messages/${data.from}`)} key={data.from}>
                                             <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New messages from <span>@{data.tag}</span></p>
+                                        </div>
+                                    )
+                                }else if(data.type === "New group"){
+                                    return(
+                                        <div className={style.newGroup} onClick={()=> goToGroup(data.from.slice(2) ,data.time)}>
+                                            <p>You are now member of <span>{data.name}</span></p>
                                         </div>
                                     )
                                 }

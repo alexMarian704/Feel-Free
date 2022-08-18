@@ -1,4 +1,4 @@
-export const messageOrder = (address, chat, lastMessage, name, name2, time , last, file , tag) => {
+export const messageOrder = (address, chat, lastMessage, name, name2, time , last, file , tag , type) => {
     if (localStorage.getItem(`${address}Order`) !== null) {
         let array = JSON.parse(localStorage.getItem(`${address}Order`));
         let filterArray = array.filter(x => x.chat !== chat)
@@ -13,9 +13,10 @@ export const messageOrder = (address, chat, lastMessage, name, name2, time , las
             time,
             last,
             file,
-            tag
+            tag,
+            type
         };
-        console.log(filterArray)
+        //console.log(type)
         localStorage.setItem(`${address}Order`, JSON.stringify(filterArray));
     } else {
         localStorage.setItem(`${address}Order`, JSON.stringify([
@@ -27,7 +28,8 @@ export const messageOrder = (address, chat, lastMessage, name, name2, time , las
                 time,
                 last,
                 file,
-                tag
+                tag,
+                type
             }
         ]))
     }

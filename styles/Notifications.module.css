@@ -83,7 +83,7 @@
     transition: all 200ms ease-in-out;
 }
 
-.newMessage:hover{
+.newMessage:hover, .newGroup:hover{
     background-color: rgb(70, 70, 70);
 }
 
@@ -145,4 +145,20 @@
 
 .request span:hover{
     text-decoration: underline 2px;
+}
+
+.newGroup{
+    margin-top: 10px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+    padding: 0px 2px 0px 2px;
+}
+
+.newGroup span{
+    color: #95044d;
+    font-size: calc(18px + 0.1vw);
 }

@@ -7,6 +7,7 @@ import style from "../../styles/Group.module.css"
 import { useMoralis } from "react-moralis";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
+import { messageOrder } from '../../function/messageOrder';
 
 const GroupData = ({ selectFriend }) => {
     const { user } = useMoralis();
@@ -75,6 +76,7 @@ const GroupData = ({ selectFriend }) => {
                 description: description,
                 image: image,
                 time: time,
+                members:selectFriend
             });
             const originACL = new Moralis.ACL();
             originACL.setWriteAccess(user.id, true);
@@ -130,7 +132,8 @@ const GroupData = ({ selectFriend }) => {
                     to: friendsData[i].ethAddress,
                     type: "New group",
                     time: time,
-                    name: name
+                    name: name,
+                    tag:user.get("userTag")
                 });
 
                 const notificationsACL = new Moralis.ACL();
@@ -148,6 +151,7 @@ const GroupData = ({ selectFriend }) => {
                 localStorage.setItem("GroupsList", [...groupsList, `Group${user.get("ethAddress").slice(2)}${time}`]);
             else
                 localStorage.setItem("GroupsList", [`Group${user.get("ethAddress").slice(2)}${time}`]);
+            
         } else if (name.length <= 3) {
             setError("Name is too short")
         } else {
