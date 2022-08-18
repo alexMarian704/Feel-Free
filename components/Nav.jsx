@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useMoralis, useChain } from "react-moralis";
 import useWindowDimensions from "../function/width";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faBars , faLock } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import polygon from "../public/polygon.jpg";
 import binance from "../public/binance.png";
@@ -126,6 +126,15 @@ export default function Nav({
     Moralis.LiveQuery.close()
   }, [])
 
+  const lockAccount = ()=>{
+    const d = new Date();
+    let time = d.getTime();
+    setUserData({
+      reCheck: 1,
+      time: time
+    })
+  }
+
   return (
     <nav className="nav-in" id="nav">
       {width < 711 && navIn === "out" && (
@@ -211,7 +220,8 @@ export default function Nav({
           </div>
         </div>
       </div>
-      <div>
+      <div className="right-nav">
+        <button className="lockAccount" onClick={lockAccount}><FontAwesomeIcon icon={faLock} /></button>
         <button onClick={logOutUser} className="logOutNav">
           Log out
         </button>
