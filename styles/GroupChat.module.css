@@ -1,0 +1,19 @@
+.backToHome{
+    background-color: #800040;
+    border: none;
+    cursor: pointer;
+    border-radius: 50px;
+    width: calc(130px + 2vw);
+    height: calc(34px + 0.5vh);
+    display: block;
+    margin: auto;
+    color: white;
+    margin-top: 20px;
+    font-size: calc(16px + 0.1vw);
+}
+
+.foundError{
+    width: 100%;
+    text-align: center;
+    color: #800040;
+}

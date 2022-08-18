@@ -108,11 +108,11 @@ export default function Notifications() {
                     }}>0 notifications</p>}
                     {notArray.length > 0 &&
                         <div>
-                            {notArray.map((x) => {
+                            {notArray.map((x , i) => {
                                 const data = x.attributes;
                                 if (data.type === "Friend Request") {
                                     return (
-                                        <div className={style.request} key={data.from}>
+                                        <div className={style.request} key={i}>
                                             <p>Friend Request from <span onClick={() => route.push(`/users/${data.from}`)}>@{data.tag}</span></p>
                                             <div className={style.butDiv}>
                                                 <button className={style.accept} onClick={() => accept(data.from)}> <FontAwesomeIcon icon={faCheck} /></button>
@@ -122,13 +122,13 @@ export default function Notifications() {
                                     )
                                 } else if (data.type === "New message") {
                                     return (
-                                        <div className={style.newMessage} onClick={() => route.push(`/messages/${data.from}`)} key={data.from}>
+                                        <div className={style.newMessage} onClick={() => route.push(`/messages/${data.from}`)} key={i}>
                                             <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New messages from <span>@{data.tag}</span></p>
                                         </div>
                                     )
                                 }else if(data.type === "New group"){
                                     return(
-                                        <div className={style.newGroup} onClick={()=> goToGroup(data.from.slice(2) ,data.time)}>
+                                        <div className={style.newGroup} onClick={()=> goToGroup(data.from.slice(2) ,data.time)} key={i}>
                                             <p>You are now member of <span>{data.name}</span></p>
                                         </div>
                                     )
