@@ -8,10 +8,12 @@ import { useMoralis } from "react-moralis";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from '../../function/messageOrder';
+import { useRouter } from "next/router";
 
 const GroupData = ({ selectFriend }) => {
     const { user } = useMoralis();
     const fileRef = useRef();
+    const router = useRouter()
     const [image, setImage] = useState("")
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
@@ -58,7 +60,7 @@ const GroupData = ({ selectFriend }) => {
     const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
 
     const createGroup = async () => {
-        if (name.length > 3 && description.length > 6) {
+        if (name.length > 3 && description.length > 6 && image !== "") {
             setError("")
             const d = new Date();
             let time = d.getTime();
@@ -151,9 +153,12 @@ const GroupData = ({ selectFriend }) => {
                 localStorage.setItem("GroupsList", JSON.stringify([...JSON.parse(groupsList), `Group${user.get("ethAddress").slice(2)}${time}`]));
             else
                 localStorage.setItem("GroupsList", JSON.stringify([`Group${user.get("ethAddress").slice(2)}${time}`]));
-
+            messageOrder(user.get("ethAddress"), name, "New group", name, "", time, "you", "message", null, "group", user.get("ethAddress").slice(2) + time)
+            router.push("/")
         } else if (name.length <= 3) {
             setError("Name is too short")
+        }else if (image === "") {
+            setError("Please select an image")
         } else {
             setError("Description is too short")
         }
