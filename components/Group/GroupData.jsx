@@ -47,10 +47,10 @@ const GroupData = ({ selectFriend }) => {
         let bytes = new Uint8Array(buffer);
         let len = bytes.byteLength;
         for (let i = 0; i < len; i++) {
-          binary += String.fromCharCode(bytes[i]);
+            binary += String.fromCharCode(bytes[i]);
         }
         return window.btoa(binary);
-      }
+    }
 
     //console.log(friendsData)
 
@@ -76,7 +76,7 @@ const GroupData = ({ selectFriend }) => {
                 description: description,
                 image: image,
                 time: time,
-                members:selectFriend
+                members: selectFriend
             });
             const originACL = new Moralis.ACL();
             originACL.setWriteAccess(user.id, true);
@@ -133,7 +133,7 @@ const GroupData = ({ selectFriend }) => {
                     type: "New group",
                     time: time,
                     name: name,
-                    tag:user.get("userTag")
+                    tag: user.get("userTag")
                 });
 
                 const notificationsACL = new Moralis.ACL();
@@ -148,10 +148,10 @@ const GroupData = ({ selectFriend }) => {
             localStorage.setItem(`Group${user.get("ethAddress").slice(2)}${time}Key`, encryptedLocalKey);
             const groupsList = localStorage.getItem("GroupsList")
             if (groupsList !== null)
-                localStorage.setItem("GroupsList", [...groupsList, `Group${user.get("ethAddress").slice(2)}${time}`]);
+                localStorage.setItem("GroupsList", JSON.stringify([...JSON.parse(groupsList), `Group${user.get("ethAddress").slice(2)}${time}`]));
             else
-                localStorage.setItem("GroupsList", [`Group${user.get("ethAddress").slice(2)}${time}`]);
-            
+                localStorage.setItem("GroupsList", JSON.stringify([`Group${user.get("ethAddress").slice(2)}${time}`]));
+
         } else if (name.length <= 3) {
             setError("Name is too short")
         } else {
