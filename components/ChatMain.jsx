@@ -89,7 +89,7 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     src={friendData.image}
                     alt="Profile Photo" />}
             </div>
-            <div className={style.infoContainer} onClick={() => router.push(`/messages/${address}`)}>
+            <div className={style.infoContainer} onClick={() => type === "group" ? router.push(`/group/${groupRef}`) : router.push(`/messages/${address}`)}>
                 {(file === "message") && <div className={style.mainData}>
                     {newMaessage === false && <p>{friendData.username}</p>}
                     {newMaessage === true && <p>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
@@ -97,7 +97,7 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     }} /></p>}
                     {type === "group" && <p>{friendData.name}</p>}
                     {newMaessage === false && last === "you" && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
-                    {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{friendData.username}:</span> {lastMessage}</p>}
+                    {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{type !== "group" ? friendData.username: "Owner"}:</span> {lastMessage}</p>}
                     {newMaessage === true && <p><span>New messages</span></p>}
                 </div>}
                 {(file === "application/pdf" || file === "text/plain") && <div className={style.mainData}>

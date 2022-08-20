@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeartBroken, faHouseUser } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
+import { messageOrder } from "../../function/messageOrder";
 
 const Group = () => {
     const [member, setMember] = useState(true)
@@ -39,8 +40,8 @@ const Group = () => {
             const GroupMembers = Moralis.Object.extend(`Group${router.query.id}`);
             const query = new Moralis.Query(GroupMembers);
             query.equalTo("type", "data");
-            const results = await query.first();
-            if (results === undefined) {
+            const _results = await query.first();
+            if (_results === undefined) {
                 setMember(false)
             }
             setLoading(false)
@@ -77,8 +78,21 @@ const Group = () => {
                     const localEncrypt = encrypt(textKey, user.id)
                     localStorage.setItem(`Group${router.query.id}Key`, localEncrypt)
                     results.destroy()
+                    const groupsList = localStorage.getItem("GroupsList")
+                    if (groupsList !== null)
+                        localStorage.setItem("GroupsList", JSON.stringify([...JSON.parse(groupsList), `Group${router.query.id}`]));
+                    else
+                        localStorage.setItem("GroupsList", JSON.stringify([`Group${router.query.id}`]));
+                    messageOrder(user.get("ethAddress"), _results.attributes.name, "New group", _results.attributes.name, "", _results.attributes.time, "friend", "message", null, "group", router.query.id)
                 }
             }
+            const userNotification = Moralis.Object.extend("Notification");
+            const queryNotification = new Moralis.Query(userNotification);
+            queryNotification.equalTo("to", user.get("ethAddress"));
+            queryNotification.equalTo("type", "New group");
+            queryNotification.equalTo("time", _results.attributes.time);
+            const results1 = await queryNotification.first();
+            results1.destroy()
         }
     }, [isAuthenticated, router.query.id])
 

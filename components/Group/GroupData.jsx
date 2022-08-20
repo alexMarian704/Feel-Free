@@ -154,7 +154,9 @@ const GroupData = ({ selectFriend }) => {
             else
                 localStorage.setItem("GroupsList", JSON.stringify([`Group${user.get("ethAddress").slice(2)}${time}`]));
             messageOrder(user.get("ethAddress"), name, "New group", name, "", time, "you", "message", null, "group", user.get("ethAddress").slice(2) + time)
-            router.push("/")
+            setTimeout(() => {
+                router.push(`/group/${user.get("ethAddress").slice(2)}${time}`)
+              }, 1000)
         } else if (name.length <= 3) {
             setError("Name is too short")
         }else if (image === "") {
