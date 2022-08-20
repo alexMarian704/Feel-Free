@@ -1,6 +1,6 @@
 .main{
-    width: calc(48px + 1vw);
-    height: calc(48px + 1vw);
+    width: calc(45px + 1vw);
+    height: calc(45px + 1vw);
     max-width: 60px;
     max-height: 60px;
     background-color: rgb(34, 34, 34);
@@ -15,7 +15,7 @@
     height: 100%;
     border-radius: 50%;
     background-color: #800040;
-    font-size: 25px;
+    font-size: calc(22px + 0.1vw);
     cursor: pointer;
     border: none;
     box-shadow: 0px 0px 10px 1px rgba(34, 33, 33, 0.12);

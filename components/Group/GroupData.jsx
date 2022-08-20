@@ -19,6 +19,7 @@ const GroupData = ({ selectFriend }) => {
     const [description, setDescription] = useState("")
     const [error, setError] = useState("")
     const [friendsData, setFriendsData] = useState([])
+    const [creatingLoading , setCreatingLoading] = useState(false);
 
     const changePhoto = async (e) => {
         const file = e.target.files[0];
@@ -74,8 +75,8 @@ const GroupData = ({ selectFriend }) => {
             groupData.save({
                 type: "data",
                 owner: user.get("ethAddress"),
-                name: name,
-                description: description,
+                name: name.trim(),
+                description: description.trim(),
                 image: image,
                 time: time,
                 members: selectFriend
@@ -134,7 +135,7 @@ const GroupData = ({ selectFriend }) => {
                     to: friendsData[i].ethAddress,
                     type: "New group",
                     time: time,
-                    name: name,
+                    name: name.trim(),
                     tag: user.get("userTag")
                 });
 
@@ -153,18 +154,21 @@ const GroupData = ({ selectFriend }) => {
                 localStorage.setItem("GroupsList", JSON.stringify([...JSON.parse(groupsList), `Group${user.get("ethAddress").slice(2)}${time}`]));
             else
                 localStorage.setItem("GroupsList", JSON.stringify([`Group${user.get("ethAddress").slice(2)}${time}`]));
-            messageOrder(user.get("ethAddress"), name, "New group", name, "", time, "you", "message", null, "group", user.get("ethAddress").slice(2) + time)
+            messageOrder(user.get("ethAddress"), name.trim(), "New group", name.trim(), "", time, "you", "message", null, "group", user.get("ethAddress").slice(2) + time)
+            setCreatingLoading(true)
             setTimeout(() => {
                 router.push(`/group/${user.get("ethAddress").slice(2)}${time}`)
               }, 1000)
-        } else if (name.length <= 3) {
-            setError("Name is too short")
+        } else if (name.trim().length <= 3) {
+            setError("Name is too short, it has to be at least 4 characters")
         }else if (image === "") {
             setError("Please select an image")
-        } else {
-            setError("Description is too short")
+        } else if(description.trim().length <= 7) {
+            setError("Description is too short, it has to be at least 8 characters")
         }
     }
+
+    console.log(name.trim())
 
 
     return (
@@ -216,7 +220,7 @@ const GroupData = ({ selectFriend }) => {
                     </div>
                 </div>
                 <div>
-                    {error !== "" && <p>{error}</p>}
+                    {error !== "" && <p className={style.error}>{error}</p>}
                 </div>
             </div>
             <button className={style.createButton} onClick={createGroup}>

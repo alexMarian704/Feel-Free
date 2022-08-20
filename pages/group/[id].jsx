@@ -10,7 +10,7 @@ import { Moralis } from "moralis";
 import style from "../../styles/GroupChat.module.css"
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeartBroken, faHouseUser } from "@fortawesome/free-solid-svg-icons";
+import { faHeartBroken, faHouseUser, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from "../../function/messageOrder";
@@ -92,7 +92,8 @@ const Group = () => {
             queryNotification.equalTo("type", "New group");
             queryNotification.equalTo("time", _results.attributes.time);
             const results1 = await queryNotification.first();
-            results1.destroy()
+            if(results1 !== undefined)
+                results1.destroy()
         }
     }, [isAuthenticated, router.query.id])
 
@@ -120,10 +121,16 @@ const Group = () => {
 
     return (
         <div>
-            {loading === false && <div>
-                {router.query.id}
-                {internetStatus === false && <OfflineNotification />}
-            </div>}
+            {loading === false &&
+                <div>
+                    <div className={style.nav}>
+                        <div>
+                            <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
+                        </div>
+                    </div>
+                    {router.query.id}
+                    {internetStatus === false && <OfflineNotification />}
+                </div>}
         </div>
 
     )
