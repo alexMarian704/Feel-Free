@@ -50,3 +50,31 @@
     color: white;
     border-color: black;
 }
+
+.groupInfo{
+    display: flex;
+    align-items: center;
+}
+
+.groupInfo h2{
+    color: white;
+    font-size: calc(21px + 0.1vw);
+}
+
+.data{
+    display: flex;
+    align-items: left;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+
+.data:hover{
+    opacity: 0.7;
+}
+
+.data p{
+    color: rgb(220, 220, 220);
+    font-size: calc(14px + 0.1vw);
+}

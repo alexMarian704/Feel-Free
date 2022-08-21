@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useInternetConnection } from "../../function/hooks/useInternetConnection";
 import OfflineNotification from "../../components/OfflineNotification";
 import Head from "next/head";
@@ -10,16 +10,21 @@ import { Moralis } from "moralis";
 import style from "../../styles/GroupChat.module.css"
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeartBroken, faHouseUser, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from "../../function/messageOrder";
+import styleChat from "../../styles/Messages.module.css"
 
 const Group = () => {
     const [member, setMember] = useState(true)
     const [loading, setLoading] = useState(true);
+    const [groupData, setGroupData] = useState("")
+    const [message, setMessage] = useState("")
+    const [reply, setReply] = useState("")
     const { isAuthenticated, user } = useMoralis();
     const router = useRouter()
+    const fileRef = useRef()
     const internetStatus = useInternetConnection()
 
     function _base64ToArrayBuffer(base64) {
@@ -43,6 +48,8 @@ const Group = () => {
             const _results = await query.first();
             if (_results === undefined) {
                 setMember(false)
+            } else {
+                setGroupData(_results.attributes)
             }
             setLoading(false)
             if (localStorage.getItem(`Group${router.query.id}Key`) === null) {
@@ -92,7 +99,7 @@ const Group = () => {
             queryNotification.equalTo("type", "New group");
             queryNotification.equalTo("time", _results.attributes.time);
             const results1 = await queryNotification.first();
-            if(results1 !== undefined)
+            if (results1 !== undefined)
                 results1.destroy()
         }
     }, [isAuthenticated, router.query.id])
@@ -119,16 +126,49 @@ const Group = () => {
             </div>
         )
 
+    const pushMessage = () => {
+
+    }
+
+    const sendImage = () => {
+
+    }
+
+    console.log(groupData)
+
     return (
         <div>
             {loading === false &&
                 <div>
                     <div className={style.nav}>
-                        <div>
+                        <div className={style.groupInfo}>
                             <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
+                            <div className={style.data}>
+                                <h2>{groupData.name}</h2>
+                                <p>{groupData.members.length} members</p>
+                            </div>
                         </div>
                     </div>
-                    {router.query.id}
+                    <div className={styleChat.sendContainer}>
+                        <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
+                            if (e.key === "Enter") {
+                                pushMessage("message", "message", message);
+                                setReply("");
+                            }
+                        }} />
+                        <button onClick={() => { pushMessage("message", "message", message), setReply("") }}><FontAwesomeIcon icon={faPaperPlane} /></button>
+                        <button onClick={() => {
+                            fileRef.current.click();
+                        }}><FontAwesomeIcon icon={faPaperclip} /></button>
+                        <input
+                            type="file"
+                            onChange={sendImage}
+                            ref={fileRef}
+                            style={{
+                                display: "none",
+                            }}
+                        />
+                    </div>
                     {internetStatus === false && <OfflineNotification />}
                 </div>}
         </div>

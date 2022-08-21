@@ -42,7 +42,6 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
             const results = await query.first();
             if (results !== undefined) {
                 setFriendData(results.attributes);
-                console.log(results.attributes.image)
             }
         }
     }
