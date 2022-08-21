@@ -126,15 +126,56 @@ const Group = () => {
             </div>
         )
 
-    const pushMessage = () => {
+    const pushMessage = async (file, fileName, message) => {
+        if (message.trim() !== "") {
+            const d = new Date();
+            let time = d.getTime();
 
+            const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
+            const encryptMessage = encrypt(message, encryptKey)
+            const encryptReply = encrypt(reply, encryptKey)
+
+            const MessageOrigin = Moralis.Object.extend(`Group${router.query.id}`);
+            const messageOriginPush = new MessageOrigin();
+            messageOriginPush.save({
+                from: user.get("ethAddress"),
+                message: encryptMessage,
+                time: time,
+                file: file,
+                fileName: fileName,
+                tag: user.get("userTag"),
+                reply: encryptReply
+            });
+            const messageACL = new Moralis.ACL();
+            messageACL.setWriteAccess(user.id, true);
+            messageACL.setReadAccess(user.id, true)
+            for (let i = 0; i < groupData.members.length; i++) {
+                const addressToTag = Moralis.Object.extend("Tags");
+                const query = new Moralis.Query(addressToTag);
+                query.equalTo("ethAddress", groupData.members[i]);
+                const results = await query.first();
+                if (results !== undefined) {
+                    messageACL.setWriteAccess(results.attributes.idUser, true);
+                    messageACL.setReadAccess(results.attributes.idUser, true);
+                }
+            }
+            messageOriginPush.setACL(messageACL)
+            messageOriginPush.save();
+            setMessage("")
+        }
     }
 
-    const sendImage = () => {
+    const sendImage = async (e) => {
+        const file = e.target.files[0];
+        const imageMessage = new Moralis.File(file.name, file);
+        await imageMessage.saveIPFS();
 
+        console.log(imageMessage.ipfs())
+
+        pushMessage(file.type, file.name, imageMessage.ipfs());
     }
 
-    console.log(groupData)
+    // console.log(groupData)
 
     return (
         <div>
