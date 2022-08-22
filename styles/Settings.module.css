@@ -132,3 +132,61 @@
     border: none;
     box-shadow: 0px 0px 5px 2px rgba(77, 77, 77, 0.22);
 }
+
+.animate {
+    width: 330px;
+    position: fixed;
+    height: 200px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 10vh;
+    margin: auto;
+    border-radius: 6px;
+    background-color: rgb(36, 36, 36);
+    box-shadow: 0px 0px 1px 2px rgba(21, 21, 21, 0.12);
+    transition: all 300ms ease-in-out;
+    transform: scale(0)
+}
+
+.animateDot{
+    height: 140px;
+    width: 140px;
+    border-radius: 50%;
+    background-color: #800040;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(60px + 1vw);
+    transition: all 200ms ease-in-out;
+}
+
+.animateDotCheck{
+    height: 140px;
+    width: 140px;
+    border-radius: 50%;
+    background-color: #800040;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation-name: check;
+    animation-duration: 1100ms;
+    font-size: calc(70px + 1vw);
+}
+
+@keyframes check{
+    0%{
+        font-size: 10px;
+    }
+    100%{
+        font-size: calc(70px + 1vw);
+    }
+}

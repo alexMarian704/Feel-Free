@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faEye, faEyeSlash, faCheck } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Settings.module.css"
 import SHA256 from 'crypto-js/sha256';
 import Hex from "crypto-js/enc-hex"
@@ -19,15 +19,16 @@ const Settings = ({ setSettings }) => {
     const [errorTag, setErrorTag] = useState("");
     const [newTag, setNewTag] = useState("")
     const [name, setName] = useState("");
+    const [animate, setAnimate] = useState(false);
 
     const chnagePassword = () => {
-        const hashDigest = SHA256(password + user.id);
+        const hashDigest = SHA256(password.trim() + user.id);
         const passwordHash = Hex.stringify(hashDigest)
         const oldHash = SHA256(oldPassword + user.id);
         const oldPasswordHash = Hex.stringify(oldHash);
 
         if (oldPasswordHash === user.get("passwordHash")) {
-            if (password === confrimPassword && password.length >= 8) {
+            if (password === confrimPassword && password.trim().length >= 8) {
                 setUserData({
                     passwordHash: passwordHash
                 })
@@ -40,6 +41,10 @@ const Settings = ({ setSettings }) => {
         } else {
             setError("Incorrect old password");
         }
+        setAnimate(true)
+        setTimeout(() => {
+            setAnimate(false)
+        }, 1100)
         setOldPassword("")
         setPassword("")
         setConfirmPassword("")
@@ -64,6 +69,10 @@ const Settings = ({ setSettings }) => {
             setUserData({
                 userTag: newTag.toLowerCase().replace(/ /g, "")
             })
+            setAnimate(true)
+            setTimeout(() => {
+                setAnimate(false)
+            }, 1100)
             setErrorTag("");
             setNewTag("")
         } else if (newTag.length <= 3) {
@@ -94,6 +103,10 @@ const Settings = ({ setSettings }) => {
                 name2: splitName[1] ? splitName[1].toLowerCase() : "",
             })
             resultTag.save();
+            setAnimate(true)
+            setTimeout(() => {
+                setAnimate(false)
+            }, 1100)
             setName("");
         }
     }
@@ -196,6 +209,13 @@ const Settings = ({ setSettings }) => {
                             <button className={style.change} onClick={chnageName}>Change name</button>
                         </div>
                     </section>
+                </div>
+            </div>
+            <div className={style.animate} style={{
+                "transform": animate === false ? "scale(0)" : "scale(1)"
+            }}>
+                <div className={animate === true ? style.animateDotCheck : style.animateDot}>
+                    <FontAwesomeIcon icon={faCheck} />
                 </div>
             </div>
         </div>
