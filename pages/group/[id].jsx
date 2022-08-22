@@ -130,10 +130,26 @@ const Group = () => {
         if (message.trim() !== "") {
             const d = new Date();
             let time = d.getTime();
+            let main = {
+                userAddress: user.get("ethAddress"),
+                messages: []
+            }
 
             const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
             const encryptMessage = encrypt(message, encryptKey)
             const encryptReply = encrypt(reply, encryptKey)
+
+            if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
+                const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+                const decryptedMessages = decrypt(encryptedMessages, user.id);
+                main.messages = decryptedMessages.messages
+            }
+            main.messages.push({ type: user.get("userTag"), message: message, time: time, seen: [], file: file, fileName: fileName, reply: reply })
+            console.log(main.messages)
+
+            const encryptedMessagesList = encrypt(main, user.id)
+            localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
+            messageOrder(user.get("ethAddress"), groupData.name, message, groupData.name, "", time, user.get("userTag"), file, groupData.members, "group", router.query.id)
 
             const MessageOrigin = Moralis.Object.extend(`Group${router.query.id}`);
             const messageOriginPush = new MessageOrigin();

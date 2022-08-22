@@ -98,6 +98,7 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     {newMaessage === false && last === "you" && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
                     {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{type !== "group" ? friendData.username: "Owner"}:</span> {lastMessage}</p>}
                     {newMaessage === true && <p><span>New messages</span></p>}
+                    {newMaessage === false && last === user.get("userTag") && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
                 </div>}
                 {(file === "application/pdf" || file === "text/plain") && <div className={style.mainData}>
                     <p>{friendData.name} {friendData.name2}</p>
