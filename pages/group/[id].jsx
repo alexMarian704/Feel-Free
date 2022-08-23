@@ -15,17 +15,24 @@ import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from "../../function/messageOrder";
 import styleChat from "../../styles/Messages.module.css"
+import RenderGroupMessage from "../../components/MessageGroup";
 
 const Group = () => {
     const [member, setMember] = useState(true)
     const [loading, setLoading] = useState(true);
     const [groupData, setGroupData] = useState("")
     const [message, setMessage] = useState("")
+    const [localMessages, setLocalMessages] = useState([])
+    const [render, setRender] = useState(100);
     const [reply, setReply] = useState("")
     const { isAuthenticated, user } = useMoralis();
     const router = useRouter()
     const fileRef = useRef()
     const internetStatus = useInternetConnection()
+    const [positionScroll, setPositionScroll] = useState(1);
+    const messageRef = useRef();
+    const [openReply, setOpenReply] = useState(-1);
+    const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -103,6 +110,22 @@ const Group = () => {
                 results1.destroy()
         }
     }, [isAuthenticated, router.query.id])
+
+    const getLocalMessages = () => {
+        if (isAuthenticated && router.query.id) {
+            if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
+                const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+                const decryptedMessages = decrypt(encryptedMessages, user.id);
+                setLocalMessages(decryptedMessages.messages)
+            }
+        }
+    }
+
+    useEffect(() => {
+        getLocalMessages()
+    }, [isAuthenticated, router.query.id])
+
+    console.log(localMessages)
 
     if (!isAuthenticated) {
         return <Reject />;
@@ -191,6 +214,13 @@ const Group = () => {
         pushMessage(file.type, file.name, imageMessage.ipfs());
     }
 
+    const handleScroll = (e) => {
+        const element = e.currentTarget;
+        const position = element.scrollTop / (element.scrollHeight - element.clientHeight);
+        if (Math.abs(positionScroll - position) >= 0.02)
+            setPositionScroll(Number(position.toPrecision(2)))
+    };
+
     // console.log(groupData)
 
     return (
@@ -205,6 +235,28 @@ const Group = () => {
                                 <p>{groupData.members.length} members</p>
                             </div>
                         </div>
+                    </div>
+                    <div className={styleChat.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll} id="scrollID">
+                        {localMessages.length > 0 && localMessages.map((message, i) => {
+                            const d = new Date(message.time);
+                            let day = d.getDate()
+                            let month = d.getMonth();
+                            let year = d.getFullYear()
+                            const prevTime = new Date(i > 0 ? localMessages[i - 1].time : null);
+                            let dayP = prevTime.getDate()
+                            let monthP = prevTime.getMonth();
+                            let yearP = prevTime.getFullYear()
+                            if (i >= localMessages.length - render - 1)
+                                return (
+                                    <div key={i}>
+                                        {(day !== dayP || month !== monthP || year !== yearP) &&
+                                            <div>
+                                                <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
+                                            </div>}
+                                            <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
+                                    </div>
+                                )
+                        })}
                     </div>
                     <div className={styleChat.sendContainer}>
                         <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {

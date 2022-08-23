@@ -13,7 +13,7 @@
     justify-content: center;
 }
 
-.replyContainer{
+.replyContainer {
     width: 100%;
     position: fixed;
     bottom: calc(57px + 1.8vh);
@@ -22,7 +22,7 @@
     border-radius: 10px 10px 0px 0px;
 }
 
-.replyContainer button{
+.replyContainer button {
     position: absolute;
     right: 8px;
     top: 0px;
@@ -34,7 +34,7 @@
     font-size: calc(19px + 0.1vw);
 }
 
-.replyContainer p{
+.replyContainer p {
     background-color: rgb(40, 39, 39);
     width: calc(80% + 80px + 2vw);
     max-width: calc(90%);
@@ -231,7 +231,7 @@
     padding-bottom: 19px;
 }
 
-.messageOptions{
+.messageOptions {
     position: absolute;
     right: 3px;
     height: 20px;
@@ -250,11 +250,11 @@
     display: none;
 }
 
-.myMessageContainer:hover .messageOptions{
+.myMessageContainer:hover .messageOptions {
     display: inline-block;
 }
 
-.friendContainer:hover .messageOptions{
+.friendContainer:hover .messageOptions {
     display: inline-block;
 }
 
@@ -364,7 +364,7 @@
     padding: 4px;
 }
 
-.myImgContainer:hover .messageOptions{
+.myImgContainer:hover .messageOptions {
     display: inline-block;
 }
 
@@ -698,14 +698,14 @@
     padding: 8px;
 }
 
-.deleteContent h4{
+.deleteContent h4 {
     width: 100%;
     text-align: center;
     font-size: calc(19px + 0.1vw);
     margin-top: 12px;
 }
 
-.deleteContent div{
+.deleteContent div {
     width: 100%;
     margin-top: 15px;
     height: 50%;
@@ -714,7 +714,7 @@
     justify-content: space-around;
 }
 
-.noButton{
+.noButton {
     width: calc(100px + 1vw);
     height: calc(35px + 1vh);
     border-radius: 5px;
@@ -726,11 +726,11 @@
     transition: all 200ms ease-in-out;
 }
 
-.noButton:hover{
+.noButton:hover {
     background-color: #460626;
 }
 
-.yesButton{
+.yesButton {
     width: calc(100px + 1vw);
     height: calc(35px + 1vh);
     border-radius: 5px;
@@ -741,7 +741,7 @@
     transition: all 200ms ease-in-out;
 }
 
-.infoContainer{
+.infoContainer {
     margin-left: 5px;
     display: flex;
     align-items: left;
@@ -749,11 +749,11 @@
     justify-content: center;
 }
 
-.infoContainer p{
+.infoContainer p {
     color: white;
 }
 
-.messageOptionsContainer{
+.messageOptionsContainer {
     position: absolute;
     top: -108px;
     background-color: red;
@@ -765,7 +765,8 @@
     border-radius: 6px;
 }
 
-.messageOptionsContainer button, .messageOptionsContainerFriend button{
+.messageOptionsContainer button,
+.messageOptionsContainerFriend button {
     width: 100%;
     height: 50px;
     background-color: transparent;
@@ -777,11 +778,12 @@
     border-radius: 6px;
 }
 
-.messageOptionsContainer button:hover, .messageOptionsContainerFriend button:hover{
+.messageOptionsContainer button:hover,
+.messageOptionsContainerFriend button:hover {
     background-color: #0a0a0a;
 }
 
-.messageOptionsContainerFriend{
+.messageOptionsContainerFriend {
     position: absolute;
     top: -54px;
     background-color: red;
@@ -793,7 +795,7 @@
     border-radius: 6px;
 }
 
-.replyMessage{
+.replyMessage {
     width: 100%;
     background-color: rgb(31, 31, 31);
     overflow: hidden;
@@ -810,13 +812,13 @@
     cursor: pointer;
 }
 
-.replyMessage p{
+.replyMessage p {
     overflow-wrap: break-word;
     width: 100%;
     cursor: pointer;
 }
 
-.scrollToBottom{
+.scrollToBottom {
     position: fixed;
     bottom: calc(105px + 3.6vh);
     right: 20px;
@@ -836,17 +838,17 @@
     justify-content: center;
 }
 
-.replyImage{
+.replyImage {
     position: relative;
     height: calc(32px + 1.8vh);
     width: calc(32px + 1.8vh);
 }
 
-.replyImage img{
+.replyImage img {
     border-radius: 6px;
 }
 
-.imgMainReply{
+.imgMainReply {
     background-color: rgb(40, 39, 39);
     width: calc(80% + 80px + 2vw);
     max-width: calc(90%);
@@ -863,4 +865,19 @@
     color: rgb(180, 179, 179);
     border-left: 4px solid #800040;
     padding-right: 20px;
+}
+
+.chatDate {
+    width: 60%;
+    text-align: center;
+    height: 30px;
+    background: rgba(128, 0, 64, 0.5);
+    display: flex;
+    margin: auto;
+    margin-top: 10px;
+    align-items: center;
+    justify-content:center;
+    font-size: calc(18px + 0.1vw);
+    margin-bottom: 10px;
+    border-radius: 20px;
 }

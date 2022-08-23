@@ -742,20 +742,7 @@ export default function Messages() {
               <div key={i}>
                 {(day !== dayP || month !== monthP || year !== yearP) &&
                   <div>
-                    <p style={{
-                      "width": "60%",
-                      "textAlign": "center",
-                      "height": "30px",
-                      "background": "rgba(128, 0, 64 , 0.5)",
-                      "display": "flex",
-                      "margin": "auto",
-                      "marginTop": "10px",
-                      "alignItems": "center",
-                      "justifyContent": "center",
-                      "fontSize": "calc(18px + 0.1vw)",
-                      "marginBottom": "10px",
-                      "borderRadius": "20px"
-                    }}>{day}.{month + 1}.{year}</p>
+                    <p className={style.chatDate}>{day}.{month + 1}.{year}</p>
                   </div>}
                 <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} />
               </div>
