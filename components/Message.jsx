@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, deleteRequest }) {
+export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, deleteRequest , deleteForYou }) {
   const d = new Date(message.time);
   let minutes = d.getMinutes();
   let hours = d.getHours();
@@ -183,6 +183,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             }}><FontAwesomeIcon icon={faCaretDown} /></button>}
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
+              <button onClick={() => { deleteForYou(message.time), setOpenReply(-1) }}>Delete for you</button>
             </div>}
           </div>
         </div>

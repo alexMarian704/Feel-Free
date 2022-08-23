@@ -656,6 +656,35 @@ export default function Messages() {
     localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
   }
 
+  const deleteForYou = (time) => {
+    let messageList = []
+    let main = {
+      userAddress: user.get("ethAddress"),
+      messages: messageList
+    }
+    const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
+    const decryptedMessages = decrypt(encryptedMessages, user.id);
+    main.messages = decryptedMessages.messages
+    let poz
+    main.messages.map((x, i) => {
+      if (x.time === time) {
+        x.message = "This message was deleted"
+        x.file = ""
+        x.fileName = ""
+        x.delete = true
+        poz = i
+      }
+    })
+    if (poz === main.messages.length - 1) {
+      let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
+      messageOrder(user.get("ethAddress"), router.query.mesID, "Deleted message", friendData.name, friendData.name2, time, "friend", "message", friendData.userTag)
+    }
+
+    setLocalMessages(main.messages)
+    const encryptedMessagesList = encrypt(main, user.id)
+    localStorage.setItem(router.query.mesID + user.get("ethAddress"), encryptedMessagesList);
+  }
+
   const sendImage = async (e) => {
     const file = e.target.files[0];
     console.log(file)
@@ -744,7 +773,7 @@ export default function Messages() {
                   <div>
                     <p className={style.chatDate}>{day}.{month + 1}.{year}</p>
                   </div>}
-                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} />
+                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} deleteForYou={deleteForYou}/>
               </div>
             )
         })}
