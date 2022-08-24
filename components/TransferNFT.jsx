@@ -17,12 +17,7 @@ export default function TransferNFT({ userETH, selectedChain, style }) {
   const userNFTBalance = async () => {
     setLoading(true);
     const userNFTs = await Moralis.Web3API.account.getNFTs({
-      chain:
-        selectedChain === "eth"
-          ? "0x4"
-          : selectedChain === "bsc"
-          ? "0x61"
-          : "mumbai",
+      chain:selectedChain,
       address: userETH,
     });
     if (userNFTs && userNFTs.result.length > 0) {

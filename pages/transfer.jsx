@@ -26,7 +26,7 @@ import OfflineNotification from "../components/OfflineNotification";
 export default function Transfer({ tag }) {
   const [amount, setAmount] = useState("");
   const [to, setTo] = useState("");
-  const { user, isAuthenticated, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
+  const { user, isAuthenticated, isWeb3EnableLoading, isWeb3Enabled, enableWeb3,chainId } = useMoralis();
   const [errorSend, setErrorSend] = useState("");
   const router = useRouter();
   const [confirm, setConfirm] = useState(false);
@@ -37,8 +37,6 @@ export default function Transfer({ tag }) {
   const [tagList, setTagList] = useState([]);
   const [openTagList, setOpenTagList] = useState(false);
   const internetStatus = useInternetConnection()
-  let selectedChain;
-  if (user) selectedChain = user.get("chain");
 
   const { fetch, error, isFetching } = useWeb3Transfer({
     amount: Moralis.Units.ETH(Number(amount)),
@@ -47,13 +45,13 @@ export default function Transfer({ tag }) {
   });
 
   useEffect(() => {
-    if (isAuthenticated) {
-      getBalance(userETHaddress).then((result) => {
+    if (isAuthenticated && chainId !== null) {
+      getBalance(userETHaddress, chainId).then((result) => {
         setBalance(result);
       });
       getFriend();
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated,chainId])
 
   useEffect(() => {
     setAmount("");
@@ -162,14 +160,14 @@ export default function Transfer({ tag }) {
         <div onClick={() => setTransferMode("Token")}><p>Transfer Coins</p></div>
         <div onClick={() => {setTransferMode("NFT") , setOpenTagList(false)}}><p>Transfer NFTs</p></div>
       </div>
-      {transferMode === "NFT" && <TransferNFT userETH={userETHaddress} selectedChain={selectedChain} style={style} />}
+      {transferMode === "NFT" && <TransferNFT userETH={userETHaddress} selectedChain={chainId} style={style} />}
       {transferMode === "Token" && <div className={style.transfer}>
         <div className={style.align} onClick={()=> setOpenTagList(false)}> 
           <p className={style.label}>
             Your{" "}
-            {selectedChain === "eth"
+            {chainId === "0x4"
               ? "ETH"
-              : selectedChain === "bsc"
+              : chainId === "0x61"
                 ? "BNB"
                 : "MATIC"}{" "}
             address
@@ -186,9 +184,9 @@ export default function Transfer({ tag }) {
           </div>
           <p className={style.address}>
             Balance: {balance}{" "}
-            {selectedChain === "eth"
+            {chainId === "0x4"
               ? "ETH"
-              : selectedChain === "bsc"
+              : chainId === "0x61"
                 ? "BNB"
                 : "MATIC"}
           </p>
@@ -203,9 +201,9 @@ export default function Transfer({ tag }) {
             onChange={(e) => setAmount(e.target.value)}
             id={style.input}
             placeholder={
-              selectedChain === "eth"
+              chainId === "0x4"
                 ? "0.0 ETH"
-                : selectedChain === "bsc"
+                : chainId === "0x61"
                   ? "0.0 BNB"
                   : "0.0 MATIC"
             }
@@ -283,9 +281,9 @@ export default function Transfer({ tag }) {
               {toTag && <p className={style.text}>Tag: {toTag}</p>}
               <p className={style.text}>
                 Amount: {amount}{" "}
-                {selectedChain === "eth"
+                {chainId === "0x4"
                   ? "ETH"
-                  : selectedChain === "bsc"
+                  : chainId === "0x61"
                     ? "BNB"
                     : "MATIC"}
               </p>
@@ -305,7 +303,7 @@ export default function Transfer({ tag }) {
         {error && <p className={style.error}>{error.message}</p>}
         {errorSend && <p className={style.error}>{errorSend}</p>}
       </div>}
-      <GetTransactions chain={selectedChain} userETHaddress={userETHaddress} />
+      <GetTransactions chain={chainId} userETHaddress={userETHaddress} />
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
     </div>

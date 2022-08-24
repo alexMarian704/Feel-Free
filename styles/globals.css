@@ -300,13 +300,13 @@ button {
 
 @media only screen and (max-width: 460px) {
   .setUp {
-    height: 80vh;
+    height: 70vh;
     padding-top: 30px;
     width: 91vw;
   }
 
   .signIn {
-    height: 84vh;
+    height: 64vh;
   }
 }
 
@@ -315,6 +315,8 @@ button {
   color: rgb(255, 0, 0);
   font-size: 18px;
   margin-top: 7px;
+  position: absolute;
+  bottom: 10px;
 }
 
 nav {

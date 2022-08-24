@@ -21,7 +21,7 @@ import Settings from "../components/Settings";
 
 
 export default function profile() {
-  const { isAuthenticated, user, setUserData } = useMoralis();
+  const { isAuthenticated, user, setUserData,chainId } = useMoralis();
   const fileRef = useRef();
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
@@ -29,12 +29,12 @@ export default function profile() {
   const [settings , setSettings] = useState(false);
 
   useEffect(()=>{
-    if (isAuthenticated) {
-      getBalance(userETHaddress).then((result) => {
+    if (isAuthenticated && chainId!== null) {
+      getBalance(userETHaddress,chainId).then((result) => {
         setBalance(result);
       });
     }
-  },[isAuthenticated])
+  },[isAuthenticated , chainId])
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -137,9 +137,9 @@ export default function profile() {
           <h2 className={style.address}>Tag: @{user.get("userTag")}</h2>
           <h2 className={style.address}>Address: {userETHaddress}</h2>
           <h2 className={style.address}>
-            {selectedChain === "eth"
+            {chainId === "0x4"
               ? "ETH"
-              : selectedChain === "bsc"
+              : chainId === "0x61"
               ? "BNB"
               : "MATIC"}{" "}
             Balance: {balance}

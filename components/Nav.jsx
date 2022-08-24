@@ -27,22 +27,12 @@ export default function Nav({
     isWeb3EnableLoading,
     isWeb3Enabled,
     enableWeb3,
+    chainId
   } = useMoralis();
   const chainUser = user.get("chain");
   const [navIn, setNavIn] = useState("in");
   const router = useRouter();
-  const [chain, setChain] = useState("");
   const [chainOption, setChainOption] = useState(false);
-  const [name, setName] = useState(
-    chainUser === "eth"
-      ? "Ethereum"
-      : chainUser === "bsc"
-        ? "Binance"
-        : "Polygon"
-  );
-  const [imageLink, setImageLink] = useState(
-    chainUser === "eth" ? ethereum : chainUser === "bsc" ? binance : polygon
-  );
   const { switchNetwork } = useChain();
 
   useEffect(() => {
@@ -70,11 +60,8 @@ export default function Nav({
 
   const changeChain = (x) => {
     if (x === "eth") {
-      setChain("eth");
       document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
       setChainOption(false);
-      setName("Ethereum");
-      setImageLink(ethereum);
       setUserData({
         chain: "eth",
       });
@@ -84,11 +71,9 @@ export default function Nav({
           setBalance(result);
         });
     } else if (x === "bsc") {
-      setChain("bsc");
+      //setChain("bsc");
       document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
       setChainOption(false);
-      setName("Binance");
-      setImageLink(binance);
       setUserData({
         chain: "bsc",
       });
@@ -99,11 +84,9 @@ export default function Nav({
           setBalance(result);
         });
     } else {
-      setChain("polygon");
+      //setChain("polygon");
       document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
       setChainOption(false);
-      setName("Polygon");
-      setImageLink(polygon);
       setUserData({
         chain: "polygon",
       });
@@ -185,12 +168,16 @@ export default function Nav({
           >
             {" "}
             <Image
-              src={imageLink}
+              src={chainId === "0x4" ? ethereum : chainId === "0x61" ? binance : polygon}
               width="35"
               height="35"
               className="dropdown-image"
             />
-            {name}
+            {chainId === "0x4"
+              ? "Ethereum"
+              : chainId === "0x61"
+                ? "Binance"
+                : "Polygon"}
           </div>
           <div className="dropdown-content" id="in-dropdown">
             <a onClick={() => changeChain("eth")}>

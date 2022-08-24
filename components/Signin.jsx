@@ -1,4 +1,4 @@
-import React, { useState  , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import metamask from "../public/metamask.png";
 import walletconnect from "../public/walletconnect.png";
@@ -8,19 +8,24 @@ import Head from "next/head";
 import { Moralis } from "moralis";
 
 export default function SignIn() {
-  const { authenticate, authError , isWeb3EnableLoading , isWeb3Enabled , enableWeb3 } = useMoralis();
+  const { authenticate, authError, isWeb3EnableLoading, isWeb3Enabled, enableWeb3, chainId } = useMoralis();
   const [navSignIn, setNavSignIn] = useState("metamask");
-  
-  useEffect(()=>{
+  const [error , setError] = useState("")
+
+  useEffect(() => {
     if (!isWeb3Enabled && !isWeb3EnableLoading) {
       enableWeb3()
     }
-  },[])
+  }, [])
 
   const signInFunction = () => {
-    authenticate({
-      signingMessage: "Welcome !",
-    });
+    if (chainId === "0x4" || chainId === "0x61" || chainId === "0x13881") {
+      authenticate({
+        signingMessage: "Welcome !",
+      });
+    }else{
+      setError("Unsupported chain")
+    }
   };
 
   const walletConnectSignIn = () => {
@@ -30,8 +35,8 @@ export default function SignIn() {
     });
   };
 
-  const changeSignIn = ()=>{
-    if(navSignIn === "metamask")
+  const changeSignIn = () => {
+    if (navSignIn === "metamask")
       setNavSignIn("walletconnect")
     else
       setNavSignIn("metamask")
@@ -54,6 +59,7 @@ export default function SignIn() {
             Sign In
           </button>
           {authError && <h2 className="signInError">{authError.message}</h2>}
+          {error && <h2 className="signInError">{error}</h2>}
         </div>
       )}
       {navSignIn === "walletconnect" && (
