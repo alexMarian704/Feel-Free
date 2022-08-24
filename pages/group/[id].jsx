@@ -32,6 +32,7 @@ const Group = () => {
     const [positionScroll, setPositionScroll] = useState(1);
     const messageRef = useRef();
     const [openReply, setOpenReply] = useState(-1);
+    const [open , setOpen] = useState(false);
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
 
     function _base64ToArrayBuffer(base64) {
@@ -125,7 +126,7 @@ const Group = () => {
         getLocalMessages()
     }, [isAuthenticated, router.query.id])
 
-    console.log(localMessages)
+    //console.log(localMessages)
 
     if (!isAuthenticated) {
         return <Reject />;
@@ -170,6 +171,8 @@ const Group = () => {
             main.messages.push({ type: user.get("userTag"), message: message, time: time, seen: [], file: file, fileName: fileName, reply: reply })
             console.log(main.messages)
 
+            setLocalMessages(main.messages)
+
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
             messageOrder(user.get("ethAddress"), groupData.name, message, groupData.name, "", time, user.get("userTag"), file, groupData.members, "group", router.query.id)
@@ -200,7 +203,49 @@ const Group = () => {
             }
             messageOriginPush.setACL(messageACL)
             messageOriginPush.save();
+            pushNotification()
             setMessage("")
+        }
+    }
+
+    const pushNotification = async () => {
+        for (let i = 0; i < groupData.members.length; i++) {
+            const userNotification = Moralis.Object.extend("Notification");
+            const query = new Moralis.Query(userNotification);
+            query.equalTo("to", groupData.members[i]);
+            query.equalTo("tag", user.get("userTag"));
+            query.equalTo("type", "Group message");
+            query.equalTo("name", router.query.id);
+            const results = await query.first();
+
+            if (results === undefined) {
+                const addressToTag = Moralis.Object.extend("Tags");
+                const _query = new Moralis.Query(addressToTag);
+                _query.equalTo("ethAddress", groupData.members[i]);
+                const _results = await _query.first();
+
+                const d = new Date();
+                let time = d.getTime();
+
+                const Notification = Moralis.Object.extend("Notification");
+                const noti = new Notification();
+                noti.save({
+                    from: user.get("ethAddress"),
+                    to: groupData.members[i],
+                    type: "Group message",
+                    tag: user.get("userTag"),
+                    name: router.query.id,
+                    time: time
+                });
+
+                const notificationsACL = new Moralis.ACL();
+                notificationsACL.setWriteAccess(user.id, true);
+                notificationsACL.setReadAccess(user.id, true)
+                notificationsACL.setWriteAccess(_results.attributes.idUser, true);
+                notificationsACL.setReadAccess(_results.attributes.idUser, true);
+                noti.setACL(notificationsACL)
+                noti.save();
+            }
         }
     }
 
@@ -253,7 +298,7 @@ const Group = () => {
                                             <div>
                                                 <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                             </div>}
-                                            <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
+                                        <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
                                     </div>
                                 )
                         })}
