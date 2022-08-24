@@ -4,13 +4,14 @@ import { useRouter } from "next/router";
 import { useMoralis, useChain } from "react-moralis";
 import useWindowDimensions from "../function/width";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faBars , faLock } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faBars, faLock } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import polygon from "../public/polygon.jpg";
 import binance from "../public/binance.png";
 import ethereum from "../public/ethereum.png";
 import { Moralis } from "moralis";
 import { userStatus } from "../function/userStatus";
+import { detectMobile } from "../function/detectMobile";
 
 export default function Nav({
   getBalance,
@@ -126,7 +127,7 @@ export default function Nav({
     Moralis.LiveQuery.close()
   }, [])
 
-  const lockAccount = ()=>{
+  const lockAccount = () => {
     const d = new Date();
     let time = d.getTime();
     setUserData({
@@ -169,14 +170,16 @@ export default function Nav({
           <div
             className="dropbtn"
             onClick={() => {
-              if (chainOption === false) {
-                document.getElementsByClassName("dropdown-content")[0].id =
-                  "out-dropdown";
-                setChainOption(true);
-              } else {
-                document.getElementsByClassName("dropdown-content")[0].id =
-                  "in-dropdown";
-                setChainOption(false);
+              if (detectMobile() === false) {
+                if (chainOption === false) {
+                  document.getElementsByClassName("dropdown-content")[0].id =
+                    "out-dropdown";
+                  setChainOption(true);
+                } else {
+                  document.getElementsByClassName("dropdown-content")[0].id =
+                    "in-dropdown";
+                  setChainOption(false);
+                }
               }
             }}
           >
