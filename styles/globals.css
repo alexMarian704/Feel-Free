@@ -298,15 +298,15 @@ button {
   justify-content: center;
 }
 
-@media only screen and (max-width: 460px) {
+@media only screen and (max-width: 560px) {
   .setUp {
-    height: 70vh;
+    height: 74vh;
     padding-top: 30px;
     width: 91vw;
   }
 
   .signIn {
-    height: 64vh;
+    height: 60vh;
   }
 }
 
@@ -316,7 +316,7 @@ button {
   font-size: 18px;
   margin-top: 7px;
   position: absolute;
-  bottom: 10px;
+  bottom: 6px;
 }
 
 nav {
@@ -651,4 +651,8 @@ input[type="number"] {
   height: calc(27px + 1vh);
   border-radius: 10px;
   font-size: calc(17px + 0.1vw);
+}
+
+a{
+  color: white;
 }

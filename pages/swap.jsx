@@ -17,7 +17,7 @@ import OfflineNotification from "../components/OfflineNotification";
 
 
 export default function swap() {
-  const { isAuthenticated, user, isInitialized } = useMoralis();
+  const { isAuthenticated, user, isInitialized, chainId } = useMoralis();
   const internetStatus = useInternetConnection()
   const [coins, setCoins] = useState([]);
   const [to, setTo] = useState({
@@ -47,18 +47,13 @@ export default function swap() {
   const [priceFrom, setPriceFrom] = useState("");
   const [priceTo, setPriceTo] = useState("");
 
-  let selectedChain;
-  if (user) {
-    selectedChain = user.get("chain");
-  }
-
   async function getTokens() {
     await Moralis.initPlugins();
     const result = await Moralis.Plugins.oneInch.getSupportedTokens({
       chain:
-        selectedChain === "eth"
+        chainId === "0x4"
           ? "eth"
-          : selectedChain === "bsc"
+          : chainId === "0x61"
             ? "bsc"
             : "polygon",
     });
@@ -84,9 +79,9 @@ export default function swap() {
     if (isInitialized && isAuthenticated) {
       if (to.symbol === "MATIC" || to.symbol === "ETH" || to.symbol === "BNB") {
         let price = await Moralis.Web3API.token.getTokenPrice({
-          address: to.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : to.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
+          address: to.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : to.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: chainId === "0x4"
             ? "eth"
-            : selectedChain === "bsc"
+            : chainId === "0x61"
               ? "bsc"
               : "polygon",
         }).then((x) => {
@@ -96,9 +91,9 @@ export default function swap() {
         })
       } else {
         let price = await Moralis.Web3API.token.getTokenPrice({
-          address: to.address, chain: selectedChain === "eth"
+          address: to.address, chain: chainId === "0x4"
             ? "eth"
-            : selectedChain === "bsc"
+            : chainId === "0x61"
               ? "bsc"
               : "polygon",
         }).then((x) => {
@@ -114,9 +109,9 @@ export default function swap() {
     if (isInitialized && isAuthenticated) {
       if (from.symbol === "MATIC" || from.symbol === "ETH" || from.symbol === "BNB") {
         let price2 = await Moralis.Web3API.token.getTokenPrice({
-          address: from.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : from.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: selectedChain === "eth"
+          address: from.symbol === "MATIC" ? "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270" : from.symbol === "ETH" ? "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" : "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", chain: chainId === "0x4"
             ? "eth"
-            : selectedChain === "bsc"
+            : chainId === "0x61"
               ? "bsc"
               : "polygon",
         }).then((x) => {
@@ -126,9 +121,9 @@ export default function swap() {
         })
       } else {
         let price2 = await Moralis.Web3API.token.getTokenPrice({
-          address: from.address, chain: selectedChain === "eth"
+          address: from.address, chain: chainId === "0x4"
             ? "eth"
-            : selectedChain === "bsc"
+            : chainId === "0x61"
               ? "bsc"
               : "polygon",
         }).then((x) => {
@@ -150,7 +145,7 @@ export default function swap() {
 
   useEffect(() => {
     if (user) {
-      if (selectedChain === "eth") {
+      if (chainId === "0x4") {
         setFrom(data[2][0]);
         setTo(data[2][1]);
         setVSelect(false);
@@ -159,7 +154,7 @@ export default function swap() {
         setGas(0);
         setSearchArray([]);
         setSearch("");
-      } else if (selectedChain === "bsc") {
+      } else if (chainId === "0x61") {
         setFrom(data[1][0]);
         setTo(data[1][1]);
         setVSelect(false);
@@ -180,7 +175,7 @@ export default function swap() {
       }
       getTokens();
     }
-  }, [user, selectedChain]);
+  }, [user, chainId]);
 
   useEffect(() => {
     setAux(from);
@@ -202,9 +197,9 @@ export default function swap() {
       // console.log(from);
       const quote = await Moralis.Plugins.oneInch.quote({
         chain:
-          selectedChain === "eth"
+          chainId === "0x4"
             ? "eth"
-            : selectedChain === "bsc"
+            : chainId === "0x61"
               ? "bsc"
               : "polygon",
         fromTokenAddress: `${from.address}`,
@@ -225,9 +220,9 @@ export default function swap() {
     if (Number(e) !== 0) {
       const quote = await Moralis.Plugins.oneInch.quote({
         chain:
-          selectedChain === "eth"
+          chainId === "0x4"
             ? "eth"
-            : selectedChain === "bsc"
+            : chainId === "0x61"
               ? "bsc"
               : "polygon",
         fromTokenAddress: `${from.address}`,
@@ -261,9 +256,9 @@ export default function swap() {
 
   const options = {
     chain:
-      selectedChain === "eth"
+    chainId === "0x4"
         ? "eth"
-        : selectedChain === "bsc"
+        : chainId === "0x61"
           ? "bsc"
           : "polygon",
     fromTokenAddress: `${from.address}`,

@@ -24,7 +24,7 @@ export default function SignIn() {
         signingMessage: "Welcome !",
       });
     }else{
-      setError("Unsupported chain")
+      setError("Unsupported chain, please switch to ETH, BNB or POLYGON")
     }
   };
 

@@ -4,10 +4,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, deleteRequest , deleteForYou }) {
+export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, deleteRequest, deleteForYou }) {
   const d = new Date(message.time);
   let minutes = d.getMinutes();
   let hours = d.getHours();
+
+  function detectLink(text) {
+    var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(urlRegex, function (url) {
+      //return <a href={url}>{url}</a>;
+      return '<a href="' + url + '" className=linkMessage>' + url + '</a>';
+    });
+  }
+
+  function detectURLs(message) {
+    var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+    return message.match(urlRegex)
+  }
+
+  //console.log(detectLink(message.message));
 
   if (message.type === 1) {
     if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
@@ -78,7 +93,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             <p className={style.myText} style={{
               "fontStyle": message.delete !== true ? "normal" : "italic",
               "color": message.delete !== true ? "white" : "rgb(170,170,170)"
-            }}>{message.message}</p>
+            }} dangerouslySetInnerHTML={{__html:detectLink(message.message) !== message.message ? detectLink(message.message) : message.message}} />
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime} style={{
               "right": message.delete !== true ? "27px" : "6px"

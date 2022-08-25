@@ -1,128 +1,134 @@
-.data{
-    background-color: rgb(51, 49, 49);
-    height: 80px;
-    width: 60vw;
-    margin: auto;
-    margin-top: 17px;
-    border-radius: 4px;
-    box-shadow: 0px 0px 3px 1px rgba(42, 42, 42, 0.2);
-    max-width: 700px;
-    min-width: 263px;
-    position: relative;
-    transition: all 250ms linear;
+.data {
+  background-color: rgb(40, 40, 40);
+  height: 80px;
+  width: 60vw;
+  margin: auto;
+  margin-top: 17px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 3px 1px rgba(42, 42, 42, 0.2);
+  max-width: 700px;
+  min-width: 263px;
+  position: relative;
+  transition: all 250ms linear;
 }
 
-.container h2{
-    width: 100%;
-    margin-top: 20px;
-    text-align: center;
+.container h2 {
+  width: 100%;
+  margin-top: 20px;
+  text-align: center;
 }
 
-.container{
-    padding-bottom: 30px;
+.container {
+  padding-bottom: 30px;
 }
 
-.more{
-    position: absolute;
-    top: 0;
-    right: 2px;
-    height: 80px;
-    width: 8%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.more {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  height: 80px;
+  width: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.more button{
-    border: none;
-    font-size: 27px;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    outline: none;
-    cursor: pointer;
-    color: rgb(173, 169, 169);
-    background-color: transparent;
-    transition: all 150ms ease-in-out;
+.more button {
+  border: none;
+  font-size: 27px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  cursor: pointer;
+  color: rgb(173, 169, 169);
+  background-color: transparent;
+  transition: all 150ms ease-in-out;
 }
 
-.more button:hover{
-    color: rgb(223, 219, 219);
+.more button:hover {
+  color: rgb(223, 219, 219);
 }
 
-.data p{
-    white-space: nowrap;
-    width: 90%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 18px;
-    margin: auto;
-    margin-left: 7px;
+.data p {
+  white-space: nowrap;
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 18px;
+  margin: auto;
+  margin-left: 7px;
 }
 
-.data section{
-    height: 70px;
-    margin-left: 7px;
+.data section {
+  height: 70px;
+  margin-left: 7px;
 }
 
-.input{
-    font-weight: 500;
-    font-size: 17px;
-    width: 98%;
-    background-color: rgb(131, 131, 131);
-    word-break: break-all;
-    padding-left: 3px;
-    text-overflow: ellipsis;
-    border-radius: 3px;
-    box-shadow: 0px 0px 3px 1px rgba(42, 42, 42, 0.2);
-    padding-right: 3px;
-    overflow: hidden;
-    max-height: 75px;
-    min-height: 45px;
+.input {
+  font-weight: 500;
+  font-size: 17px;
+  width: 98%;
+  background-color: rgb(131, 131, 131);
+  word-break: break-all;
+  padding-left: 3px;
+  text-overflow: ellipsis;
+  border-radius: 3px;
+  box-shadow: 0px 0px 3px 1px rgba(42, 42, 42, 0.2);
+  padding-right: 3px;
+  overflow: hidden;
+  max-height: 75px;
+  min-height: 45px;
 }
 
-.data span{
-    font-weight: 900;
-    color: #c2c1c1;
-    font-size: 18.5px;
+.data span {
+  font-weight: 900;
+  color: #c2c1c1;
+  font-size: 18.5px;
 }
 
-#openContainer{
-    height: 300px;
+#openContainer {
+  height: 300px;
 }
 
 .loader {
-    border: 10px solid white;
-    border-top: 10px solid #800040;
-    border-radius: 50%;
-    width: 70px;
-    height: 70px;
-    animation: spin 2s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
-  .loadingContainer {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 30px;
+  border: 10px solid white;
+  border-top: 10px solid #800040;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
 
-@media only screen and (max-width: 620px) {
-    .data{
-      width: 95vw;
-    }
+  100% {
+    transform: rotate(360deg);
   }
+}
+
+.loadingContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+@media only screen and (max-width: 790px) {
+  .data {
+    width: 85vw;
+  }
+}
+@media only screen and (max-width: 640px) {
+  .data {
+    width: 95vw;
+  }
+}

@@ -121,13 +121,13 @@ export default function Nav({
 
   return (
     <nav className="nav-in" id="nav">
-      {width < 711 && navIn === "out" && (
+      {width < 791 && navIn === "out" && (
         <button className="close-nav" onClick={changeNav}>
           <FontAwesomeIcon icon={faTimes} color="#800040" />
         </button>
       )}
 
-      {width < 711 && navIn === "in" && (
+      {width < 791 && navIn === "in" && (
         <button className="open-nav" onClick={changeNavOut}>
           <FontAwesomeIcon icon={faBars} color="#800040" />
         </button>

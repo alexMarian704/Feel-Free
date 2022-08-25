@@ -4,7 +4,7 @@
   background-color: rgb(28, 28, 28);
   height: 27vh;
   border-radius: 10px;
-  box-shadow: 0px 0px 2px 1px rgba(149, 149, 149, 0.17);
+  box-shadow: 0px 0px 1px 1px rgba(96, 96, 96, 0.14);
   max-width: 700px;
   min-width: 263px;
   margin-top: 8px;
@@ -121,7 +121,7 @@
   min-width: 240px;
   width: 38vw;
   cursor: pointer;
-  background-color: rgb(31, 30, 30);
+  background-color: rgb(28, 28, 28);
   border-radius: 7px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
@@ -286,7 +286,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: rgba(34, 34, 34, 1);
+  background-color: rgb(28, 28, 28);
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -373,7 +373,25 @@
   font-size: calc(17px + 0.1vw);
 }
 
-@media only screen and (max-width: 620px) {
+@media only screen and (max-width: 790px) {
+  .transfer{
+    width: 85vw;
+  }
+  .align{
+    width: 70vw;
+  }
+  .toDiv{
+    width: 70vw;
+  }
+  .transferMode{
+    width: 85vw;
+  }
+  .listContainer{
+    width: 70vw;
+  }
+}
+
+@media only screen and (max-width: 640px) {
   .transfer{
     width: 95vw;
   }

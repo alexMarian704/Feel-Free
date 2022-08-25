@@ -205,6 +205,11 @@ const Group = () => {
             messageOriginPush.save();
             pushNotification()
             setMessage("")
+
+            if (main.messages.length > 0) {
+                setRender(++render);
+                messageRef.current.scrollIntoView({ behavior: 'smooth' })
+            }
         }
     }
 

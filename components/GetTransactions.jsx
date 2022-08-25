@@ -5,7 +5,7 @@ import style from "../styles/Transactions.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleDown, faArrowCircleUp } from "@fortawesome/free-solid-svg-icons";
 
-export default function GetTransactions({ chain, userETHaddress }) {
+export default function GetTransactions({ chain, userETHaddress,setOpenTagList }) {
     const { user } = useMoralis();
     const [hTransaction, setHTransaction] = useState([]);
     const [open, setOpen] = useState("");
@@ -24,7 +24,7 @@ export default function GetTransactions({ chain, userETHaddress }) {
     }, [chain])
 
     return (
-        <div className={style.main}>
+        <div className={style.main} onClick={()=> setOpenTagList(false)}>
             {hTransaction.length > 0 && loading === false &&
                 <div className={style.container}>
                     <h2>Your transactions</h2>

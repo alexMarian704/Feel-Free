@@ -155,7 +155,7 @@ export default function Transfer({ tag }) {
         setBalance={setBalance}
         balance={true}
       />
-      <div className="marginDiv"></div>
+      <div className="marginDiv" onClick={()=> setOpenTagList(false)}></div>
       <div className={style.transferMode} onClick={userStatus}>
         <div onClick={() => setTransferMode("Token")}><p>Transfer Coins</p></div>
         <div onClick={() => {setTransferMode("NFT") , setOpenTagList(false)}}><p>Transfer NFTs</p></div>
@@ -303,7 +303,7 @@ export default function Transfer({ tag }) {
         {error && <p className={style.error}>{error.message}</p>}
         {errorSend && <p className={style.error}>{errorSend}</p>}
       </div>}
-      <GetTransactions chain={chainId} userETHaddress={userETHaddress} />
+      <GetTransactions chain={chainId} userETHaddress={userETHaddress} setOpenTagList={setOpenTagList} />
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
     </div>
