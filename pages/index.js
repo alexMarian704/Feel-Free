@@ -18,9 +18,10 @@ import OfflineNotification from "../components/OfflineNotification";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import UnsupportedChain from "../components/UnsupportedChain";
 
 export default function Home() {
-  const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3 } = useMoralis();
+  const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3,chainId } = useMoralis();
   const [info, setInfo] = useState(null);
   const [page, setPage] = useState("Messages");
   const internetStatus = useInternetConnection()
@@ -80,6 +81,7 @@ export default function Home() {
       {(user.get("info") === false ||
         info === false) && <Info setInfo={setInfo} />}
       {internetStatus === false && <OfflineNotification /> }
+      {(chainId !== null && chainId !== "0x41" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }

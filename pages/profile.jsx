@@ -18,6 +18,7 @@ import { useInternetConnection } from "../function/hooks/useInternetConnection";
 import OfflineNotification from "../components/OfflineNotification";
 import { FiSettings } from 'react-icons/fi';
 import Settings from "../components/Settings";
+import UnsupportedChain from "../components/UnsupportedChain";
 
 
 export default function profile() {
@@ -150,6 +151,7 @@ export default function profile() {
       {settings === true && <Settings setSettings={setSettings} />}
       {settings === false &&<Notifications />}
       {internetStatus === false && <OfflineNotification /> }
+      {(chainId !== null && chainId !== "0x41" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }

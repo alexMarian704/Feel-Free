@@ -16,9 +16,10 @@ import Notifications from "../components/Notifications";
 import { userStatus } from "../function/userStatus";
 import { useInternetConnection } from "../function/hooks/useInternetConnection";
 import OfflineNotification from "../components/OfflineNotification";
+import UnsupportedChain from "../components/UnsupportedChain";
 
 export default function search() {
-  const { isAuthenticated, user } = useMoralis();
+  const { isAuthenticated, user,chainId } = useMoralis();
   const [results, setResults] = useState([]);
   const [value, setValue] = useState("");
   const [tag, setTag] = useState("");
@@ -180,6 +181,7 @@ export default function search() {
       </div>
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
+      {(chainId !== null && chainId !== "0x41" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }

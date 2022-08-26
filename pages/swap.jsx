@@ -14,6 +14,7 @@ import Notifications from "../components/Notifications";
 import { userStatus } from "../function/userStatus";
 import { useInternetConnection } from "../function/hooks/useInternetConnection";
 import OfflineNotification from "../components/OfflineNotification";
+import UnsupportedChain from "../components/UnsupportedChain";
 
 
 export default function swap() {
@@ -499,6 +500,7 @@ export default function swap() {
       )}
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
+      {(chainId !== null && chainId !== "0x41" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }

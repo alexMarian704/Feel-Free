@@ -15,12 +15,13 @@ import CheckPassword from "../../components/CheckPassword";
 import { userStatus } from '../../function/userStatus';
 import { useInternetConnection } from "../../function/hooks/useInternetConnection";
 import OfflineNotification from "../../components/OfflineNotification";
+import UnsupportedChain from '../../components/UnsupportedChain';
 
 export default function UserID() {
   const [userData, setUserData] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false)
-  const { isAuthenticated, user, isInitialized } = useMoralis();
+  const { isAuthenticated, user, isInitialized,chainId } = useMoralis();
   const router = useRouter()
   const [isFriend, setIsFriend] = useState(false);
   const [isSend, setIsSend] = useState(false);
@@ -243,6 +244,7 @@ export default function UserID() {
           <div></div>
         </div>}
         {internetStatus === false && <OfflineNotification /> }
+        {(chainId !== null && chainId !== "0x41" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   )
 }

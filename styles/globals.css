@@ -666,3 +666,21 @@ input[type="number"] {
 a{
   color: white;
 }
+
+.unsupported{
+  position: absolute;
+  z-index: 450;
+  width: 100vw;
+  height: 100vh;
+  top: 0px;
+  left: 0px;
+  background: #121212;
+  color: #800040;
+  padding-top: 20vh;
+}
+
+.unsupported h1{
+  font-size: calc(65px + 2vw);
+  width: 100%;
+  text-align: center;
+}
