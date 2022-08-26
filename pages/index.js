@@ -41,7 +41,7 @@ export default function Home() {
       <Head>
         <title>Home</title>
       </Head>
-      <Nav balance={false} />
+      {user.get("userNameChange") === true && user.get("passwordConfig") === true && (info === true || user.get("info") === true) && <Nav balance={false} />}
       <div className="marginDiv"></div>
       {user.get("userNameChange") === true && user.get("passwordConfig") === true &&
         (info === true || user.get("info") === true) && (

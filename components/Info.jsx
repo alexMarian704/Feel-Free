@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 
 export default function Info({ setInfo }) {
-  const { setUserData } = useMoralis();
+  const { setUserData,logout } = useMoralis();
 
   const accept = () => {
     setUserData({
@@ -18,6 +18,7 @@ export default function Info({ setInfo }) {
       {/* <button className="exclamation">
         <FontAwesomeIcon icon={faExclamation} color="rgb(243, 92, 4)" />
       </button> */}
+      <button onClick={()=> logout()} className="checkLogOut">Log out</button>
       <h3 className="setUpTitle">Important</h3>
       <div className="infoClass">
         <h2 className="setUpInfoText">

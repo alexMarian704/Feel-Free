@@ -6,7 +6,7 @@ import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 
 export default function ConfigUser({ setInfo }) {
-  const { setUserData, user } = useMoralis();
+  const { setUserData, user,logout } = useMoralis();
   const [username, setUsername] = useState("");
   const [tag, setTag] = useState("");
   const [validTag, setValidTag] = useState(null);
@@ -183,6 +183,7 @@ export default function ConfigUser({ setInfo }) {
 
   return (
     <div className="setUp">
+      <button onClick={()=> logout()} className="checkLogOut">Log out</button>
       <h2 className="setUpTitle">Choose your username & tag</h2>
       <div className="setUpContainer">
         <label>Username</label>

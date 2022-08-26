@@ -7,7 +7,7 @@ import SHA256 from 'crypto-js/sha256';
 import Hex from "crypto-js/enc-hex"
 
 export default function PasswordConfig() {
-  const { setUserData, user } = useMoralis();
+  const { setUserData, user, logout } = useMoralis();
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
@@ -40,6 +40,7 @@ export default function PasswordConfig() {
 
   return (
     <div className="setUp">
+      <button onClick={() => logout()} className="checkLogOut">Log out</button>
       <h3 className="setUpTitle">Set up a password</h3>
       <div className="setUpContainer">
         <label>Password</label>
@@ -54,21 +55,25 @@ export default function PasswordConfig() {
             )}
           </button>
         </div>
-        <br />
-        <label>Confirm Password</label>
-        <br />
-        <div className="checkDiv">
-          <input type={seeC === false ? "password" : "text"} value={passwordCheck} onChange={(e) => setPasswordCheck(e.target.value)} className="setUpInput" />
-          <button className="checkBut" onClick={() => setSeeC(!seeC)}>
-            {seeC === false ? (
-              <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
-            ) : (
-              <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
-            )}
-          </button>
+        <div style={{
+          "marginTop": "7px"
+        }}>
+          <label>Confirm Password</label>
+          <br />
+          <div className="checkDiv">
+            <input type={seeC === false ? "password" : "text"} value={passwordCheck} onChange={(e) => setPasswordCheck(e.target.value)} className="setUpInput" />
+            <button className="checkBut" onClick={() => setSeeC(!seeC)}>
+              {seeC === false ? (
+                <FontAwesomeIcon icon={faEye} style={{ fontSize: 20 }} />
+              ) : (
+                <FontAwesomeIcon icon={faEyeSlash} style={{ fontSize: 20 }} />
+              )}
+            </button>
+          </div>
         </div>
       </div>
       <button onClick={confirmPassword} className="setUpBut">Confirm</button>
+      <p className="passwordWarning">Password cannot be changed if you do not know the old one</p>
       {error && <p className="checkError">{error}</p>}
     </div>
   );
