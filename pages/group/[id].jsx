@@ -16,6 +16,7 @@ import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from "../../function/messageOrder";
 import styleChat from "../../styles/Messages.module.css"
 import RenderGroupMessage from "../../components/MessageGroup";
+import GroupOptions from "../../components/Group/GroupOptions";
 
 const Group = () => {
     const [member, setMember] = useState(true)
@@ -25,6 +26,7 @@ const Group = () => {
     const [localMessages, setLocalMessages] = useState([])
     const [render, setRender] = useState(100);
     const [reply, setReply] = useState("")
+    const [initial, setInitial] = useState([])
     const { isAuthenticated, user } = useMoralis();
     const router = useRouter()
     const fileRef = useRef()
@@ -32,7 +34,7 @@ const Group = () => {
     const [positionScroll, setPositionScroll] = useState(1);
     const messageRef = useRef();
     const [openReply, setOpenReply] = useState(-1);
-    const [open , setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
 
     function _base64ToArrayBuffer(base64) {
@@ -118,15 +120,24 @@ const Group = () => {
                 const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
                 const decryptedMessages = decrypt(encryptedMessages, user.id);
                 setLocalMessages(decryptedMessages.messages)
+                setInitial(decryptedMessages.messages)
             }
         }
     }
 
     useEffect(() => {
+        if (messageRef.current !== undefined) {
+            messageRef.current.scrollIntoView({ behavior: 'instant' })
+            setLoading(false);
+        } else if (isAuthenticated && router.query.id) {
+            if (localStorage.getItem(`Group${router.query.id}Messages`) === null)
+                setLoading(false);
+        }
+    }, [router.query.id, isAuthenticated, initial])
+
+    useEffect(() => {
         getLocalMessages()
     }, [isAuthenticated, router.query.id])
-
-    //console.log(localMessages)
 
     if (!isAuthenticated) {
         return <Reject />;
@@ -275,61 +286,59 @@ const Group = () => {
 
     return (
         <div>
-            {loading === false &&
-                <div>
-                    <div className={style.nav}>
-                        <div className={style.groupInfo}>
-                            <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
-                            <div className={style.data}>
-                                <h2>{groupData.name}</h2>
-                                <p>{groupData.members.length} members</p>
-                            </div>
-                        </div>
+            <div className={style.nav}>
+                {groupData !== "" && <div className={style.groupInfo}>
+                    <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
+                    <div className={style.data}>
+                        <h2>{groupData.name}</h2>
+                        <p>{groupData.members.length} members</p>
                     </div>
-                    <div className={styleChat.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll} id="scrollID">
-                        {localMessages.length > 0 && localMessages.map((message, i) => {
-                            const d = new Date(message.time);
-                            let day = d.getDate()
-                            let month = d.getMonth();
-                            let year = d.getFullYear()
-                            const prevTime = new Date(i > 0 ? localMessages[i - 1].time : null);
-                            let dayP = prevTime.getDate()
-                            let monthP = prevTime.getMonth();
-                            let yearP = prevTime.getFullYear()
-                            if (i >= localMessages.length - render - 1)
-                                return (
-                                    <div key={i}>
-                                        {(day !== dayP || month !== monthP || year !== yearP) &&
-                                            <div>
-                                                <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
-                                            </div>}
-                                        <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
-                                    </div>
-                                )
-                        })}
-                    </div>
-                    <div className={styleChat.sendContainer}>
-                        <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
-                            if (e.key === "Enter") {
-                                pushMessage("message", "message", message);
-                                setReply("");
-                            }
-                        }} />
-                        <button onClick={() => { pushMessage("message", "message", message), setReply("") }}><FontAwesomeIcon icon={faPaperPlane} /></button>
-                        <button onClick={() => {
-                            fileRef.current.click();
-                        }}><FontAwesomeIcon icon={faPaperclip} /></button>
-                        <input
-                            type="file"
-                            onChange={sendImage}
-                            ref={fileRef}
-                            style={{
-                                display: "none",
-                            }}
-                        />
-                    </div>
-                    {internetStatus === false && <OfflineNotification />}
                 </div>}
+                <GroupOptions />
+            </div>
+            <div className={styleChat.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll} id="scrollID">
+                {localMessages.length > 0 && localMessages.map((message, i) => {
+                    const d = new Date(message.time);
+                    let day = d.getDate()
+                    let month = d.getMonth();
+                    let year = d.getFullYear()
+                    const prevTime = new Date(i > 0 ? localMessages[i - 1].time : null);
+                    let dayP = prevTime.getDate()
+                    let monthP = prevTime.getMonth();
+                    let yearP = prevTime.getFullYear()
+                    if (i >= localMessages.length - render - 1)
+                        return (
+                            <div key={i}>
+                                {(day !== dayP || month !== monthP || year !== yearP) &&
+                                    <div>
+                                        <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
+                                    </div>}
+                                <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
+                            </div>
+                        )
+                })}
+            </div>
+            <div className={styleChat.sendContainer}>
+                <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
+                    if (e.key === "Enter") {
+                        pushMessage("message", "message", message);
+                        setReply("");
+                    }
+                }} />
+                <button onClick={() => { pushMessage("message", "message", message), setReply("") }}><FontAwesomeIcon icon={faPaperPlane} /></button>
+                <button onClick={() => {
+                    fileRef.current.click();
+                }}><FontAwesomeIcon icon={faPaperclip} /></button>
+                <input
+                    type="file"
+                    onChange={sendImage}
+                    ref={fileRef}
+                    style={{
+                        display: "none",
+                    }}
+                />
+            </div>
+            {internetStatus === false && <OfflineNotification />}
         </div>
 
     )

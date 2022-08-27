@@ -72,6 +72,7 @@ const GroupData = ({ selectFriend }) => {
 
             const GroupOrigin = Moralis.Object.extend(ref);
             const groupData = new GroupOrigin();
+            selectFriend.push(user.get("ethAddress"))
             groupData.save({
                 type: "data",
                 owner: user.get("ethAddress"),

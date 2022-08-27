@@ -85,7 +85,7 @@ export default function Options({ open, setOpen, userAddress, friendAddress, get
                     setOpenConfirm(true)
                     setOpen(false);
                 }
-                } >Delete chat</button>
+                }>Delete chat</button>
             </div>
         </div>
     );

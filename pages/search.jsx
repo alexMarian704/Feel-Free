@@ -181,7 +181,7 @@ export default function search() {
       </div>
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
-      {(chainId !== null && chainId !== "0x41" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
+      {(chainId !== null && chainId !== "0x4" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }
