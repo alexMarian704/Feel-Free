@@ -742,7 +742,7 @@ export default function Messages() {
             {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 > 1 && <p>{lastConnected}</p>}
           </div>
         </div>
-        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} setOpenConfirm={setOpenConfirm} />
+        <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} setOpenConfirm={setOpenConfirm} friendTag={friendData.userTag} />
       </div>
       {loading === true && <div className={style.loadingContainer}>
         <div className={style.loader}></div>

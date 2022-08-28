@@ -61,7 +61,7 @@ const Group = () => {
             const query = new Moralis.Query(GroupMessage);
             query.equalTo("type", "Message");
             const results = await query.find();
-
+            deleteNotification();
             if (results !== undefined) {
                 for (let i = 0; i < results.length; i++) {
                     if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
@@ -297,9 +297,9 @@ const Group = () => {
                 const userNotification = Moralis.Object.extend("Notification");
                 const query = new Moralis.Query(userNotification);
                 query.equalTo("to", groupData.members[i]);
-                query.equalTo("tag", user.get("userTag"));
+                //query.equalTo("tag", user.get("userTag"));
                 query.equalTo("type", "Group message");
-                query.equalTo("name", router.query.id);
+                query.equalTo("url", router.query.id);
                 const results = await query.first();
 
                 if (results === undefined) {

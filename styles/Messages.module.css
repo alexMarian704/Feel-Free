@@ -377,7 +377,7 @@
 .optionsContainer {
     position: absolute;
     background-color: rgb(21, 21, 21);
-    bottom: calc(-140px - 4vh);
+    bottom: calc(-175px - 5vh - 5px);
     z-index: 100;
     right: 10px;
     width: calc(140px + 1vw);

@@ -6,7 +6,7 @@ import style from "../styles/FriendList.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProfilePicture from "../public/profile.jpg";
 import { useRouter } from "next/router";
-import { faComment , faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faComment , faSearch,faArrowAltCircleRight} from "@fortawesome/free-solid-svg-icons";
 
 export default function FriendList() {
     const { user } = useMoralis();
@@ -86,7 +86,10 @@ export default function FriendList() {
                                 <p onClick={() => goToProfile(friend.ethAddress)}>@{friend.userTag}</p>
                             </div>
                             <div className={style.buttonContainer}>
-                                <button onClick={() => goToChat(friend.ethAddress)}><FontAwesomeIcon icon={faComment} /> </button>
+                                <button onClick={() => route.push(`/transfer/${friend.userTag}`) } style={{
+                                    "marginRight":"15px"
+                                }}><FontAwesomeIcon icon={faArrowAltCircleRight} /></button>
+                                <button onClick={() => goToChat(friend.ethAddress)}><FontAwesomeIcon icon={faComment} /></button>
                             </div>
                         </div>
                     )
