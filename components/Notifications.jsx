@@ -132,6 +132,12 @@ export default function Notifications() {
                                             <p>You are now member of <span>{data.name}</span></p>
                                         </div>
                                     )
+                                }else if(data.type === "Group message"){
+                                    return(
+                                        <div>
+                                            <h1>Salut</h1>
+                                        </div>
+                                    )
                                 }
                             })}
                         </div>}

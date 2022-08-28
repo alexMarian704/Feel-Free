@@ -50,6 +50,70 @@ const Group = () => {
     const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
     const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
 
+    const unredMessages = async () => {
+        if (isAuthenticated && router.query.mesID) {
+            let messageList = []
+            let main = {
+                userAddress: user.get("ethAddress"),
+                messages: messageList
+            }
+            const GroupMessage = Moralis.Object.extend(`Group${router.query.id}`);
+            const query = new Moralis.Query(GroupMessage);
+            query.equalTo("type", "Message");
+            const results = await query.find();
+
+            if (results !== undefined) {
+                for (let i = 0; i < results.length; i++) {
+                    if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
+                        const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+                        const decryptedMessages = decrypt(encryptedMessages, user.id);
+                        main.messages = decryptedMessages.messages
+                    }
+                    const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
+                    const decryptMessage = decrypt(results[i].attributes.message, encryptKey)
+                    const decryptReply = decrypt(results[i].attributes.reply, encryptKey)
+                    main.messages.push({ type: results[i].attributes.tag, message: decryptMessage, time: results[i].attributes.time, file: results[i].attributes.file, fileName: results[i].attributes.fileName, reply: decryptReply })
+
+                    const encryptedMessagesList = encrypt(main, user.id)
+                    localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
+                    console.log(main.messages)
+                }
+                for (let i = 0; i < results.length; i++) {
+                    if (results[i].attributes.seen + 1 === results[i].attributes.membersNumber) {
+                        const query1 = new Moralis.Query(GroupMessage);
+                        query1.equalTo("time", results[i].attributes.time);
+                        query1.equalTo("type", "Message")
+                        const results1 = await query1.first();
+                        if (results1 !== undefined)
+                            results1.destroy()
+                    } else {
+                        results[i].set({
+                            seen: results[i].attributes.seen + 1
+                        })
+                        results[i].save();
+                    }
+                }
+                if (main.messages.length > 0) {
+                    setLocalMessages(main.messages)
+                    messageRef.current.scrollIntoView({ behavior: 'instant' })
+                }
+            }
+        }
+    }
+
+    const deleteNotification = async () => {
+        const userNotification = Moralis.Object.extend("Notification");
+        const query = new Moralis.Query(userNotification);
+        query.equalTo("url", router.query.mesID);
+        query.equalTo("type", "Group message");
+        query.equalTo("to", user.get("ethAddress"));
+        const results = await query.first();
+        if (results !== undefined) {
+            results.destroy()
+        }
+    }
+
+
     useEffect(async () => {
         if (isAuthenticated && router.query.id) {
             const GroupMembers = Moralis.Object.extend(`Group${router.query.id}`);
@@ -197,7 +261,10 @@ const Group = () => {
                 file: file,
                 fileName: fileName,
                 tag: user.get("userTag"),
-                reply: encryptReply
+                reply: encryptReply,
+                type: "Message",
+                seen: 1,
+                membersNumber: groupData.members.length
             });
             const messageACL = new Moralis.ACL();
             messageACL.setWriteAccess(user.id, true);
@@ -226,41 +293,44 @@ const Group = () => {
 
     const pushNotification = async () => {
         for (let i = 0; i < groupData.members.length; i++) {
-            const userNotification = Moralis.Object.extend("Notification");
-            const query = new Moralis.Query(userNotification);
-            query.equalTo("to", groupData.members[i]);
-            query.equalTo("tag", user.get("userTag"));
-            query.equalTo("type", "Group message");
-            query.equalTo("name", router.query.id);
-            const results = await query.first();
+            if (groupData.members[i] !== user.get("ethAddress")) {
+                const userNotification = Moralis.Object.extend("Notification");
+                const query = new Moralis.Query(userNotification);
+                query.equalTo("to", groupData.members[i]);
+                query.equalTo("tag", user.get("userTag"));
+                query.equalTo("type", "Group message");
+                query.equalTo("name", router.query.id);
+                const results = await query.first();
 
-            if (results === undefined) {
-                const addressToTag = Moralis.Object.extend("Tags");
-                const _query = new Moralis.Query(addressToTag);
-                _query.equalTo("ethAddress", groupData.members[i]);
-                const _results = await _query.first();
+                if (results === undefined) {
+                    const addressToTag = Moralis.Object.extend("Tags");
+                    const _query = new Moralis.Query(addressToTag);
+                    _query.equalTo("ethAddress", groupData.members[i]);
+                    const _results = await _query.first();
 
-                const d = new Date();
-                let time = d.getTime();
+                    const d = new Date();
+                    let time = d.getTime();
 
-                const Notification = Moralis.Object.extend("Notification");
-                const noti = new Notification();
-                noti.save({
-                    from: user.get("ethAddress"),
-                    to: groupData.members[i],
-                    type: "Group message",
-                    tag: user.get("userTag"),
-                    name: router.query.id,
-                    time: time
-                });
+                    const Notification = Moralis.Object.extend("Notification");
+                    const noti = new Notification();
+                    noti.save({
+                        from: user.get("ethAddress"),
+                        to: groupData.members[i],
+                        type: "Group message",
+                        tag: user.get("userTag"),
+                        url: router.query.id,
+                        time: time,
+                        name: groupData.name
+                    });
 
-                const notificationsACL = new Moralis.ACL();
-                notificationsACL.setWriteAccess(user.id, true);
-                notificationsACL.setReadAccess(user.id, true)
-                notificationsACL.setWriteAccess(_results.attributes.idUser, true);
-                notificationsACL.setReadAccess(_results.attributes.idUser, true);
-                noti.setACL(notificationsACL)
-                noti.save();
+                    const notificationsACL = new Moralis.ACL();
+                    notificationsACL.setWriteAccess(user.id, true);
+                    notificationsACL.setReadAccess(user.id, true)
+                    notificationsACL.setWriteAccess(_results.attributes.idUser, true);
+                    notificationsACL.setReadAccess(_results.attributes.idUser, true);
+                    noti.setACL(notificationsACL)
+                    noti.save();
+                }
             }
         }
     }
