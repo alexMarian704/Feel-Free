@@ -51,7 +51,7 @@ const Group = () => {
     const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
 
     const unredMessages = async () => {
-        if (isAuthenticated && router.query.mesID) {
+        if (isAuthenticated && router.query.id) {
             let messageList = []
             let main = {
                 userAddress: user.get("ethAddress"),
@@ -60,6 +60,7 @@ const Group = () => {
             const GroupMessage = Moralis.Object.extend(`Group${router.query.id}`);
             const query = new Moralis.Query(GroupMessage);
             query.equalTo("type", "Message");
+            query.notEqualTo("from" , user.get("ethAddress"));
             const results = await query.find();
             deleteNotification();
             if (results !== undefined) {
@@ -83,6 +84,7 @@ const Group = () => {
                         const query1 = new Moralis.Query(GroupMessage);
                         query1.equalTo("time", results[i].attributes.time);
                         query1.equalTo("type", "Message")
+                        query1.equalTo("tag", results[i].attributes.tag)
                         const results1 = await query1.first();
                         if (results1 !== undefined)
                             results1.destroy()
@@ -94,6 +96,7 @@ const Group = () => {
                     }
                 }
                 if (main.messages.length > 0) {
+                    messageOrder(user.get("ethAddress"), results[results.length-1].attributes.name, main.messages[main.messages.length-1].message, results[results.length-1].attributes.name, "", main.messages[main.messages.length-1].time, "friend", main.messages[main.messages.length-1].file, main.messages[main.messages.length-1].type, "group", router.query.id)
                     setLocalMessages(main.messages)
                     messageRef.current.scrollIntoView({ behavior: 'instant' })
                 }
@@ -104,7 +107,7 @@ const Group = () => {
     const deleteNotification = async () => {
         const userNotification = Moralis.Object.extend("Notification");
         const query = new Moralis.Query(userNotification);
-        query.equalTo("url", router.query.mesID);
+        query.equalTo("url", router.query.id);
         query.equalTo("type", "Group message");
         query.equalTo("to", user.get("ethAddress"));
         const results = await query.first();
@@ -201,6 +204,7 @@ const Group = () => {
 
     useEffect(() => {
         getLocalMessages()
+        unredMessages();
     }, [isAuthenticated, router.query.id])
 
     if (!isAuthenticated) {
@@ -250,7 +254,7 @@ const Group = () => {
 
             const encryptedMessagesList = encrypt(main, user.id)
             localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
-            messageOrder(user.get("ethAddress"), groupData.name, message, groupData.name, "", time, user.get("userTag"), file, groupData.members, "group", router.query.id)
+            messageOrder(user.get("ethAddress"), groupData.name, message, groupData.name, "", time, "you", file, user.get("userTag"), "group", router.query.id)
 
             const MessageOrigin = Moralis.Object.extend(`Group${router.query.id}`);
             const messageOriginPush = new MessageOrigin();
@@ -264,7 +268,8 @@ const Group = () => {
                 reply: encryptReply,
                 type: "Message",
                 seen: 1,
-                membersNumber: groupData.members.length
+                membersNumber: groupData.members.length,
+                name:groupData.name
             });
             const messageACL = new Moralis.ACL();
             messageACL.setWriteAccess(user.id, true);

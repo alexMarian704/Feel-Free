@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply,scrollIntoViewIndicator, setScrollIntoViewIndicator }) {
-    const { user } = useMoralis()
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator }) {
+  const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
   let hours = d.getHours();
@@ -61,7 +61,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
       )
     else
       return (
-        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time} 
+        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time}
         // style={{
         //   background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
         // }}
@@ -102,7 +102,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
           </div>
         </div>
       );
-  } else if (message.type === 2) {
+  } else if (message.type !== user.get("userTag")) {
     if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
       return (
         <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>

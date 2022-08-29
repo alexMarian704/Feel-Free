@@ -134,8 +134,8 @@ export default function Notifications() {
                                     )
                                 }else if(data.type === "Group message"){
                                     return(
-                                        <div>
-                                            <h1>Salut</h1>
+                                        <div key={i}>
+                                            <p>New group message</p>
                                         </div>
                                     )
                                 }
