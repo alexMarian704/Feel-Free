@@ -134,7 +134,6 @@ const Group = () => {
             const subscription = await query.subscribe()
 
             subscription.on("create", async (object) => {
-                console.log(object.attributes)
                 const decryptMessage = decrypt(object.attributes.message, encryptKey)
                 const decryptReply = decrypt(object.attributes.reply, encryptKey)
                 if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
@@ -146,12 +145,30 @@ const Group = () => {
 
                 const encryptedMessagesList = encrypt(main, user.id)
                 localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
+                deleteNotification()
+
+                if (object.attributes.seen.length + 1 === object.attributes.membersNumber && object.attributes.seen.includes(user.get("ethAddress")) === false) {
+                    object.destroy();
+                    // const query1 = new Moralis.Query(GroupMessage);
+                    // query1.equalTo("time", object.attributes.time);
+                    // query1.equalTo("type", "Message")
+                    // query1.equalTo("tag", object.attributes.tag)
+                    // const results1 = await query1.first();
+                    // if (results1 !== undefined) {
+                    //     results1.destroy()
+                    // }
+                } else {
+                    object.set({
+                        seen: [...object.attributes.seen, user.get("ethAddress")]
+                    })
+                    object.save();
+                }
 
                 messageOrder(user.get("ethAddress"), object.attributes.name, main.messages[main.messages.length - 1].message, object.attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
 
                 if (main.messages.length > 0) {
                     setLocalMessages(main.messages)
-                    messageRef.current.scrollIntoView({ behavior: 'instant' })
+                    messageRef.current.scrollIntoView({ behavior: 'smooth' })
                 }
             })
 
@@ -305,21 +322,6 @@ const Group = () => {
             localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
             messageOrder(user.get("ethAddress"), groupData.name, message, groupData.name, "", time, "you", file, user.get("userTag"), "group", router.query.id)
 
-            const MessageOrigin = Moralis.Object.extend(`Group${router.query.id}`);
-            const messageOriginPush = new MessageOrigin();
-            messageOriginPush.save({
-                from: user.get("ethAddress"),
-                message: encryptMessage,
-                time: time,
-                file: file,
-                fileName: fileName,
-                tag: user.get("userTag"),
-                reply: encryptReply,
-                type: "Message",
-                seen: [user.get("ethAddress")],
-                membersNumber: groupData.members.length,
-                name: groupData.name
-            });
             const messageACL = new Moralis.ACL();
             messageACL.setWriteAccess(user.id, true);
             messageACL.setReadAccess(user.id, true)
@@ -333,8 +335,24 @@ const Group = () => {
                     messageACL.setReadAccess(results.attributes.idUser, true);
                 }
             }
+
+            const MessageOrigin = Moralis.Object.extend(`Group${router.query.id}`);
+            const messageOriginPush = new MessageOrigin();
             messageOriginPush.setACL(messageACL)
             messageOriginPush.save();
+            messageOriginPush.save({
+                from: user.get("ethAddress"),
+                message: encryptMessage,
+                time: time,
+                file: file,
+                fileName: fileName,
+                tag: user.get("userTag"),
+                reply: encryptReply,
+                type: "Message",
+                seen: [user.get("ethAddress")],
+                membersNumber: groupData.members.length,
+                name: groupData.name
+            });
             pushNotification()
             setMessage("")
 
