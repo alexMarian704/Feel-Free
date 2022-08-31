@@ -74,16 +74,16 @@
 }
 
 .newMessage{
-    margin-top: 10px;
-    height: 40px;
+    margin-bottom: 7px;
     display: flex;
+    padding: 7px 0px 7px 0px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 200ms ease-in-out;
 }
 
-.newMessage:hover, .newGroup:hover{
+.newMessage:hover, .newGroup:hover, .groupMessage:hover{
     background-color: rgb(70, 70, 70);
 }
 
@@ -161,4 +161,17 @@
 .newGroup span{
     color: #95044d;
     font-size: calc(18px + 0.1vw);
+}
+
+.groupMessage{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+    padding: 5px 0px 5px 0px;
+    margin-bottom: 5px;
+}
+.groupMessage span , .newMessage span{
+    color: #a80054;
 }

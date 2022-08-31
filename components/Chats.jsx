@@ -20,7 +20,8 @@ export default function Chats() {
         const userNotification = Moralis.Object.extend("Notification");
         const query = new Moralis.Query(userNotification);
         query.equalTo("to", user.get("ethAddress"));
-        query.equalTo("type", "New message");
+        query.containedIn("type" , ["New message", "Group message"])
+        
         const results = await query.find();
         if (results !== undefined){
             setNotArray(results)
@@ -38,8 +39,6 @@ export default function Chats() {
     useEffect(async () => {
         queryNotifications();
     }, [])
-
-    // console.log(notArray);
 
     return (
         <div>

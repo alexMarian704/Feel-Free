@@ -95,7 +95,7 @@ export default function Notifications() {
         results1.destroy();
     }
 
-    const goToGroup = (eth , time)=>{
+    const goToGroup = (eth, time) => {
         route.push(`/group/${eth}${time}`)
     }
 
@@ -108,7 +108,7 @@ export default function Notifications() {
                     }}>0 notifications</p>}
                     {notArray.length > 0 &&
                         <div>
-                            {notArray.map((x , i) => {
+                            {notArray.map((x, i) => {
                                 const data = x.attributes;
                                 if (data.type === "Friend Request") {
                                     return (
@@ -126,16 +126,16 @@ export default function Notifications() {
                                             <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New messages from <span>@{data.tag}</span></p>
                                         </div>
                                     )
-                                }else if(data.type === "New group"){
-                                    return(
-                                        <div className={style.newGroup} onClick={()=> goToGroup(data.from.slice(2) ,data.time)} key={i}>
+                                } else if (data.type === "New group") {
+                                    return (
+                                        <div className={style.newGroup} onClick={() => goToGroup(data.from.slice(2), data.time)} key={i}>
                                             <p>You are now member of <span>{data.name}</span></p>
                                         </div>
                                     )
-                                }else if(data.type === "Group message"){
-                                    return(
-                                        <div key={i}>
-                                            <p>New group message</p>
+                                } else if (data.type === "Group message") {
+                                    return (
+                                        <div key={i} className={style.groupMessage} onClick={()=>route.push(`/group/${data.url}`)}>
+                                            <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New message in <span>{data.name}</span> from <span>@{data.tag}</span></p>
                                         </div>
                                     )
                                 }

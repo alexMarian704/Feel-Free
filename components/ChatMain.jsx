@@ -51,17 +51,19 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
     }, [])
 
     useEffect(() => {
-        let nr = 0;
-        for (let i = 0; i < notification.length; i++) {
-            if (notification[i].attributes.tag === tag) {
-                nr = 1;
+        if (notification.length > 0) {
+            for (let i = 0; i < notification.length; i++) {
+                if (type !== "group") {
+                    if (notification[i].attributes.tag === tag && notification[i].attributes.name === undefined) {
+                        setNewMessage(true);
+                    }
+                } else {
+                    if (notification[i].attributes.tag === tag && friendData.name === notification[i].attributes.name)
+                        setNewMessage(true);
+                }
             }
         }
-        if (nr === 1)
-            setNewMessage(true);
-        else
-            setNewMessage(false);
-    }, [notification])
+    }, [notification.length])
 
     return (
         <div className={style.container}>
@@ -73,7 +75,7 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     objectFit="cover"
                     src={friendData.profilePhoto}
                     alt="Profile Photo" />}
-                {(friendData.profilePhoto === undefined && (friendData.image === "" || friendData.image === undefined) ) && <Image
+                {(friendData.profilePhoto === undefined && (friendData.image === "" || friendData.image === undefined)) && <Image
                     width="100%"
                     height="100%"
                     layout="fill"
@@ -91,13 +93,16 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
             <div className={style.infoContainer} onClick={() => type === "group" ? router.push(`/group/${groupRef}`) : router.push(`/messages/${address}`)}>
                 {(file === "message") && <div className={style.mainData}>
                     {newMaessage === false && <p>{friendData.username}</p>}
-                    {newMaessage === true && <p>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                    {newMaessage === true && type !== "group" && <p>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
                     }} /></p>}
-                    {type === "group" && <p>{friendData.name}</p>}
+                    {newMaessage === true && type === "group" && <p>{friendData.name} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                        "fontSize": "14px"
+                    }} /></p>}
+                    {newMaessage === false && type === "group" && <p>{friendData.name}</p>}
                     {newMaessage === false && last === "you" && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
-                    
-                    {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{type !== "group" ? friendData.username: `@${tag}`}:</span> {lastMessage}</p>}
+
+                    {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{type !== "group" ? friendData.username : `@${tag}`}:</span> {lastMessage}</p>}
                     {newMaessage === true && <p><span>New messages</span></p>}
                     {newMaessage === false && last === user.get("userTag") && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
                 </div>}

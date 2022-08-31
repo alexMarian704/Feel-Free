@@ -260,7 +260,7 @@
 
 .myText,
 .friendText {
-    font-size: 22px;
+    font-size: calc(19px + 0.1vw);
     overflow-wrap: break-word;
     width: 100%;
 }
@@ -821,10 +821,10 @@
 .scrollToBottom {
     position: fixed;
     bottom: calc(105px + 3.6vh);
-    right: 20px;
+    right: 10px;
     z-index: 399;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     cursor: pointer;
     outline: none;
     background-color: rgb(48, 48, 48);
@@ -880,4 +880,12 @@
     font-size: calc(18px + 0.1vw);
     margin-bottom: 10px;
     border-radius: 20px;
+}
+
+.friendTagMessage{
+    margin: 0px;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: calc(16px + 0.1vw);
 }

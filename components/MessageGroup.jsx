@@ -89,6 +89,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             {minutes < 10 && <p className={style.myMessageTime} style={{
               "right": message.delete !== true ? "27px" : "6px"
             }}>{`${hours}:0${minutes}`}</p>}
+            <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>
             {message.delete !== true && <button className={style.messageOptions} onClick={() => {
               if (openReply !== number)
                 setOpenReply(number)
@@ -169,6 +170,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             }}>
               <p>{message.reply.message}</p>
             </div>}
+            <p className={style.friendTagMessage}>@{message.type}</p>
             <p className={style.friendText} style={{
               "fontStyle": message.delete !== true ? "normal" : "italic",
               "color": message.delete !== true ? "white" : "rgb(170,170,170)"

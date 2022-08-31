@@ -664,7 +664,8 @@ input[type="number"] {
 }
 
 a{
-  color: white;
+  color: rgb(89, 212, 250);
+  text-decoration: none;
 }
 
 .unsupported{

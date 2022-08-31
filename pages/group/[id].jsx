@@ -10,7 +10,7 @@ import { Moralis } from "moralis";
 import style from "../../styles/GroupChat.module.css"
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip } from "@fortawesome/free-solid-svg-icons";
+import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip,faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from "../../function/messageOrder";
@@ -424,8 +424,6 @@ const Group = () => {
             setPositionScroll(Number(position.toPrecision(2)))
     };
 
-    // console.log(groupData)
-
     return (
         <div>
             <div className={style.nav}>
@@ -459,6 +457,10 @@ const Group = () => {
                             </div>
                         )
                 })}
+                {localMessages.length > 0 && positionScroll < 0.92 &&
+                    <button className={styleChat.scrollToBottom} style={reply === "" ? { bottom: "calc(65px + 1.8vh)" } : { bottom: "calc(105px + 3.6vh)" }} onClick={() => messageRef.current.scrollIntoView({ behavior: 'smooth' })}>
+                        <FontAwesomeIcon icon={faChevronDown} />
+                    </button>}
             </div>
             <div className={styleChat.sendContainer}>
                 <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
