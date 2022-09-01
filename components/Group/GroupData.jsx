@@ -20,15 +20,17 @@ const GroupData = ({ selectFriend }) => {
     const [error, setError] = useState("")
     const [friendsData, setFriendsData] = useState([])
     const [creatingLoading, setCreatingLoading] = useState(false);
+    const [loadingImage, setLoadingImage] = useState(false)
 
     const changePhoto = async (e) => {
+        setLoadingImage(true)
         const file = e.target.files[0];
         const type = e.target.files[0].type.replace("image/", "");
         const name = `profile.${type}`;
         const groupImage = new Moralis.File(name, file);
         await groupImage.saveIPFS();
         setImage(groupImage.ipfs())
-        console.log(groupImage.ipfs());
+        setLoadingImage(false)
     };
 
     useEffect(async () => {
@@ -54,7 +56,6 @@ const GroupData = ({ selectFriend }) => {
         }
         return window.btoa(binary);
     }
-
     //console.log(friendsData)
 
     const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
@@ -185,14 +186,11 @@ const GroupData = ({ selectFriend }) => {
         }
     }
 
-    console.log(name.trim())
-
-
     return (
         <div>
             <div>
                 <div className={style.imageContainer}>
-                    {image !== "" && (
+                    {image !== "" && loadingImage === false && (
                         <Image
                             src={image}
                             alt="group image"
@@ -203,9 +201,13 @@ const GroupData = ({ selectFriend }) => {
                             className={style.img}
                         />
                     )}
-                    {image === "" &&
-                        <div>
+                    {image === "" && loadingImage === false &&
+                        <div className={style.infoDiv}>
                             <p>Select group image</p>
+                        </div>}
+                    {loadingImage === true &&
+                        <div className={style.loadingContainer}>
+                            <div className={style.loader}></div>
                         </div>}
                     <button
                         onClick={() => {
