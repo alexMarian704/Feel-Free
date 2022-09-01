@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator }) {
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors }) {
   const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -170,7 +170,9 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             }}>
               <p>{message.reply.message}</p>
             </div>}
-            <p className={style.friendTagMessage}>@{message.type}</p>
+            <p style={{
+              "color":nameColors[nameColors.indexOf(message.type)+1]
+            }} className={style.friendTagMessage}>@{message.type}</p>
             <p className={style.friendText} style={{
               "fontStyle": message.delete !== true ? "normal" : "italic",
               "color": message.delete !== true ? "white" : "rgb(170,170,170)"

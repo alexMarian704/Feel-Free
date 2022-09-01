@@ -126,7 +126,6 @@ const Group = () => {
                 userAddress: user.get("ethAddress"),
                 messages: messageList
             }
-            const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
 
             const query = new Moralis.Query(`Group${router.query.id}`)
             query.equalTo("type", "Message");
@@ -134,6 +133,7 @@ const Group = () => {
             const subscription = await query.subscribe()
 
             subscription.on("create", async (object) => {
+                const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
                 const decryptMessage = decrypt(object.attributes.message, encryptKey)
                 const decryptReply = decrypt(object.attributes.reply, encryptKey)
                 if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
@@ -190,11 +190,11 @@ const Group = () => {
             setLoading(false)
             if (localStorage.getItem(`Group${router.query.id}Key`) === null) {
                 const GroupKey = Moralis.Object.extend(`Group${router.query.id}`);
-                const query = new Moralis.Query(GroupKey);
-                query.equalTo("type", "Encryption key");
-                query.equalTo("to", user.get("ethAddress"));
-                const results = await query.first();
-                if (results !== undefined) {
+                const query_ = new Moralis.Query(GroupKey);
+                query_.equalTo("type", "Encryption key");
+                query_.equalTo("to", user.get("ethAddress"));
+                const results1 = await query_.first();
+                if (results1 !== undefined) {
                     const dec = new TextDecoder();
                     const encryptedPrivateKey = localStorage.getItem(`privateKeyUser${user.get("ethAddress")}`)
                     const decryptedPrivateKEy = decrypt(encryptedPrivateKey, user.id);
@@ -209,7 +209,7 @@ const Group = () => {
                         true,
                         ["decrypt"]
                     );
-                    const bufferKey = _base64ToArrayBuffer(results.attributes.key)
+                    const bufferKey = _base64ToArrayBuffer(results1.attributes.key)
                     const decryptedKey = await window.crypto.subtle.decrypt({
                         name: "RSA-OAEP"
                     },
@@ -217,23 +217,23 @@ const Group = () => {
                         bufferKey
                     )
                     const textKey = dec.decode(decryptedKey)
-                    console.log(textKey)
+                    //console.log(textKey)
                     const localEncrypt = encrypt(textKey, user.id)
                     localStorage.setItem(`Group${router.query.id}Key`, localEncrypt)
-                    results.destroy()
+                    results1.destroy()
 
                     const addressToTag = Moralis.Object.extend("Tags");
                     const query = new Moralis.Query(addressToTag);
                     query.equalTo("ethAddress", _results.attributes.owner);
-                    const results = await query.first();
+                    const resultsTag = await query.first();
 
                     const groupsList = localStorage.getItem("GroupsList")
                     if (groupsList !== null)
                         localStorage.setItem("GroupsList", JSON.stringify([...JSON.parse(groupsList), `Group${router.query.id}`]));
                     else
                         localStorage.setItem("GroupsList", JSON.stringify([`Group${router.query.id}`]));
-                    messageOrder(user.get("ethAddress"), _results.attributes.name, "New group", _results.attributes.name, "", _results.attributes.time, "friend", "message", results.attributes.userTag, "group", router.query.id)
-                }
+                    messageOrder(user.get("ethAddress"), _results.attributes.name, "New group", _results.attributes.name, "", _results.attributes.time, "friend", "message", resultsTag.attributes.userTag, "group", router.query.id)
+               }
             }
             const userNotification = Moralis.Object.extend("Notification");
             const queryNotification = new Moralis.Query(userNotification);
@@ -453,7 +453,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} />
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} />}
                             </div>
                         )
                 })}

@@ -19,7 +19,7 @@ const GroupData = ({ selectFriend }) => {
     const [description, setDescription] = useState("")
     const [error, setError] = useState("")
     const [friendsData, setFriendsData] = useState([])
-    const [creatingLoading , setCreatingLoading] = useState(false);
+    const [creatingLoading, setCreatingLoading] = useState(false);
 
     const changePhoto = async (e) => {
         const file = e.target.files[0];
@@ -60,6 +60,15 @@ const GroupData = ({ selectFriend }) => {
     const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
     const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
 
+    function generateRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
     const createGroup = async () => {
         if (name.length > 3 && description.length > 6 && image !== "") {
             setError("")
@@ -69,6 +78,12 @@ const GroupData = ({ selectFriend }) => {
             const stringKey = self.crypto.randomUUID()
             const enc = new TextEncoder();
             const encodedKey = enc.encode(stringKey);
+
+            let colors = [];
+            for (let i = 0; i < friendsData.length; i++) {
+                colors.push(friendsData[i].userTag)
+                colors.push(generateRandomColor())
+            }
 
             const GroupOrigin = Moralis.Object.extend(ref);
             const groupData = new GroupOrigin();
@@ -80,7 +95,8 @@ const GroupData = ({ selectFriend }) => {
                 description: description.trim(),
                 image: image,
                 time: time,
-                members: selectFriend
+                members: selectFriend,
+                colors: colors
             });
             const originACL = new Moralis.ACL();
             originACL.setWriteAccess(user.id, true);
@@ -159,12 +175,12 @@ const GroupData = ({ selectFriend }) => {
             setCreatingLoading(true)
             setTimeout(() => {
                 router.push(`/group/${user.get("ethAddress").slice(2)}${time}`)
-              }, 1000)
+            }, 1000)
         } else if (name.trim().length <= 3) {
             setError("Name is too short, it has to be at least 4 characters")
-        }else if (image === "") {
+        } else if (image === "") {
             setError("Please select an image")
-        } else if(description.trim().length <= 7) {
+        } else if (description.trim().length <= 7) {
             setError("Description is too short, it has to be at least 8 characters")
         }
     }
