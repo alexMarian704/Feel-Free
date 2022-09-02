@@ -10,7 +10,7 @@ import { Moralis } from "moralis";
 import style from "../../styles/GroupChat.module.css"
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip,faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from "../../function/messageOrder";
@@ -37,7 +37,7 @@ const Group = () => {
     const [openReply, setOpenReply] = useState(-1);
     const [open, setOpen] = useState(false);
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
-    const [groupUnreadMessageNumber , setGroupUnreadMessageNumber] = useState(0);
+    const [groupUnreadMessageNumber, setGroupUnreadMessageNumber] = useState(0);
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -151,14 +151,6 @@ const Group = () => {
 
                 if (object.attributes.seen.length + 1 === object.attributes.membersNumber && object.attributes.seen.includes(user.get("ethAddress")) === false) {
                     object.destroy();
-                    // const query1 = new Moralis.Query(GroupMessage);
-                    // query1.equalTo("time", object.attributes.time);
-                    // query1.equalTo("type", "Message")
-                    // query1.equalTo("tag", object.attributes.tag)
-                    // const results1 = await query1.first();
-                    // if (results1 !== undefined) {
-                    //     results1.destroy()
-                    // }
                 } else {
                     object.set({
                         seen: [...object.attributes.seen, user.get("ethAddress")]
@@ -219,7 +211,6 @@ const Group = () => {
                         bufferKey
                     )
                     const textKey = dec.decode(decryptedKey)
-                    //console.log(textKey)
                     const localEncrypt = encrypt(textKey, user.id)
                     localStorage.setItem(`Group${router.query.id}Key`, localEncrypt)
                     results1.destroy()
@@ -235,16 +226,18 @@ const Group = () => {
                     else
                         localStorage.setItem("GroupsList", JSON.stringify([`Group${router.query.id}`]));
                     messageOrder(user.get("ethAddress"), _results.attributes.name, "New group", _results.attributes.name, "", _results.attributes.time, "friend", "message", resultsTag.attributes.userTag, "group", router.query.id)
-               }
+                }
             }
-            const userNotification = Moralis.Object.extend("Notification");
-            const queryNotification = new Moralis.Query(userNotification);
-            queryNotification.equalTo("to", user.get("ethAddress"));
-            queryNotification.equalTo("type", "New group");
-            queryNotification.equalTo("time", _results.attributes.time);
-            const results1 = await queryNotification.first();
-            if (results1 !== undefined)
-                results1.destroy()
+            if (_results !== undefined) {
+                const userNotification = Moralis.Object.extend("Notification");
+                const queryNotification = new Moralis.Query(userNotification);
+                queryNotification.equalTo("to", user.get("ethAddress"));
+                queryNotification.equalTo("type", "New group");
+                queryNotification.equalTo("time", _results.attributes.time);
+                const results1 = await queryNotification.first();
+                if (results1 !== undefined)
+                    results1.destroy()
+            }
         }
     }, [isAuthenticated, router.query.id])
 
@@ -260,21 +253,21 @@ const Group = () => {
     }
 
     useEffect(() => {
-        if (messageRef.current !== undefined) {
+        if (messageRef.current !== undefined && initial.length === localMessages.length) {
             messageRef.current.scrollIntoView({ behavior: 'instant' })
             setLoading(false);
         } else if (isAuthenticated && router.query.id) {
             if (localStorage.getItem(`Group${router.query.id}Messages`) === null)
                 setLoading(false);
         }
-    }, [router.query.id, isAuthenticated, initial])
+    }, [router.query.id, isAuthenticated, messageRef.current])
 
     useEffect(() => {
         getLocalMessages()
         unredMessages();
         receiveMessage();
-        if(isAuthenticated){
-            groupUnreadMessages(router.query.id , user.get("ethAddress"), setGroupUnreadMessageNumber,groupUnreadMessageNumber);
+        if (isAuthenticated) {
+            groupUnreadMessages(router.query.id, user.get("ethAddress"), setGroupUnreadMessageNumber, groupUnreadMessageNumber);
         }
     }, [isAuthenticated, router.query.id])
 
@@ -432,11 +425,15 @@ const Group = () => {
 
     return (
         <div>
+            <Head>
+                {groupData !== "" && <title>{groupData.name}</title>}
+                {groupData === "" && <title>Loading...</title>}
+            </Head>
             <div className={style.nav}>
                 {groupData !== "" && <div className={style.groupInfo}>
                     <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
-                    <div className={style.data}>
-                        <h2>{groupData.name} {groupUnreadMessageNumber}</h2>
+                    <div className={style.data} onClick={() => router.push(`/group/info/${router.query.id}`)}>
+                        <h2>{groupData.name}</h2>
                         <p>{groupData.members.length} members</p>
                     </div>
                 </div>}
@@ -459,7 +456,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber}  />}
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} />}
                             </div>
                         )
                 })}

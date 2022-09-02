@@ -10,6 +10,11 @@
     color: white;
     margin-top: 20px;
     font-size: calc(16px + 0.1vw);
+    transition: all 200ms ease-in-out;
+}
+
+.backToHome:hover{
+    background-color: #620533;
 }
 
 .foundError{
