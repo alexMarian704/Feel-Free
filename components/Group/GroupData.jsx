@@ -85,6 +85,8 @@ const GroupData = ({ selectFriend }) => {
                 colors.push(friendsData[i].userTag)
                 colors.push(generateRandomColor())
             }
+            colors.push(user.get("userTag"))
+            colors.push(generateRandomColor())
 
             const GroupOrigin = Moralis.Object.extend(ref);
             const groupData = new GroupOrigin();

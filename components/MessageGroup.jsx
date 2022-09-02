@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors }) {
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors,unread }) {
   const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -89,7 +89,8 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             {minutes < 10 && <p className={style.myMessageTime} style={{
               "right": message.delete !== true ? "27px" : "6px"
             }}>{`${hours}:0${minutes}`}</p>}
-            <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>
+            {number > total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>}
+            {number <= total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} color="#00e600" /></p>}
             {message.delete !== true && <button className={style.messageOptions} onClick={() => {
               if (openReply !== number)
                 setOpenReply(number)

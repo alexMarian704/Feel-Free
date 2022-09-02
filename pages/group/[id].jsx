@@ -17,6 +17,7 @@ import { messageOrder } from "../../function/messageOrder";
 import styleChat from "../../styles/Messages.module.css"
 import RenderGroupMessage from "../../components/MessageGroup";
 import GroupOptions from "../../components/Group/GroupOptions";
+import { groupUnreadMessages } from "../../function/groupUnreadMessages";
 
 const Group = () => {
     const [member, setMember] = useState(true)
@@ -36,6 +37,7 @@ const Group = () => {
     const [openReply, setOpenReply] = useState(-1);
     const [open, setOpen] = useState(false);
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
+    const [groupUnreadMessageNumber , setGroupUnreadMessageNumber] = useState(0);
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -271,6 +273,9 @@ const Group = () => {
         getLocalMessages()
         unredMessages();
         receiveMessage();
+        if(isAuthenticated){
+            groupUnreadMessages(router.query.id , user.get("ethAddress"), setGroupUnreadMessageNumber,groupUnreadMessageNumber);
+        }
     }, [isAuthenticated, router.query.id])
 
     if (!isAuthenticated) {
@@ -359,6 +364,7 @@ const Group = () => {
             if (main.messages.length > 0) {
                 setRender(++render);
                 messageRef.current.scrollIntoView({ behavior: 'smooth' })
+                setGroupUnreadMessageNumber(++groupUnreadMessageNumber);
             }
         }
     }
@@ -430,7 +436,7 @@ const Group = () => {
                 {groupData !== "" && <div className={style.groupInfo}>
                     <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
                     <div className={style.data}>
-                        <h2>{groupData.name}</h2>
+                        <h2>{groupData.name} {groupUnreadMessageNumber}</h2>
                         <p>{groupData.members.length} members</p>
                     </div>
                 </div>}
@@ -453,7 +459,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} />}
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber}  />}
                             </div>
                         )
                 })}
