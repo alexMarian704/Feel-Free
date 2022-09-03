@@ -11,6 +11,8 @@ import CheckPassword from "../../../components/CheckPassword";
 import style from "../../../styles/GroupChat.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeartBroken, faHouseUser, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
+
 
 const GroupInfo = () => {
     const internetStatus = useInternetConnection()
@@ -57,7 +59,21 @@ const GroupInfo = () => {
 
     return (
         <div>
-            
+            {groupData !== "" && <div className={style.imageContainer}>
+                <Image
+                    src={groupData.image}
+                    alt="groupImage"
+                    width="90%"
+                    height="90%"
+                    layout="fill"
+                    objectFit="cover"
+                />
+                <div className={style.groupMainInfo}>
+                    <h3>{groupData.name}</h3>
+                    <p>{groupData.members.length} members</p>
+                </div>
+                <div className={style.fade}></div>
+            </div>}
             {internetStatus === false && <OfflineNotification />}
         </div>
     )

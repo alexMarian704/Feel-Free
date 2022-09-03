@@ -151,3 +151,29 @@
     align-items: center;
     position: relative;
 }
+
+.imageContainer{
+    height: calc(200px + 21vw);
+    max-height: 500px;
+    position: relative;
+}
+
+.groupMainInfo{
+    position: absolute;
+    bottom: calc(10px + 1vw);
+    left: 30px;
+}
+.groupMainInfo h3{
+    font-size: calc(30px + 0.1vw);
+}
+.groupMainInfo p{
+    font-size: calc(16px + 0.1vw);
+}
+.fade{
+    position: absolute;
+    bottom: 0;
+    left: 0px;
+    height: calc(50px + 5vw);
+    background-image: linear-gradient(to top , rgba(19, 19, 19, 0.6) , rgba(0,0,0,0));
+    width: 100%;
+}

@@ -35,6 +35,11 @@
     transition: all 150ms ease-in-out;
 }
 
+.mainData{
+    width: 60%;
+    min-width: 200px;
+}
+
 @media only screen and (max-width: 1400px) {
     .container{
       width: 100vw;
