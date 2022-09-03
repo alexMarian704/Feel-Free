@@ -1,16 +1,21 @@
 .sendContainer {
-    width: 100%;
+    width: calc(1200px + 10vw);
+    max-width: 1700px;
     position: fixed;
     bottom: 0px;
     height: calc(57px + 1.8vh);
-    /* min-height: 50px;
-    max-height: 95px; */
     display: flex;
     align-items: center;
     padding-left: 16px;
     background-color: rgb(29, 28, 28);
     border-radius: 6px;
     justify-content: center;
+}
+
+@media only screen and (max-width: 1400px) {
+    .sendContainer {
+        width: 100%;
+    }
 }
 
 .replyContainer {
@@ -79,8 +84,8 @@
     border: none;
     outline: none;
     cursor: pointer;
-    width: calc(40px + 1vw);
-    height: calc(40px + 1vw);
+    width: calc(50px + 0.4vw);
+    height: calc(50px + 0.4vw);
     max-height: 63px;
     max-width: 63px;
     color: white;
@@ -504,12 +509,19 @@
 .mediaContainer {
     position: absolute;
     z-index: 400;
-    width: 100%;
+    width: calc(1200px + 10vw);
+    max-width: 1700px;
     height: auto;
     min-height: 100vh;
     top: 0px;
     background: #121212;
     padding-top: 20px;
+}
+
+@media only screen and (max-width: 1400px) {
+    .mediaContainer {
+        width: 100vw;
+    }
 }
 
 .mediaBackBut {
@@ -876,13 +888,13 @@
     margin: auto;
     margin-top: 10px;
     align-items: center;
-    justify-content:center;
+    justify-content: center;
     font-size: calc(18px + 0.1vw);
     margin-bottom: 10px;
     border-radius: 20px;
 }
 
-.friendTagMessage{
+.friendTagMessage {
     margin: 0px;
     width: 100%;
     text-align: left;

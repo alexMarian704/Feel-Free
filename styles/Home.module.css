@@ -45,7 +45,7 @@
   background-color: #800040;
   border-radius: 50%;
   bottom: 20px;
-  right: 20px;
+  right: calc((90vw - 1200px)/2 + 20px);
   color: white;
   font-size: 25px;
   display: flex;
@@ -55,6 +55,12 @@
   box-shadow: 0px 0px 10px 1px rgba(34, 33, 33, 0.12);
   cursor: pointer;
   transition: all 150ms ease-in-out;
+}
+
+@media only screen and (max-width: 1400px) {
+  .createGroup{
+    right: 20px;
+  }
 }
 
 .createGroup:hover{

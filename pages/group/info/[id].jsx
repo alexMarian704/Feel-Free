@@ -17,6 +17,21 @@ const GroupInfo = () => {
     const { isAuthenticated, user } = useMoralis();
     const [groupData, setGroupData] = useState("")
     const [member, setMember] = useState(true)
+    const router = useRouter()
+
+    useEffect(async () => {
+        if (isAuthenticated && router.query.id) {
+            const GroupData = Moralis.Object.extend(`Group${router.query.id}`);
+            const query = new Moralis.Query(GroupData);
+            query.equalTo("type", "data");
+            const results = await query.first();
+            if (results === undefined) {
+                setMember(false)
+            } else {
+                setGroupData(results.attributes)
+            }
+        }
+    }, [isAuthenticated, router.query.id])
 
     if (!isAuthenticated) {
         return <Reject />;
@@ -42,7 +57,7 @@ const GroupInfo = () => {
 
     return (
         <div>
-
+            
             {internetStatus === false && <OfflineNotification />}
         </div>
     )

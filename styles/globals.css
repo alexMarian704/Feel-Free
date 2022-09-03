@@ -11,6 +11,8 @@ body {
   font-family: "Padauk", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(22, 22, 22);
+  overflow-x: hidden;
 }
 
 * {
@@ -44,9 +46,19 @@ button {
 .containerBlack {
   background: #121212;
   color: white;
-  width: 100%;
+  width: calc(1200px + 10vw);
+  max-width: 1700px;
   height: 100%;
   min-height: 100vh;
+  margin: auto;
+  box-shadow: 0px 0px 2px 4px rgba(27, 27, 27, 0.36);
+}
+
+@media only screen and (max-width: 1400px) {
+    .containerBlack{
+      width: 100vw;
+      box-shadow: none;
+    }
 }
 
 #container {
@@ -439,12 +451,12 @@ nav button:hover {
   padding: 2px 7px 2px 0px;
   margin-top: 5px;
   cursor: pointer;
-  font-size: calc(16px + 0.2vw);
+  font-size: calc(17px + 0.1vw);
   display: flex;
   align-items: center;
   transition: all 300ms ease-in-out;
   justify-content: space-around;
-  min-width: 110px;
+  min-width: calc(110px + 0.2vw);
 }
 
 .dropdown-image {
@@ -461,10 +473,10 @@ nav button:hover {
   display: none;
   position: absolute;
   background-color: rgb(31, 30, 30);
-  min-width: 120px;
+  min-width: calc(120px + 0.2vw);
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 8;
-  border-radius: 8px;
+  border-radius: 9px;
   top: 0%;
   left: 50%;
   transform: translate(-50%, 35%);
@@ -476,10 +488,10 @@ nav button:hover {
   display: block;
   cursor: pointer;
   display: flex;
-  font-size: calc(16px + 0.2vw);
+  font-size: calc(17px + 0.1vw);
   align-items: center;
   padding: 3px;
-  padding-right: 10px;
+  padding-right: 8px;
   justify-content: space-evenly;
 }
 
