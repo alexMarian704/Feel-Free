@@ -12,12 +12,14 @@ import style from "../../../styles/GroupChat.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeartBroken, faHouseUser, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
+import MembersAndMedia from "../../../components/Group/MembersAndMedia";
 
 
 const GroupInfo = () => {
     const internetStatus = useInternetConnection()
     const { isAuthenticated, user } = useMoralis();
     const [groupData, setGroupData] = useState("")
+    const [notification, setNotification] = useState(true);
     const [member, setMember] = useState(true)
     const router = useRouter()
 
@@ -57,6 +59,10 @@ const GroupInfo = () => {
             </div>
         )
 
+    const changeNotificationGroup = () => {
+        setNotification(!notification)
+    }
+
     return (
         <div>
             {groupData !== "" && <div className={style.imageContainer}>
@@ -74,6 +80,23 @@ const GroupInfo = () => {
                 </div>
                 <div className={style.fade}></div>
             </div>}
+            <div>
+                {groupData !== "" && <div className={style.groupDescription}>
+                    <h3>Description</h3>
+                    <p>{groupData.description}</p>
+                </div>}
+                <div className={style.groupNotifications}>
+                    <div>
+                        <h3>Notifications</h3>
+                        <label class="switch">
+                            <input type="checkbox" className="switch-input" onChange={changeNotificationGroup} checked={notification} />
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <p>{notification === true ? "On" : "Off"}</p>
+                </div>
+                <MembersAndMedia members={groupData.members} />
+            </div>
             {internetStatus === false && <OfflineNotification />}
         </div>
     )

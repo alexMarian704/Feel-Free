@@ -833,7 +833,7 @@
 .scrollToBottom {
     position: fixed;
     bottom: calc(105px + 3.6vh);
-    right: 10px;
+    right: calc((90vw - 1200px)/2 + 20px);
     z-index: 399;
     width: 35px;
     height: 35px;
@@ -849,6 +849,12 @@
     align-items: center;
     justify-content: center;
 }
+
+@media only screen and (max-width: 1400px) {
+    .scrollToBottom{
+      right: 20px;
+    }
+  }
 
 .replyImage {
     position: relative;
