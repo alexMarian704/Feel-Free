@@ -7,7 +7,7 @@ import ConfigAccount from "../components/ConfigAccount";
 import { Moralis } from "moralis";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Search.module.css";
 import ProfilePicture from "../public/profile.jpg";
 import { useRouter } from "next/router";
@@ -19,14 +19,34 @@ import OfflineNotification from "../components/OfflineNotification";
 import UnsupportedChain from "../components/UnsupportedChain";
 
 export default function search() {
-  const { isAuthenticated, user,chainId } = useMoralis();
-  const [results, setResults] = useState([]);
+  const { isAuthenticated, user, chainId, setUserData } = useMoralis();
+  const [searchHistory, setSearchHistory] = useState([]);
   const [value, setValue] = useState("");
   const [tag, setTag] = useState("");
   const [nameArray, setNameArray] = useState([]);
   const [error, setError] = useState("");
+  const [history, setHistory] = useState([])
   const route = useRouter()
   const internetStatus = useInternetConnection()
+
+  useEffect(async () => {
+    if (isAuthenticated) {
+      if (user.get("searchHistory") !== undefined) {
+        let history = user.get("searchHistory");
+        let pushArr = []
+        for (let i = 0; i < history.length; i++) {
+          const historyData = Moralis.Object.extend("Tags");
+          const queryHistory = new Moralis.Query(historyData);
+          queryHistory.equalTo("ethAddress", history[i]);
+          const resultsHistory = await queryHistory.first();
+          if (resultsHistory !== undefined) {
+            pushArr.push(resultsHistory.attributes);
+          }
+        }
+        setSearchHistory(pushArr);
+      }
+    }
+  }, [isAuthenticated])
 
   if (!isAuthenticated) {
     return <Reject />;
@@ -40,43 +60,58 @@ export default function search() {
   if (user.get("reCheck") === 1) return <CheckPassword />
 
   const getUsers = async () => {
-    const UserTagData = Moralis.Object.extend("Tags");
-    const query = new Moralis.Query(UserTagData);
-    query.equalTo("userTag", value);
-    const results = await query.first();
-    if (results) {
-      setTag(results.attributes);
-      setError("")
-    }
-    //else {
-    const UserNameData = Moralis.Object.extend("Tags");
-    const queryName = new Moralis.Query(UserNameData);
-    queryName.equalTo("name", value);
-    const queryName2 = new Moralis.Query(UserNameData);
-    queryName2.equalTo("name2", value);
-    const MainQuery = Moralis.Query.or(queryName, queryName2);
-    const resultsName = await MainQuery.find();
-    if (resultsName.length > 0) {
-      let array = []
-      for (let i = 0; i < resultsName.length; i++) {
-        const object = resultsName[i];
-        array.push(object.attributes)
-      }
-      if (array.length > 0) {
-        setNameArray([...array]);
+    if (value.trim() !== "") {
+      const UserTagData = Moralis.Object.extend("Tags");
+      const query = new Moralis.Query(UserTagData);
+      query.equalTo("userTag", value.trim());
+      const results = await query.first();
+      if (results) {
+        setTag(results.attributes);
         setError("")
       }
-    } else {
-      setError("No results found")
+
+      const UserNameData = Moralis.Object.extend("Tags");
+      const queryName = new Moralis.Query(UserNameData);
+      queryName.equalTo("name", value.trim());
+      const queryName2 = new Moralis.Query(UserNameData);
+      queryName2.equalTo("name2", value.trim());
+      const MainQuery = Moralis.Query.or(queryName, queryName2);
+      const resultsName = await MainQuery.find();
+      if (resultsName.length > 0) {
+        let array = []
+        for (let i = 0; i < resultsName.length; i++) {
+          const object = resultsName[i];
+          array.push(object.attributes)
+        }
+        if (array.length > 0) {
+          setNameArray([...array]);
+          setError("")
+        }
+      } else {
+        setError("No results found")
+      }
     }
-    // }
   };
 
   const goToProfile = (eth) => {
+    if (user.get("searchHistory") !== undefined) {
+      if (user.get("searchHistory").includes(eth) === false)
+        setUserData({
+          searchHistory: [...user.get("searchHistory"), eth]
+        })
+    } else
+      setUserData({
+        searchHistory: [eth]
+      })
     route.push(`/users/${eth}`)
   }
 
-  console.log(nameArray)
+  const deleteHistory = (eth) => {
+    setUserData({
+      searchHistory: user.get("searchHistory").filter((x) => x !== eth)
+    })
+    setSearchHistory(searchHistory.filter((x) => x.ethAddress !== eth))
+  }
 
   return (
     <div>
@@ -145,7 +180,7 @@ export default function search() {
         {nameArray.length > 0 &&
           <div>
             {nameArray.map((name, i) => (
-              <div className={style.resultUser} onClick={() => goToProfile(tag.ethAddress)} key={i}>
+              <div className={style.resultUser} onClick={() => goToProfile(name.ethAddress)} key={i}>
                 <div className={style.imgProfile}>
                   {name.profilePhoto !== undefined && (
                     <Image
@@ -177,11 +212,48 @@ export default function search() {
               </div>
             ))}
           </div>}
+        {searchHistory.length > 0 && nameArray.length===0 && tag === "" &&
+          <div>
+            <h3 className={style.searchHistoryTitle}>Recent search:</h3>
+            {searchHistory.map((name, i) => (
+              <div className={style.resultUser} key={i}>
+                <div className={style.imgProfile} onClick={() => goToProfile(name.ethAddress)} >
+                  {name.profilePhoto !== undefined && (
+                    <Image
+                      src={name.profilePhoto}
+                      alt="profilePhoto"
+                      width="50%"
+                      height="50%"
+                      layout="fill"
+                      objectFit="cover"
+                      className={style.img}
+                    />
+                  )}
+                  {name.profilePhoto === undefined && (
+                    <Image
+                      src={ProfilePicture}
+                      alt="profilePhoto"
+                      width="50%"
+                      height="50%"
+                      layout="responsive"
+                      objectFit="contain"
+                      className={style.img}
+                    />
+                  )}
+                </div>
+                <div className={style.nameCon} onClick={() => goToProfile(name.ethAddress)} >
+                  <p>Username: {name.username}</p>
+                  <p>Tag: @{name.userTag}</p>
+                </div>
+                <button className={style.deleteHistory} onClick={() => deleteHistory(name.ethAddress)}><FontAwesomeIcon icon={faTimes} /></button>
+              </div>
+            ))}
+          </div>}
         {error && <p className={style.errorSearch}>{error}</p>}
       </div>
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
-      {(chainId !== null && chainId !== "0x4" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
+      {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }
