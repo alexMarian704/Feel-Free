@@ -17,7 +17,7 @@ import MembersAndMedia from "../../../components/Group/MembersAndMedia";
 
 const GroupInfo = () => {
     const internetStatus = useInternetConnection()
-    const { isAuthenticated, user } = useMoralis();
+    const { isAuthenticated, user, setUserData } = useMoralis();
     const [groupData, setGroupData] = useState("")
     const [notification, setNotification] = useState(true);
     const [member, setMember] = useState(true)
@@ -33,6 +33,11 @@ const GroupInfo = () => {
                 setMember(false)
             } else {
                 setGroupData(results.attributes)
+            }
+            if(user.get("muteGroupNotification")!== undefined){
+                if(user.get("muteGroupNotification").includes(router.query.id)){
+                    setNotification(false)
+                }
             }
         }
     }, [isAuthenticated, router.query.id])
@@ -59,9 +64,40 @@ const GroupInfo = () => {
             </div>
         )
 
-    const changeNotificationGroup = () => {
+    const changeNotificationGroup = async () => {
+        const addressToTag = Moralis.Object.extend("Tags");
+        const query = new Moralis.Query(addressToTag);
+        query.equalTo("ethAddress", user.get("ethAddress"))
+        const results = await query.first();
+        if (results !== undefined) {
+            if (results.attributes.muteGroupNotification !== undefined) {
+                if (notification === true) {
+                    results.save({
+                        muteGroupNotification: [...results.attributes.muteGroupNotification, router.query.id]
+                    })
+                    setUserData({
+                        muteGroupNotification: [...results.attributes.muteGroupNotification, router.query.id]
+                    })
+                } else {
+                    results.save({
+                        muteGroupNotification: results.attributes.muteGroupNotification.filter((x) => x !== router.query.id)
+                    })
+                    setUserData({
+                        muteGroupNotification: results.attributes.muteGroupNotification.filter((x) => x !== router.query.id)
+                    })
+                }
+            } else {
+                results.save({
+                    muteGroupNotification: [router.query.id]
+                })
+                setUserData({
+                    muteGroupNotification: [router.query.id]
+                })
+            }
+        }
         setNotification(!notification)
     }
+    console.log(notification)
 
     return (
         <div>
@@ -88,9 +124,9 @@ const GroupInfo = () => {
                 <div className={style.groupNotifications}>
                     <div>
                         <h3>Notifications</h3>
-                        <label class="switch">
+                        <label className="switch">
                             <input type="checkbox" className="switch-input" onChange={changeNotificationGroup} checked={notification} />
-                            <span class="slider round"></span>
+                            <span className="slider round"></span>
                         </label>
                     </div>
                     <p>{notification === true ? "On" : "Off"}</p>

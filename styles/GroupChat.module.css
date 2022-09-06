@@ -233,3 +233,53 @@
 .groupInfoNav div h4{
     font-size: calc(17px + 0.1vw);
 }
+
+.imgProfile{
+    width: calc(41px + 1vw);
+    height: calc(41px + 1vw);
+    position: relative;
+    border-radius: 50%;
+    border: 2px solid #800040;
+}
+.imgProfile img{
+    border-radius: 50%;
+}
+.membersContainer{
+    width: 100%;
+    display: flex;
+    height: calc(55px + 1vw);
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid rgb(5, 5, 5);
+    padding-left: 10px;
+    padding-right: 15px;
+}
+
+.membersInfo{
+    cursor: pointer;
+    margin-left: 10px;
+}
+.leftInfo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sendButton{
+    width: calc(41px + 1vw);
+    height: calc(41px + 1vw);
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #800040;
+    font-size: calc(26px + 1vw);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 200ms ease-in-out;
+}
+.sendButton:hover{
+    color: white;
+}
