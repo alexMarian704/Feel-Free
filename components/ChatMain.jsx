@@ -11,7 +11,7 @@ import { Moralis } from "moralis";
 export default function ChatMain({ name, name2, address, lastMessage, time, last, file, notification, tag, type, groupRef }) {
     const [friendData, setFriendData] = useState("");
     const [newMaessage, setNewMessage] = useState(false);
-    const { user } = useMoralis();
+    const { user, isAuthenticated } = useMoralis();
     const router = useRouter();
     const d = new Date(time);
     const today = new Date();
@@ -54,12 +54,15 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
         if (notification.length > 0) {
             for (let i = 0; i < notification.length; i++) {
                 if (type !== "group") {
-                    if (notification[i].attributes.tag === tag && notification[i].attributes.name === undefined) {
+                    if (notification[i].attributes.tag === tag && notification[i].attributes.name === undefined && groupRef === undefined) {
                         setNewMessage(true);
                     }
                 } else {
-                    if (notification[i].attributes.tag === tag && friendData.name === notification[i].attributes.name)
+                    if (notification[i].attributes.groupRef === groupRef && friendData.name === notification[i].attributes.name && notification[i].attributes.name !== undefined && notification[i].attributes.name === address) {
                         setNewMessage(true);
+                    }
+                    // if(address === "FFFFFFFF")
+                    //     console.log(friendData)
                 }
             }
         }
@@ -92,14 +95,15 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
             </div>
             <div className={style.infoContainer} onClick={() => type === "group" ? router.push(`/group/${groupRef}`) : router.push(`/messages/${address}`)}>
                 {(file === "message") && <div className={style.mainData}>
-                    {newMaessage === false && <p>{friendData.username}</p>}
+                    {newMaessage === false && type !== "group" && <p>{friendData.username}</p>}
                     {newMaessage === true && type !== "group" && <p>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
                     }} /></p>}
-                    {newMaessage === true && type === "group" && <p>{friendData.name} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                    {newMaessage === true && friendData.owner !== undefined  && <p>{friendData.name} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
                     }} /></p>}
                     {newMaessage === false && type === "group" && <p>{friendData.name}</p>}
+
                     {newMaessage === false && last === "you" && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
 
                     {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{type !== "group" ? friendData.username : `@${tag}`}:</span> {lastMessage}</p>}
@@ -109,13 +113,13 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                 {(file === "application/pdf" || file === "text/plain") && <div className={style.mainData}>
                     <p>{friendData.name} {friendData.name2}</p>
                     {newMaessage === false && last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faFile} /> </p>}
-                    {newMaessage === false && last === "friend" && <p><span>{friendData.username}: </span><FontAwesomeIcon icon={faFile} /></p>}
+                    {newMaessage === false && last === "friend" && <p><span>{type !== "group" ? friendData.username : `@${tag}`}: </span><FontAwesomeIcon icon={faFile} /></p>}
                     {newMaessage === true && last === "friend" && <p><span>New messages</span></p>}
                 </div>}
                 {(file === "image/jpg" || file === "image/png" || file === "image/jpeg") && <div className={style.mainData}>
                     <p>{friendData.name} {friendData.name2}</p>
                     {newMaessage === false && last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faImage} /> </p>}
-                    {newMaessage === false && last === "friend" && <p><span>{friendData.username}: </span><FontAwesomeIcon icon={faImage} /></p>}
+                    {newMaessage === false && last === "friend" && <p><span>{type !== "group" ? friendData.username : `@${tag}`}</span> <FontAwesomeIcon icon={faImage} /></p>}
                     {newMaessage === true && last === "friend" && <p><span>New messages</span></p>}
                 </div>}
                 <div>

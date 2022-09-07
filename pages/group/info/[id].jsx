@@ -34,8 +34,8 @@ const GroupInfo = () => {
             } else {
                 setGroupData(results.attributes)
             }
-            if(user.get("muteGroupNotification")!== undefined){
-                if(user.get("muteGroupNotification").includes(router.query.id)){
+            if (user.get("muteGroupNotification") !== undefined) {
+                if (user.get("muteGroupNotification").includes(router.query.id)) {
                     setNotification(false)
                 }
             }
@@ -101,6 +101,8 @@ const GroupInfo = () => {
 
     return (
         <div>
+            <button className={style.backButton} onClick={() => router.push(`/group/${router.query.id}`)
+            } ><FontAwesomeIcon icon={faArrowLeft} /></button>
             {groupData !== "" && <div className={style.imageContainer}>
                 <Image
                     src={groupData.image}

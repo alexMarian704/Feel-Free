@@ -7,12 +7,17 @@ import ProfilePicture from "../../public/profile.jpg";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons";
+import AES from 'crypto-js/aes';
+import ENC from 'crypto-js/enc-utf8'
 
 const MembersAndMedia = ({ members }) => {
     const [nav, setNav] = useState("members")
     const [membersData, setMembersData] = useState([])
-    const { isAuthenticated } = useMoralis();
+    const { user, isAuthenticated } = useMoralis();
+    const [media, setMedia] = useState([])
     const router = useRouter()
+
+    const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
 
     useEffect(async () => {
         const addressToTag = Moralis.Object.extend("Tags");
@@ -23,6 +28,14 @@ const MembersAndMedia = ({ members }) => {
             setMembersData(results);
         }
     }, [members])
+
+    useEffect(() => {
+        if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
+            const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+            const decryptedMessages = decrypt(encryptedMessages, user.id);
+            setMedia(decryptedMessages.messages.filter(x => x.file === "image/jpg" || x.file === "image/jpeg" || x.file === "image/png"))
+        }
+    }, [router.query.id, isAuthenticated])
 
     return (
         <div>
@@ -84,6 +97,21 @@ const MembersAndMedia = ({ members }) => {
                             )
                         })}
                     </div>}
+            </div>}
+            {nav === "media" && <div>
+                {media.length === 0 && <div>
+                    <h3>No media content</h3>
+                </div>}
+                {media.length > 0 && <div className={style.mediaContent}>
+                    {media.map((image, i) => (
+                        <div key={i} className={style.mediaImage}>
+                            <Image src={image.message} alt="Group image"
+                                layout="fill"
+                                objectFit="cover"
+                            />
+                        </div>
+                    ))}
+                </div>}
             </div>}
         </div>
     )

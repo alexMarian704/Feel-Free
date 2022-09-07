@@ -283,3 +283,59 @@
 .sendButton:hover{
     color: white;
 }
+
+.backButton{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 405;
+    cursor: pointer;
+    width: calc(25px + 1vw);
+    height: calc(25px + 1vw);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: calc(17px + 0.1vw);
+    color: white;
+    background-color: rgb(14, 14, 14);
+    border: none;
+    transition: all 200ms ease-in-out;
+}
+
+.backButton:hover{
+    background-color: white;
+    color: rgb(14, 14, 14);
+}
+.mediaImage{
+    position: relative;
+    width: calc(121px + 3vw);
+    height: calc(121px + 3vw);
+    margin-bottom: 7px;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin: 0px 4px 7px 4px;
+}
+.mediaImage img{
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+.mediaImage img:hover{
+    opacity: 0.7;
+}
+.mediaContent{
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 5px;
+    overflow-x: hidden;
+}
+
+@media only screen and (max-width: 500px) {
+    .mediaImage {
+        width: 45vw;
+        height: 45vw;
+    }
+}

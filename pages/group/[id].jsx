@@ -391,7 +391,8 @@ const Group = () => {
                         tag: user.get("userTag"),
                         url: router.query.id,
                         time: time,
-                        name: groupData.name
+                        name: groupData.name,
+                        groupRef:router.query.id
                     });
 
                     const notificationsACL = new Moralis.ACL();
