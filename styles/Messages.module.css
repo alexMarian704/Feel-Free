@@ -12,19 +12,22 @@
     justify-content: center;
 }
 
-@media only screen and (max-width: 1400px) {
-    .sendContainer {
-        width: 100%;
-    }
-}
-
 .replyContainer {
-    width: 100%;
+    width: calc(1200px + 10vw);
     position: fixed;
     bottom: calc(57px + 1.8vh);
     height: calc(37px + 1.8vh);
     background-color: rgb(29, 28, 28);
     border-radius: 10px 10px 0px 0px;
+}
+
+@media only screen and (max-width: 1400px) {
+    .sendContainer {
+        width: 100%;
+    }
+    .replyContainer {
+        width: 100%;
+    }
 }
 
 .replyContainer button {

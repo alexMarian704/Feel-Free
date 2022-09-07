@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors,unread }) {
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread }) {
   const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -62,9 +62,9 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
     else
       return (
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time}
-        // style={{
-        //   background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
-        // }}
+        style={{
+          background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
+        }}
         >
           <div className={style.myMessageContainer}>
             {message.reply && <div className={style.replyMessage} onClick={() => {
@@ -162,6 +162,9 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
           background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
         }}>
           <div className={style.friendContainer}>
+            <p style={{
+              "color": nameColors[nameColors.indexOf(message.type) + 1]
+            }} className={style.friendTagMessage}>@{message.type}</p>
             {message.reply && <div className={style.replyMessage} onClick={() => {
               document.getElementById(message.reply.time).scrollIntoView()
               setScrollIntoViewIndicator(message.reply.time)
@@ -171,9 +174,6 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             }}>
               <p>{message.reply.message}</p>
             </div>}
-            <p style={{
-              "color":nameColors[nameColors.indexOf(message.type)+1]
-            }} className={style.friendTagMessage}>@{message.type}</p>
             <p className={style.friendText} style={{
               "fontStyle": message.delete !== true ? "normal" : "italic",
               "color": message.delete !== true ? "white" : "rgb(170,170,170)"

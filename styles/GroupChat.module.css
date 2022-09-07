@@ -103,7 +103,7 @@
 .optionsContainer {
     position: absolute;
     background-color: rgb(21, 21, 21);
-    bottom: calc(-74px - 2vh);
+    bottom: calc(-148px - 4vh);
     z-index: 100;
     right: 10px;
     width: calc(140px + 1vw);
@@ -338,4 +338,13 @@
         width: 45vw;
         height: 45vw;
     }
+}
+.groupImage{
+    position: relative;
+    width: calc(37px + 0.5vw);
+    height: calc(37px + 0.5vw);
+    margin-right: 10px;
+}
+.groupImage img{
+    border-radius: 50%;
 }

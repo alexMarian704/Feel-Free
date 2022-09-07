@@ -10,7 +10,7 @@ import { Moralis } from "moralis";
 import style from "../../styles/GroupChat.module.css"
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip, faChevronDown, faImage } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from "../../function/messageOrder";
@@ -18,6 +18,7 @@ import styleChat from "../../styles/Messages.module.css"
 import RenderGroupMessage from "../../components/MessageGroup";
 import GroupOptions from "../../components/Group/GroupOptions";
 import { groupUnreadMessages } from "../../function/groupUnreadMessages";
+import Image from "next/image";
 
 const Group = () => {
     const [member, setMember] = useState(true)
@@ -271,6 +272,12 @@ const Group = () => {
         }
     }, [isAuthenticated, router.query.id])
 
+    useEffect(() => {
+        if (isAuthenticated && messageRef.current !== undefined) {
+            messageRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
+    }, [reply])
+
     if (!isAuthenticated) {
         return <Reject />;
     } else if (
@@ -392,7 +399,7 @@ const Group = () => {
                         url: router.query.id,
                         time: time,
                         name: groupData.name,
-                        groupRef:router.query.id
+                        groupRef: router.query.id
                     });
 
                     const notificationsACL = new Moralis.ACL();
@@ -433,6 +440,15 @@ const Group = () => {
             <div className={style.nav}>
                 {groupData !== "" && <div className={style.groupInfo}>
                     <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
+                    <div className={style.groupImage}>
+                        <Image
+                            width="100%"
+                            height="100%"
+                            layout="fill"
+                            objectFit="cover"
+                            src={groupData.image}
+                            alt="Group Photo" />
+                    </div>
                     <div className={style.data} onClick={() => router.push(`/group/info/${router.query.id}`)}>
                         <h2>{groupData.name}</h2>
                         <p>{groupData.members.length} members</p>
@@ -466,6 +482,27 @@ const Group = () => {
                         <FontAwesomeIcon icon={faChevronDown} />
                     </button>}
             </div>
+            {reply && reply.image !== true && <div className={styleChat.replyContainer}>
+                <p>{reply.message}</p>
+                <button onClick={() => setReply("")}>x</button>
+            </div>}
+            {reply && reply.image === true && <div className={styleChat.replyContainer}>
+                <div className={styleChat.imgMainReply}>
+                    <div>
+                        You: <FontAwesomeIcon icon={faImage} />
+                    </div>
+                    <div className={styleChat.replyImage}>
+                        <Image
+                            width="100%"
+                            height="100%"
+                            layout="fill"
+                            objectFit="cover"
+                            src={reply.message}
+                            alt="Profile Photo" />
+                    </div>
+                </div>
+                <button onClick={() => setReply("")}>x</button>
+            </div>}
             <div className={styleChat.sendContainer}>
                 <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
                     if (e.key === "Enter") {

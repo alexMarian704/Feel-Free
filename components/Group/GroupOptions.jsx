@@ -10,8 +10,10 @@ const GroupOptions = () => {
         <div className={style.containers}>
             <button className={style.options} onClick={() => setOpen(!open)} ><FontAwesomeIcon icon={faEllipsisV} /></button>
             <div className={style.optionsContainer} id={open === false ? style.close : style.open}>
-                <button onClick={()=> console.log("salut") }>Media</button>
+                <button onClick={()=> console.log("1")}>Media</button>
                 <button>Delete chat</button>
+                <button>Add members</button>
+                <button>Leave</button>
             </div>
         </div>
     )

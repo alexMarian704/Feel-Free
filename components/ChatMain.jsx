@@ -61,8 +61,6 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     if (notification[i].attributes.groupRef === groupRef && friendData.name === notification[i].attributes.name && notification[i].attributes.name !== undefined && notification[i].attributes.name === address) {
                         setNewMessage(true);
                     }
-                    // if(address === "FFFFFFFF")
-                    //     console.log(friendData)
                 }
             }
         }
