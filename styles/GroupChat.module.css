@@ -348,3 +348,65 @@
 .groupImage img{
     border-radius: 50%;
 }
+
+.descriptionContainer{
+    display: flex;
+}
+
+.descriptionContainer p{
+    margin-right: 10px;
+    max-width: calc(98% - 35px);
+    word-break: break-all;
+}
+.editDescription{
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+    font-size: calc(18px + 0.1vw);
+}
+.editDescription:hover{
+    color: #800040;
+}
+
+.texteraContainer{
+    position: relative;
+    width: 100%;
+}
+
+.descriptionTextarea{
+    min-width: calc(100% - 20px);
+    max-width: calc(100% - 20px);
+    padding: 10px;
+    padding-right: calc(50px + 1vw);
+    border-radius: 8px;
+    max-height: 250px;
+    min-height: 150px;
+    outline: none;
+    background-color: rgb(10, 10, 10);
+    color: white;
+    border: none;
+    box-shadow: 0px 0px 1px 2px rgba(11, 11, 11, 0.18);
+    font-size: calc(15px + 0.1vw);
+    font-family: "Padauk", sans-serif;
+}
+.texteraContainer button{
+    position: absolute;
+    top: 5px;
+    right: 28px;
+    width: calc(30px + 1vw);
+    height: calc(30px + 1vw);
+    border-radius: 50%;
+    color: #8c0046;
+    background-color: rgb(25, 25, 25);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(20px + 0.1vw);
+    transition: all 200ms ease-in-out;
+}
+
+.texteraContainer button:hover{
+    background-color: white;
+    color: black;
+}

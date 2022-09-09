@@ -10,7 +10,7 @@ import { Moralis } from "moralis";
 import CheckPassword from "../../../components/CheckPassword";
 import style from "../../../styles/GroupChat.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeartBroken, faHouseUser, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faHeartBroken, faHouseUser, faArrowLeft, faPen, faCheck } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import MembersAndMedia from "../../../components/Group/MembersAndMedia";
 
@@ -20,6 +20,8 @@ const GroupInfo = () => {
     const { isAuthenticated, user, setUserData } = useMoralis();
     const [groupData, setGroupData] = useState("")
     const [notification, setNotification] = useState(true);
+    const [editDescription, setEditDescription] = useState(false);
+    const [description, setDescription] = useState("")
     const [member, setMember] = useState(true)
     const router = useRouter()
 
@@ -97,7 +99,16 @@ const GroupInfo = () => {
         }
         setNotification(!notification)
     }
-    console.log(notification)
+
+    const saveDescription = async () => {
+        setEditDescription(false)
+        const GroupData = Moralis.Object.extend(`Group${router.query.id}`);
+        const query = new Moralis.Query(GroupData);
+        query.equalTo("type", "data");
+        const results = await query.first();
+        results.set("description", description);
+        results.save();
+    }
 
     return (
         <div>
@@ -121,7 +132,17 @@ const GroupInfo = () => {
             <div>
                 {groupData !== "" && <div className={style.groupDescription}>
                     <h3>Description</h3>
-                    <p>{groupData.description}</p>
+                    {editDescription === false && <div className={style.descriptionContainer}>
+                        <p>{description === "" ? groupData.description : description}</p>
+                        {groupData.owner === user.get("ethAddress") && <FontAwesomeIcon icon={faPen} className={style.editDescription} onClick={() => {
+                            setDescription(groupData.description)
+                            setEditDescription(true)
+                        }} />}
+                    </div>}
+                    {editDescription === true && <div className={style.texteraContainer}>
+                        <textarea spellCheck="false" cols="30" rows="10" className={style.descriptionTextarea} value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+                        <button onClick={saveDescription}><FontAwesomeIcon icon={faCheck} /></button>
+                    </div>}
                 </div>}
                 <div className={style.groupNotifications}>
                     <div>
