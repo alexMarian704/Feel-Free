@@ -157,6 +157,27 @@
     max-height: 500px;
     position: relative;
 }
+.imageContainer button{
+    position: absolute;
+    right: 20px;
+    bottom: calc(10px + 1vw);
+    cursor: pointer;
+    color: #8c0046;
+    width: calc(30px + 1vh);
+    height: calc(30px + 1vh);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: calc(18px + 0.1vw);
+    border: none;
+    outline: none;
+    z-index: 401;
+    transition: all 200ms ease-in-out;
+    background-color: rgb(14, 14, 14);
+}
+.imageContainer button:hover{
+    color: black;
+    background-color: white;
+}
 
 .groupMainInfo{
     position: absolute;
@@ -287,7 +308,7 @@
 .backButton{
     position: absolute;
     top: 10px;
-    left: 10px;
+    left: calc((90vw - 1200px)/2 + 20px);
     z-index: 405;
     cursor: pointer;
     width: calc(25px + 1vw);
@@ -301,6 +322,12 @@
     background-color: rgb(14, 14, 14);
     border: none;
     transition: all 200ms ease-in-out;
+}
+
+@media only screen and (max-width: 1400px) {
+    .backButton{
+      left: 10px;
+    }
 }
 
 .backButton:hover{
@@ -409,4 +436,36 @@
 .texteraContainer button:hover{
     background-color: white;
     color: black;
+}
+
+.loader {
+    border: 15px solid white;
+    border-top: 15px solid #800040;
+    border-radius: 50%;
+    width: calc(80px + 3vw);
+    height: calc(80px + 3vw);
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loadingContainer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* background-color: rgba(15, 15, 15, 0.7); */
+    border-radius: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

@@ -47,6 +47,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainer}>
               <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
+              <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
             </div>}
           </div>
         </div>
@@ -142,6 +143,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
               <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
+              <button onClick={() => { deleteForYou(message.time), setOpenReply(-1) }}>Delete for you</button>
             </div>}
           </div>
         </div>

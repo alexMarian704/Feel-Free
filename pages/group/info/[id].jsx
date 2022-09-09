@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import OfflineNotification from "../../../components/OfflineNotification";
 import { useInternetConnection } from "../../../function/hooks/useInternetConnection";
 import Head from "next/head";
@@ -23,6 +23,9 @@ const GroupInfo = () => {
     const [editDescription, setEditDescription] = useState(false);
     const [description, setDescription] = useState("")
     const [member, setMember] = useState(true)
+    const [image, setImage] = useState("")
+    const [loadingImage, setLoadingImage] = useState(false);
+    const fileRef = useRef();
     const router = useRouter()
 
     useEffect(async () => {
@@ -110,23 +113,57 @@ const GroupInfo = () => {
         results.save();
     }
 
+    const changePhoto = async (e) => {
+        setLoadingImage(true);
+        const file = e.target.files[0];
+        const type = e.target.files[0].type.replace("image/", "");
+        const name = `profile.${type}`;
+        const groupImage = new Moralis.File(name, file);
+        await groupImage.saveIPFS();
+
+        const GroupData = Moralis.Object.extend(`Group${router.query.id}`);
+        const query = new Moralis.Query(GroupData);
+        query.equalTo("type", "data");
+        const results = await query.first();
+        results.set("image", groupImage.ipfs());
+        results.save();
+        setImage(groupImage.ipfs())
+        setLoadingImage(false);
+    };
+
     return (
         <div>
             <button className={style.backButton} onClick={() => router.push(`/group/${router.query.id}`)
             } ><FontAwesomeIcon icon={faArrowLeft} /></button>
             {groupData !== "" && <div className={style.imageContainer}>
-                <Image
-                    src={groupData.image}
+                {loadingImage === false && <Image
+                    src={image === "" ? groupData.image : image}
                     alt="groupImage"
                     width="90%"
                     height="90%"
                     layout="fill"
                     objectFit="cover"
-                />
+                />}
+                {loadingImage === true &&
+                    <div className={style.loadingContainer}>
+                        <div className={style.loader}></div>
+                    </div>}
                 <div className={style.groupMainInfo}>
                     <h3>{groupData.name}</h3>
                     <p>{groupData.members.length} members</p>
                 </div>
+                {groupData.owner === user.get("ethAddress") && <button
+                    onClick={() => {
+                        fileRef.current.click();
+                    }}><FontAwesomeIcon icon={faPen} /></button>}
+                {groupData.owner === user.get("ethAddress") && <input
+                    type="file"
+                    onChange={changePhoto}
+                    ref={fileRef}
+                    style={{
+                        display: "none",
+                    }}
+                />}
                 <div className={style.fade}></div>
             </div>}
             <div>
