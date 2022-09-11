@@ -3,8 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../../styles/GroupChat.module.css"
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
-const GroupOptions = () => {
-    const [open, setOpen] = useState(false)
+const GroupOptions = ({setAddMember , open, setOpen}) => {
 
     return (
         <div className={style.containers}>
@@ -12,7 +11,7 @@ const GroupOptions = () => {
             <div className={style.optionsContainer} id={open === false ? style.close : style.open}>
                 <button onClick={()=> console.log("1")}>Media</button>
                 <button>Delete chat</button>
-                <button>Add members</button>
+                <button onClick={()=> {setAddMember(true) , setOpen(false)}}>Add members</button>
                 <button>Leave</button>
             </div>
         </div>

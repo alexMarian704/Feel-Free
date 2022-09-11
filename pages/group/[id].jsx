@@ -19,6 +19,7 @@ import RenderGroupMessage from "../../components/MessageGroup";
 import GroupOptions from "../../components/Group/GroupOptions";
 import { groupUnreadMessages } from "../../function/groupUnreadMessages";
 import Image from "next/image";
+import AddMember from "../../components/Group/AddMember";
 
 const Group = () => {
     const [member, setMember] = useState(true)
@@ -39,6 +40,7 @@ const Group = () => {
     const [open, setOpen] = useState(false);
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
     const [groupUnreadMessageNumber, setGroupUnreadMessageNumber] = useState(0);
+    const [addMember , setAddMember] = useState(false)
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -432,7 +434,7 @@ const Group = () => {
     };
 
     return (
-        <div>
+        <div style={{ "position":"relative" }}>
             <Head>
                 {groupData !== "" && <title>{groupData.name}</title>}
                 {groupData === "" && <title>Loading...</title>}
@@ -454,7 +456,7 @@ const Group = () => {
                         <p>{groupData.members.length} members</p>
                     </div>
                 </div>}
-                <GroupOptions />
+                <GroupOptions setAddMember={setAddMember} open={open} setOpen={setOpen} />
             </div>
             <div className={styleChat.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll} id="scrollID">
                 {localMessages.length > 0 && localMessages.map((message, i) => {
@@ -482,11 +484,11 @@ const Group = () => {
                         <FontAwesomeIcon icon={faChevronDown} />
                     </button>}
             </div>
-            {reply && reply.image !== true && <div className={styleChat.replyContainer}>
+            {addMember === false && reply && reply.image !== true && <div className={styleChat.replyContainer}>
                 <p>{reply.message}</p>
                 <button onClick={() => setReply("")}>x</button>
             </div>}
-            {reply && reply.image === true && <div className={styleChat.replyContainer}>
+            {addMember === false && reply && reply.image === true && <div className={styleChat.replyContainer}>
                 <div className={styleChat.imgMainReply}>
                     <div>
                         You: <FontAwesomeIcon icon={faImage} />
@@ -503,7 +505,7 @@ const Group = () => {
                 </div>
                 <button onClick={() => setReply("")}>x</button>
             </div>}
-            <div className={styleChat.sendContainer}>
+            {addMember === false && <div className={styleChat.sendContainer}>
                 <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
                     if (e.key === "Enter") {
                         pushMessage("message", "message", message);
@@ -522,7 +524,8 @@ const Group = () => {
                         display: "none",
                     }}
                 />
-            </div>
+            </div>}
+            {addMember === true && <AddMember group={router.query.id} members={groupData.members} style={style} setAddMember={setAddMember}/>}
             {internetStatus === false && <OfflineNotification />}
         </div>
 
