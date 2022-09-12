@@ -55,8 +55,8 @@
 }
 
 .imgProfile {
-    width: calc(40px + 1vw);
-    height: calc(40px + 1vw);
+    width: calc(45px + 0.5vw);
+    height: calc(45px + 0.5vw);
     border: 2px solid #800040;
     border-radius: 50%;
     position: relative;
@@ -102,7 +102,7 @@
 .next {
     position: fixed;
     bottom: calc(25px + 1vw);
-    right: calc(25px + 1vw);
+    right: calc((90vw - 1200px)/2 + 25px + 1vw);
     background-color: #800040;
     color: white;
     cursor: pointer;
@@ -116,6 +116,12 @@
     align-items: center;
     justify-content: center;
     transition: all 200ms ease-in-out;
+}
+
+@media only screen and (max-width: 1400px) {
+    .next{
+      right: calc(25px + 1vw);
+    }
 }
 
 .next:hover,

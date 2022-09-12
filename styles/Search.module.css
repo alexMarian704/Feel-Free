@@ -109,6 +109,8 @@
     margin: auto;
     margin-top: 10px;
     font-size: calc(19px + 0.1vw);
+    max-width: 700px;
+    min-width: 240px;
 }
 
 @media only screen and (max-width: 620px) {
