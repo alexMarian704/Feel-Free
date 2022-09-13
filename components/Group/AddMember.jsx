@@ -7,11 +7,13 @@ import FriendData from './FriendData';
 import styleFriend from "../../styles/Group.module.css"
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
+import { useRouter } from "next/router";
 
 const AddMember = ({ setAddMember, group, members, style }) => {
     const { user } = useMoralis();
     const [friendList, setFriendList] = useState([])
     const [selectFriend, setSelectFriend] = useState([])
+    const router = useRouter()
 
     const getFriend = async () => {
         const UserFriends = Moralis.Object.extend("Friends");
@@ -20,18 +22,15 @@ const AddMember = ({ setAddMember, group, members, style }) => {
         const result = await query.first();
         if (result.attributes.friendsArray.length > 0) {
             let array = []
-            for (let i = 0; i < result.attributes.friendsArray.length; i++) {
-                const addressToTag = Moralis.Object.extend("Tags");
-                const query = new Moralis.Query(addressToTag);
-                query.equalTo("ethAddress", result.attributes.friendsArray[i]);
-                const results = await query.first();
-                if (results !== undefined) {
-                    array.push(results.attributes);
+            const addressToTag = Moralis.Object.extend("Tags");
+            const query_ = new Moralis.Query(addressToTag);
+            query_.containedIn("ethAddress", result.attributes.friendsArray)
+            query_.find().then((res) => {
+                for(let i=0;i<res.length;i++){
+                    array.push(res[i].attributes)
                 }
-            }
-            //console.log(array)
-            setFriendList(array.filter((x)=> members.includes(x.ethAddress) === false));
-            //setFriendList(array)
+                setFriendList(array.filter((x) => members.includes(x.ethAddress) === false));
+            });
         }
     }
 
@@ -155,13 +154,13 @@ const AddMember = ({ setAddMember, group, members, style }) => {
             noti.setACL(notificationsACL)
             noti.save();
         }
-        // console.log(results.attributes.ACL.permissionsById);
-        // console.log([...results.attributes.colors,...colors] , [...results.attributes.members, ...selectFriend])
 
-        results.set("colors" , [...results.attributes.colors,...colors])
+        results.set("colors", [...results.attributes.colors, ...colors]);
         results.set("members", [...results.attributes.members, ...selectFriend]);
         results.setACL(groupACL)
         results.save();
+        Moralis.LiveQuery.close()
+        router.push(`/group/${group}`);
     }
 
     return (
@@ -169,6 +168,9 @@ const AddMember = ({ setAddMember, group, members, style }) => {
             <div className={style.nav}>
                 <div className={style.groupInfo}>
                     <button onClick={() => setAddMember(false)} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
+                    <div className={style.data}>
+                        <h2>Add members</h2>
+                    </div>
                 </div>
             </div>
             <div>

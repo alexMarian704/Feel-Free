@@ -40,7 +40,6 @@ const Group = () => {
     const [open, setOpen] = useState(false);
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
     const [groupUnreadMessageNumber, setGroupUnreadMessageNumber] = useState(0);
-    const [addMember , setAddMember] = useState(false)
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -132,6 +131,7 @@ const Group = () => {
                 messages: messageList
             }
 
+            Moralis.LiveQuery.close()
             const query = new Moralis.Query(`Group${router.query.id}`)
             query.equalTo("type", "Message");
             query.notEqualTo("from", user.get("ethAddress"));
@@ -146,26 +146,29 @@ const Group = () => {
                     const decryptedMessages = decrypt(encryptedMessages, user.id);
                     main.messages = decryptedMessages.messages
                 }
-                main.messages.push({ type: object.attributes.tag, message: decryptMessage, time: object.attributes.time, file: object.attributes.file, fileName: object.attributes.fileName, reply: decryptReply })
 
-                const encryptedMessagesList = encrypt(main, user.id)
-                localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
-                deleteNotification()
+                if (main.messages.filter((e) => { return e.type === object.attributes.tag && e.time === object.attributes.time }).length === 0) {
+                    main.messages.push({ type: object.attributes.tag, message: decryptMessage, time: object.attributes.time, file: object.attributes.file, fileName: object.attributes.fileName, reply: decryptReply })
 
-                if (object.attributes.seen.length + 1 === object.attributes.membersNumber && object.attributes.seen.includes(user.get("ethAddress")) === false) {
-                    object.destroy();
-                } else {
-                    object.set({
-                        seen: [...object.attributes.seen, user.get("ethAddress")]
-                    })
-                    object.save();
-                }
+                    const encryptedMessagesList = encrypt(main, user.id)
+                    localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
+                    deleteNotification()
 
-                messageOrder(user.get("ethAddress"), object.attributes.name, main.messages[main.messages.length - 1].message, object.attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
+                    if (object.attributes.seen.length + 1 === object.attributes.membersNumber && object.attributes.seen.includes(user.get("ethAddress")) === false) {
+                        object.destroy();
+                    } else {
+                        object.set({
+                            seen: [...object.attributes.seen, user.get("ethAddress")]
+                        })
+                        object.save();
+                    }
 
-                if (main.messages.length > 0) {
-                    setLocalMessages(main.messages)
-                    messageRef.current.scrollIntoView({ behavior: 'smooth' })
+                    messageOrder(user.get("ethAddress"), object.attributes.name, main.messages[main.messages.length - 1].message, object.attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
+
+                    if (main.messages.length > 0) {
+                        setLocalMessages(main.messages)
+                        messageRef.current.scrollIntoView({ behavior: 'smooth' })
+                    }
                 }
             })
 
@@ -434,7 +437,7 @@ const Group = () => {
     };
 
     return (
-        <div style={{ "position":"relative" }}>
+        <div style={{ "position": "relative" }}>
             <Head>
                 {groupData !== "" && <title>{groupData.name}</title>}
                 {groupData === "" && <title>Loading...</title>}
@@ -456,7 +459,7 @@ const Group = () => {
                         <p>{groupData.members.length} members</p>
                     </div>
                 </div>}
-                <GroupOptions setAddMember={setAddMember} open={open} setOpen={setOpen} />
+                <GroupOptions open={open} setOpen={setOpen} />
             </div>
             <div className={styleChat.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll} id="scrollID">
                 {localMessages.length > 0 && localMessages.map((message, i) => {
@@ -484,11 +487,11 @@ const Group = () => {
                         <FontAwesomeIcon icon={faChevronDown} />
                     </button>}
             </div>
-            {addMember === false && reply && reply.image !== true && <div className={styleChat.replyContainer}>
+            {reply && reply.image !== true && <div className={styleChat.replyContainer}>
                 <p>{reply.message}</p>
                 <button onClick={() => setReply("")}>x</button>
             </div>}
-            {addMember === false && reply && reply.image === true && <div className={styleChat.replyContainer}>
+            {reply && reply.image === true && <div className={styleChat.replyContainer}>
                 <div className={styleChat.imgMainReply}>
                     <div>
                         You: <FontAwesomeIcon icon={faImage} />
@@ -505,7 +508,7 @@ const Group = () => {
                 </div>
                 <button onClick={() => setReply("")}>x</button>
             </div>}
-            {addMember === false && <div className={styleChat.sendContainer}>
+            <div className={styleChat.sendContainer}>
                 <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write a message" onKeyPress={e => {
                     if (e.key === "Enter") {
                         pushMessage("message", "message", message);
@@ -524,8 +527,7 @@ const Group = () => {
                         display: "none",
                     }}
                 />
-            </div>}
-            {addMember === true && <AddMember group={router.query.id} members={groupData.members} style={style} setAddMember={setAddMember}/>}
+            </div>
             {internetStatus === false && <OfflineNotification />}
         </div>
 

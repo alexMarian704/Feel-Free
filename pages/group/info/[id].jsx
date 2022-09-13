@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeartBroken, faHouseUser, faArrowLeft, faPen, faCheck } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import MembersAndMedia from "../../../components/Group/MembersAndMedia";
+import AddMember from "../../../components/Group/AddMember";
 
 
 const GroupInfo = () => {
@@ -25,6 +26,7 @@ const GroupInfo = () => {
     const [member, setMember] = useState(true)
     const [image, setImage] = useState("")
     const [loadingImage, setLoadingImage] = useState(false);
+    const [addMember , setAddMember] = useState(false)
     const fileRef = useRef();
     const router = useRouter()
 
@@ -132,7 +134,7 @@ const GroupInfo = () => {
     };
 
     return (
-        <div>
+        <div style={{"position":"relative"}}>
             <button className={style.backButton} onClick={() => router.push(`/group/${router.query.id}`)
             } ><FontAwesomeIcon icon={faArrowLeft} /></button>
             {groupData !== "" && <div className={style.imageContainer}>
@@ -191,8 +193,10 @@ const GroupInfo = () => {
                     </div>
                     <p>{notification === true ? "On" : "Off"}</p>
                 </div>
-                <MembersAndMedia members={groupData.members} />
+                <MembersAndMedia members={groupData.members} setAddMember={setAddMember} groupData={groupData} />
             </div>
+            {internetStatus === false && <OfflineNotification />}
+            {addMember === true && <AddMember group={router.query.id} members={groupData.members} style={style} setAddMember={setAddMember}/>}
             {internetStatus === false && <OfflineNotification />}
         </div>
     )

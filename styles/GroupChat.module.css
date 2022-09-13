@@ -103,7 +103,7 @@
 .optionsContainer {
     position: absolute;
     background-color: rgb(21, 21, 21);
-    bottom: calc(-148px - 4vh);
+    bottom: calc(-115px - 3vh);
     z-index: 100;
     right: 10px;
     width: calc(140px + 1vw);
@@ -493,4 +493,22 @@
     display: grid;
     place-content: center;
     border-radius: 50%;
+}
+
+.addMembersPageButton{
+    width: 100%;
+    height: calc(30px + 1vh);
+    margin-top: 12px;
+    border: 2px solid #800040;
+    border-left: none;
+    border-right: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: white;
+    font-size: calc(18px + 0.1vw);
+    transition: all 200ms ease-in-out;
+}
+
+.addMembersPageButton:hover{
+    background-color: #800040;
 }

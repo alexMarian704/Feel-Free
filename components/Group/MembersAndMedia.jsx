@@ -6,11 +6,11 @@ import Image from "next/image";
 import ProfilePicture from "../../public/profile.jpg";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowAltCircleRight, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 
-const MembersAndMedia = ({ members }) => {
+const MembersAndMedia = ({ members, setAddMember, groupData }) => {
     const [nav, setNav] = useState("members")
     const [membersData, setMembersData] = useState([])
     const { user, isAuthenticated } = useMoralis();
@@ -56,6 +56,7 @@ const MembersAndMedia = ({ members }) => {
             {nav === "members" && <div>
                 {membersData.length > 0 &&
                     <div>
+                        {user.get("ethAddress") === groupData.owner && <button className={style.addMembersPageButton} onClick={()=> setAddMember(true)}><FontAwesomeIcon icon={faUserPlus} /> Add members</button>}
                         {membersData.map((member, i) => {
                             const data = member.attributes;
                             return (
@@ -100,7 +101,11 @@ const MembersAndMedia = ({ members }) => {
             </div>}
             {nav === "media" && <div>
                 {media.length === 0 && <div>
-                    <h3>No media content</h3>
+                    <h3 style={{
+                        "width":"100%",
+                        "textAlign":"center",
+                        "marginTop":"30px"
+                    }}>No media content</h3>
                 </div>}
                 {media.length > 0 && <div className={style.mediaContent}>
                     {media.map((image, i) => (
