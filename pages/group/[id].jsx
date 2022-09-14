@@ -320,7 +320,6 @@ const Group = () => {
                 main.messages = decryptedMessages.messages
             }
             main.messages.push({ type: user.get("userTag"), message: message, time: time, seen: [], file: file, fileName: fileName, reply: reply })
-            console.log(main.messages)
 
             setLocalMessages(main.messages)
 

@@ -4,10 +4,14 @@ export async function groupUnreadMessages(groupAddress, myAddress, setGroupUnrea
     if (groupAddress && myAddress) {
         const unread = Moralis.Object.extend(`Group${groupAddress}`);
         const query = new Moralis.Query(unread);
-        query.equalTo("from", myAddress);
+        query.greaterThan("membersNumber", 1);
         const results = await query.find();
         if (results !== undefined) {
-            setGroupUnreadMessages(results.length);
+            let set = new Set();
+            results.map((x) => {
+                set.add(x.attributes.time)
+            })
+            setGroupUnreadMessages(set.size);
         }
         const query1 = new Moralis.Query(`Group${groupAddress}`)
         query1.equalTo("from", myAddress);
@@ -15,7 +19,12 @@ export async function groupUnreadMessages(groupAddress, myAddress, setGroupUnrea
         subscription.on("delete", async (x) => {
             const results_ = await query.find();
             if (results_ !== undefined) {
-                setGroupUnreadMessages(results_.length);
+                let set = new Set();
+                results_.map((x) => {
+                    set.add(x.attributes.time)
+                })
+                console.log(set.size)
+                setGroupUnreadMessages(set.size);
             }
         })
     }
