@@ -69,23 +69,17 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
     return (
         <div className={style.container}>
             <div className={style.imgContainer}>
-                {friendData.profilePhoto !== undefined && type !== "group" && <Image
-                    width="100%"
-                    height="100%"
+                {friendData.profilePhoto !== undefined && type !== "group" && <Image  
                     layout="fill"
                     objectFit="cover"
                     src={friendData.profilePhoto}
                     alt="Profile Photo" />}
-                {(friendData.profilePhoto === undefined && (friendData.image === "" || friendData.image === undefined)) && <Image
-                    width="100%"
-                    height="100%"
+                {(friendData.profilePhoto === undefined && (friendData.image === "" || friendData.image === undefined)) && <Image  
                     layout="fill"
                     objectFit="cover"
                     src={ProfilePicture}
                     alt="Profile Photo" />}
                 {friendData.image !== "" && friendData.image !== undefined && <Image
-                    width="100%"
-                    height="100%"
                     layout="fill"
                     objectFit="cover"
                     src={friendData.image}

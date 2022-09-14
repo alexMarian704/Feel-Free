@@ -49,6 +49,10 @@ const GroupInfo = () => {
         }
     }, [isAuthenticated, router.query.id])
 
+    useEffect(()=>{
+        Moralis.LiveQuery.close()
+    },[])
+
     if (!isAuthenticated) {
         return <Reject />;
     } else if (
@@ -135,7 +139,9 @@ const GroupInfo = () => {
 
     return (
         <div style={{"position":"relative"}}>
-            <button className={style.backButton} onClick={() => router.push(`/group/${router.query.id}`)
+            <button className={style.backButton} onClick={() => {
+                router.push(`/group/${router.query.id}`)
+            }
             } ><FontAwesomeIcon icon={faArrowLeft} /></button>
             {groupData !== "" && <div className={style.imageContainer}>
                 {loadingImage === false && <Image

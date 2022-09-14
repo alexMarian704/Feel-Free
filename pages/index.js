@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
-import ConfigUser from "../components/ConfigUer";
+import ConfigUser from "../components/ConfigUser";
 import Info from "../components/Info";
 import SignIn from "../components/Signin";
 import Head from "next/head";

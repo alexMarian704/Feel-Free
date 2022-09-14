@@ -68,7 +68,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: flex;
-    /* background-color: red; */
     height: 27px;
 }
 
@@ -89,4 +88,11 @@
 
 .chatsContainer::-webkit-scrollbar-thumb {
     background: rgb(99, 98, 98);
+}
+
+.noMessages{
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+    font-size: calc(20px + 0.2vw);
 }

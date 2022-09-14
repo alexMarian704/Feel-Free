@@ -204,17 +204,17 @@ export default function ConfigUser({ setInfo }) {
             onChange={(e) => setTag(e.target.value)}
             className="setUpInput"
           />
-          {error && <p className="checkError">{error}</p>}
           <button className="checkBut">
             {validTag === null ? (
               <FontAwesomeIcon icon={faCheck} />
-            ) : validTag === true ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : (
-              <FontAwesomeIcon icon={faTimes} color="red" />
-            )}
+              ) : validTag === true ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} color="red" />
+                  )}
           </button>
         </div>
+        {error && <p className="checkError">{error}</p>}
       </div>
       <br />
       <button onClick={setName} className="setUpBut">

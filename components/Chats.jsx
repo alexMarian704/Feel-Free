@@ -49,6 +49,7 @@ export default function Chats() {
                     ))}
                 </div>
             }
+            {chatsArray.length === 0 && <h3 className={style.noMessages}>No messages</h3> }
         </div>
     );
 }

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useInternetConnection } from "../../function/hooks/useInternetConnection";
 import OfflineNotification from "../../components/OfflineNotification";
 import Head from "next/head";
-import { useMoralis } from "react-moralis";
+import { MoralisProvider, useMoralis } from "react-moralis";
 import Reject from "../../components/Reject";
 import ConfigAccount from "../../components/ConfigAccount";
 import { Moralis } from "moralis";
@@ -65,6 +65,7 @@ const Group = () => {
             const query = new Moralis.Query(GroupMessage);
             query.equalTo("type", "Message");
             query.notEqualTo("from", user.get("ethAddress"));
+            query.equalTo("to", user.get("ethAddress"));
             const results = await query.find();
             deleteNotification();
             if (results !== undefined) {
@@ -86,20 +87,14 @@ const Group = () => {
                     }
                 }
                 for (let i = 0; i < results.length; i++) {
-                    if (results[i].attributes.seen.length + 1 === results[i].attributes.membersNumber && results[i].attributes.seen.includes(user.get("ethAddress")) === false) {
-                        const query1 = new Moralis.Query(GroupMessage);
-                        query1.equalTo("time", results[i].attributes.time);
-                        query1.equalTo("type", "Message")
-                        query1.equalTo("tag", results[i].attributes.tag)
-                        const results1 = await query1.first();
-                        if (results1 !== undefined) {
-                            results1.destroy()
-                        }
-                    } else {
-                        results[i].set({
-                            seen: [...results[i].attributes.seen, user.get("ethAddress")]
-                        })
-                        results[i].save();
+                    const query1 = new Moralis.Query(GroupMessage);
+                    query1.equalTo("time", results[i].attributes.time);
+                    query1.equalTo("type", "Message")
+                    query1.equalTo("tag", results[i].attributes.tag)
+                    query.equalTo("to", user.get("ethAddress"));
+                    const results1 = await query1.first();
+                    if (results1 !== undefined) {
+                        results1.destroy()
                     }
                 }
                 if (main.messages.length > 0) {
@@ -131,47 +126,48 @@ const Group = () => {
                 messages: messageList
             }
 
-            Moralis.LiveQuery.close()
             const query = new Moralis.Query(`Group${router.query.id}`)
             query.equalTo("type", "Message");
             query.notEqualTo("from", user.get("ethAddress"));
+            query.equalTo("to", user.get("ethAddress"));
             const subscription = await query.subscribe()
 
             subscription.on("create", async (object) => {
-                const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
-                const decryptMessage = decrypt(object.attributes.message, encryptKey)
-                const decryptReply = decrypt(object.attributes.reply, encryptKey)
-                if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
-                    const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
-                    const decryptedMessages = decrypt(encryptedMessages, user.id);
-                    main.messages = decryptedMessages.messages
-                }
+                const deleteMessage = Moralis.Object.extend(`Group${router.query.id}`);
+                const query1 = new Moralis.Query(deleteMessage);
+                query1.equalTo("time", object.attributes.time);
+                query1.equalTo("to", user.get("ethAddress"));
+                const results1 = await query1.first();
 
-                if (main.messages.filter((e) => { return e.type === object.attributes.tag && e.time === object.attributes.time }).length === 0) {
-                    main.messages.push({ type: object.attributes.tag, message: decryptMessage, time: object.attributes.time, file: object.attributes.file, fileName: object.attributes.fileName, reply: decryptReply })
+                if (results1 !== undefined) {
+                    results1.destroy().then(() => {
+                        const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
+                        const decryptMessage = decrypt(object.attributes.message, encryptKey)
+                        const decryptReply = decrypt(object.attributes.reply, encryptKey)
+                        if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
+                            const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+                            const decryptedMessages = decrypt(encryptedMessages, user.id);
+                            main.messages = decryptedMessages.messages
+                        }
 
-                    const encryptedMessagesList = encrypt(main, user.id)
-                    localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
-                    deleteNotification()
+                        if (main.messages.filter((e) => { return e.type === object.attributes.tag && e.time === object.attributes.time }).length === 0) {
+                            main.messages.push({ type: object.attributes.tag, message: decryptMessage, time: object.attributes.time, file: object.attributes.file, fileName: object.attributes.fileName, reply: decryptReply })
 
-                    if (object.attributes.seen.length + 1 === object.attributes.membersNumber && object.attributes.seen.includes(user.get("ethAddress")) === false) {
-                        object.destroy();
-                    } else {
-                        object.set({
-                            seen: [...object.attributes.seen, user.get("ethAddress")]
-                        })
-                        object.save();
-                    }
+                            const encryptedMessagesList = encrypt(main, user.id)
+                            localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
+                            deleteNotification()
 
-                    messageOrder(user.get("ethAddress"), object.attributes.name, main.messages[main.messages.length - 1].message, object.attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
+                            messageOrder(user.get("ethAddress"), object.attributes.name, main.messages[main.messages.length - 1].message, object.attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
 
-                    if (main.messages.length > 0) {
-                        setLocalMessages(main.messages)
-                        messageRef.current.scrollIntoView({ behavior: 'smooth' })
-                    }
+                            if (main.messages.length > 0) {
+                                setLocalMessages(main.messages)
+                                if (messageRef.current !== null)
+                                    messageRef.current.scrollIntoView({ behavior: 'smooth' })
+                            }
+                        }
+                    })
                 }
             })
-
         }
     }
 
@@ -347,22 +343,27 @@ const Group = () => {
             }
 
             const MessageOrigin = Moralis.Object.extend(`Group${router.query.id}`);
-            const messageOriginPush = new MessageOrigin();
-            messageOriginPush.setACL(messageACL)
-            messageOriginPush.save();
-            messageOriginPush.save({
-                from: user.get("ethAddress"),
-                message: encryptMessage,
-                time: time,
-                file: file,
-                fileName: fileName,
-                tag: user.get("userTag"),
-                reply: encryptReply,
-                type: "Message",
-                seen: [user.get("ethAddress")],
-                membersNumber: groupData.members.length,
-                name: groupData.name
-            });
+            for (let i = 0; i < groupData.members.length; i++) {
+                if (groupData.members[i] !== user.get("ethAddress")) {
+                    const messageOriginPush = new MessageOrigin();
+                    messageOriginPush.setACL(messageACL)
+                    messageOriginPush.save();
+                    messageOriginPush.save({
+                        from: user.get("ethAddress"),
+                        message: encryptMessage,
+                        time: time,
+                        file: file,
+                        fileName: fileName,
+                        tag: user.get("userTag"),
+                        reply: encryptReply,
+                        type: "Message",
+                        seen: [user.get("ethAddress")],
+                        membersNumber: groupData.members.length,
+                        name: groupData.name,
+                        to: groupData.members[i]
+                    });
+                }
+            }
             pushNotification()
             setMessage("")
 
