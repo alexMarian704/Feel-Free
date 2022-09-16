@@ -1,6 +1,6 @@
 import { Moralis } from "moralis";
 
-export async function groupUnreadMessages(groupAddress, myAddress, setGroupUnreadMessages, groupMessages) {
+export async function groupUnreadMessages(groupAddress, myAddress, setGroupUnreadMessages, groupMessages, groupRef, decrypt) {
     if (groupAddress && myAddress) {
         const unread = Moralis.Object.extend(`Group${groupAddress}`);
         const query = new Moralis.Query(unread);
@@ -11,11 +11,19 @@ export async function groupUnreadMessages(groupAddress, myAddress, setGroupUnrea
             results.map((x) => {
                 set.add(x.attributes.time)
             })
-            setGroupUnreadMessages(set.size);
+            if (JSON.parse(localStorage.getItem(`Group${groupRef}Messages`) !== null)) {
+                const encryptedMessages = localStorage.getItem(`Group${groupRef}Messages`)
+                const decryptedMessages = decrypt(encryptedMessages, Moralis.User.current().id);
+
+                if (set.size > decryptedMessages.messages.length)
+                    setGroupUnreadMessages(decryptedMessages.messages.length);
+                else
+                    setGroupUnreadMessages(set.size);
+            } else {
+                setGroupUnreadMessages(set.size);
+            }
         }
-        const query1 = new Moralis.Query(`Group${groupAddress}`)
-        query1.equalTo("from", myAddress);
-        const subscription = await query1.subscribe()
+        const subscription = await query.subscribe()
         subscription.on("delete", async (x) => {
             const results_ = await query.find();
             if (results_ !== undefined) {
@@ -23,8 +31,18 @@ export async function groupUnreadMessages(groupAddress, myAddress, setGroupUnrea
                 results_.map((x) => {
                     set.add(x.attributes.time)
                 })
-                console.log(set.size)
-                setGroupUnreadMessages(set.size);
+
+                if (JSON.parse(localStorage.getItem(`Group${groupRef}Messages`) !== null)) {
+                    const encryptedMessages = localStorage.getItem(`Group${groupRef}Messages`)
+                    const decryptedMessages = decrypt(encryptedMessages, Moralis.User.current().id);
+
+                    if (set.size > decryptedMessages.messages.length)
+                        setGroupUnreadMessages(decryptedMessages.messages.length);
+                    else
+                        setGroupUnreadMessages(set.size);
+                } else {
+                    setGroupUnreadMessages(set.size);
+                }
             }
         })
     }

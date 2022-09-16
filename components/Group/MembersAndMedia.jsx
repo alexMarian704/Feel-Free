@@ -10,8 +10,8 @@ import { faArrowAltCircleRight, faUserPlus } from "@fortawesome/free-solid-svg-i
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 
-const MembersAndMedia = ({ members, setAddMember, groupData }) => {
-    const [nav, setNav] = useState("members")
+const MembersAndMedia = ({ members, setAddMember, groupData, mediaRoute }) => {
+    const [nav, setNav] = useState(mediaRoute === undefined ? "members" : "media")
     const [membersData, setMembersData] = useState([])
     const { user, isAuthenticated } = useMoralis();
     const [media, setMedia] = useState([])

@@ -88,7 +88,8 @@ export default function search() {
           setError("")
         }
       } else {
-        setError("No results found")
+        if(results === undefined)
+          setError("No results found")
       }
     }
   };

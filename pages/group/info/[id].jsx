@@ -26,9 +26,10 @@ const GroupInfo = () => {
     const [member, setMember] = useState(true)
     const [image, setImage] = useState("")
     const [loadingImage, setLoadingImage] = useState(false);
-    const [addMember , setAddMember] = useState(false)
+    const [addMember, setAddMember] = useState(false)
     const fileRef = useRef();
     const router = useRouter()
+    const { query: { media } } = router;
 
     useEffect(async () => {
         if (isAuthenticated && router.query.id) {
@@ -49,9 +50,10 @@ const GroupInfo = () => {
         }
     }, [isAuthenticated, router.query.id])
 
-    useEffect(()=>{
-        Moralis.LiveQuery.close()
-    },[])
+    useEffect(() => {
+        if (isAuthenticated)
+            Moralis.LiveQuery.close()
+    }, [isAuthenticated])
 
     if (!isAuthenticated) {
         return <Reject />;
@@ -138,7 +140,7 @@ const GroupInfo = () => {
     };
 
     return (
-        <div style={{"position":"relative"}}>
+        <div style={{ "position": "relative" }}>
             <button className={style.backButton} onClick={() => {
                 router.push(`/group/${router.query.id}`)
             }
@@ -199,10 +201,10 @@ const GroupInfo = () => {
                     </div>
                     <p>{notification === true ? "On" : "Off"}</p>
                 </div>
-                <MembersAndMedia members={groupData.members} setAddMember={setAddMember} groupData={groupData} />
+                <MembersAndMedia members={groupData.members} setAddMember={setAddMember} groupData={groupData} mediaRoute={media} />
             </div>
             {internetStatus === false && <OfflineNotification />}
-            {addMember === true && <AddMember group={router.query.id} members={groupData.members} style={style} setAddMember={setAddMember}/>}
+            {addMember === true && <AddMember group={router.query.id} members={groupData.members} style={style} setAddMember={setAddMember} />}
             {internetStatus === false && <OfflineNotification />}
         </div>
     )

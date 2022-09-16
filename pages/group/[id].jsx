@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useInternetConnection } from "../../function/hooks/useInternetConnection";
 import OfflineNotification from "../../components/OfflineNotification";
 import Head from "next/head";
-import { MoralisProvider, useMoralis } from "react-moralis";
+import { useMoralis } from "react-moralis";
 import Reject from "../../components/Reject";
 import ConfigAccount from "../../components/ConfigAccount";
 import { Moralis } from "moralis";
@@ -19,7 +19,6 @@ import RenderGroupMessage from "../../components/MessageGroup";
 import GroupOptions from "../../components/Group/GroupOptions";
 import { groupUnreadMessages } from "../../function/groupUnreadMessages";
 import Image from "next/image";
-import AddMember from "../../components/Group/AddMember";
 
 const Group = () => {
     const [member, setMember] = useState(true)
@@ -40,6 +39,7 @@ const Group = () => {
     const [open, setOpen] = useState(false);
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
     const [groupUnreadMessageNumber, setGroupUnreadMessageNumber] = useState(0);
+    const [openDelete, setOpenDelete] = useState(false);
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -70,12 +70,12 @@ const Group = () => {
             deleteNotification();
             if (results !== undefined) {
                 for (let i = 0; i < results.length; i++) {
-                    if (results[i].attributes.seen.includes(user.get("ethAddress")) === false) {
-                        if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
-                            const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
-                            const decryptedMessages = decrypt(encryptedMessages, user.id);
-                            main.messages = decryptedMessages.messages
-                        }
+                    if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
+                        const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+                        const decryptedMessages = decrypt(encryptedMessages, user.id);
+                        main.messages = decryptedMessages.messages
+                    }
+                    if (main.messages.filter((e) => { return e.type === results[i].attributes.tag && e.time === results[i].attributes.time }).length === 0) {
                         const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
                         const decryptMessage = decrypt(results[i].attributes.message, encryptKey)
                         const decryptReply = decrypt(results[i].attributes.reply, encryptKey)
@@ -115,6 +115,9 @@ const Group = () => {
         const results = await query.first();
         if (results !== undefined) {
             results.destroy()
+            .catch((err)=>{
+                console.log(err)
+            })
         }
     }
 
@@ -160,11 +163,14 @@ const Group = () => {
                             messageOrder(user.get("ethAddress"), object.attributes.name, main.messages[main.messages.length - 1].message, object.attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
 
                             if (main.messages.length > 0) {
+                                setRender(++render);
                                 setLocalMessages(main.messages)
                                 if (messageRef.current !== null)
                                     messageRef.current.scrollIntoView({ behavior: 'smooth' })
                             }
                         }
+                    }).catch((err)=>{
+                        console.log(err)
                     })
                 }
             })
@@ -183,7 +189,6 @@ const Group = () => {
             } else {
                 setGroupData(_results.attributes)
             }
-            setLoading(false)
             if (localStorage.getItem(`Group${router.query.id}Key`) === null) {
                 const GroupKey = Moralis.Object.extend(`Group${router.query.id}`);
                 const query_ = new Moralis.Query(GroupKey);
@@ -240,6 +245,7 @@ const Group = () => {
                 if (results1 !== undefined)
                     results1.destroy()
             }
+            setLoading(false)
         }
     }, [isAuthenticated, router.query.id])
 
@@ -255,21 +261,27 @@ const Group = () => {
     }
 
     useEffect(() => {
-        if (messageRef.current !== undefined && initial.length === localMessages.length) {
+        if (messageRef.current !== null && messageRef.current !== undefined && initial.length === localMessages.length) {
             messageRef.current.scrollIntoView({ behavior: 'instant' })
-            setLoading(false);
-        } else if (isAuthenticated && router.query.id) {
-            if (localStorage.getItem(`Group${router.query.id}Messages`) === null)
-                setLoading(false);
+            // setLoading(false);
         }
+        // else if (isAuthenticated && router.query.id) {
+        //     if (localStorage.getItem(`Group${router.query.id}Messages`) === null)
+        //         setLoading(false);
+        // }
     }, [router.query.id, isAuthenticated, messageRef.current])
 
     useEffect(() => {
-        getLocalMessages()
-        unredMessages();
-        receiveMessage();
-        if (isAuthenticated) {
-            groupUnreadMessages(router.query.id, user.get("ethAddress"), setGroupUnreadMessageNumber, groupUnreadMessageNumber);
+            getLocalMessages()
+            unredMessages();
+            receiveMessage();
+    }, [isAuthenticated, router.query.id])
+
+    useEffect(() => {
+        if (isAuthenticated && router.query.id) {
+            if (localStorage.getItem(`Group${router.query.id}Key`) !== null) {
+                groupUnreadMessages(router.query.id, user.get("ethAddress"), setGroupUnreadMessageNumber, groupUnreadMessageNumber, router.query.id, decrypt);
+            }
         }
     }, [isAuthenticated, router.query.id])
 
@@ -436,6 +448,16 @@ const Group = () => {
             setPositionScroll(Number(position.toPrecision(2)))
     };
 
+    const deleteChat = () => {
+        localStorage.removeItem(`Group${router.query.id}Messages`);
+        setLocalMessages([]);
+        setOpen(false);
+        setOpenDelete(false);
+        messageOrder(user.get("ethAddress"), groupData.name, "Chat deleted", groupData.name, "", new Date().getTime(), "you", "message", user.get("userTag"), "group", router.query.id)
+    }
+
+    console.log(groupUnreadMessageNumber)
+
     return (
         <div style={{ "position": "relative" }}>
             <Head>
@@ -459,7 +481,7 @@ const Group = () => {
                         <p>{groupData.members.length} members</p>
                     </div>
                 </div>}
-                <GroupOptions open={open} setOpen={setOpen} />
+                <GroupOptions open={open} setOpen={setOpen} groupRef={router.query.id} setOpenDelete={setOpenDelete} />
             </div>
             <div className={styleChat.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll} id="scrollID">
                 {localMessages.length > 0 && localMessages.map((message, i) => {
@@ -528,6 +550,15 @@ const Group = () => {
                     }}
                 />
             </div>
+            {openDelete === true && <div className={style.confirmDelete} >
+                <div className={styleChat.deleteContent}>
+                    <h4>Delete this chat ?</h4>
+                    <div>
+                        <button className={styleChat.noButton} onClick={() => setOpenDelete(false)}>No</button>
+                        <button className={styleChat.yesButton} onClick={deleteChat}>Yes</button>
+                    </div>
+                </div>
+            </div>}
             {internetStatus === false && <OfflineNotification />}
         </div>
 
