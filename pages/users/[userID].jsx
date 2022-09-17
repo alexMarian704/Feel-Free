@@ -16,18 +16,19 @@ import { userStatus } from '../../function/userStatus';
 import { useInternetConnection } from "../../function/hooks/useInternetConnection";
 import OfflineNotification from "../../components/OfflineNotification";
 import UnsupportedChain from '../../components/UnsupportedChain';
+import Profile from '../profile';
 
 export default function UserID() {
   const [userData, setUserData] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false)
-  const { isAuthenticated, user, isInitialized,chainId } = useMoralis();
+  const { isAuthenticated, user, isInitialized, chainId } = useMoralis();
   const router = useRouter()
   const [isFriend, setIsFriend] = useState(false);
   const [isSend, setIsSend] = useState(false);
   const internetStatus = useInternetConnection()
 
-  if (user && router.query.userID === user.get("ethAddress")) router.push("/profile")
+  if (user && router.query.userID === user.get("ethAddress")) return <Profile />
 
   const getData = async () => {
     if (isInitialized && router.query.userID && router.query.userID !== user.get("ethAddress")) {
@@ -73,7 +74,7 @@ export default function UserID() {
       getFriends();
       getRequest();
     }
-  }, [isInitialized, router.query.userID , isAuthenticated])
+  }, [isInitialized, router.query.userID, isAuthenticated])
 
   let selectedChain
   if (user)
@@ -96,10 +97,10 @@ export default function UserID() {
         "paddingTop": "40px"
       }}>User was not found</h1>
       <div style={{
-        "width":"100%",
-        "display":"flex",
-        "justifyContent":"center",
-        "marginTop":"20px"
+        "width": "100%",
+        "display": "flex",
+        "justifyContent": "center",
+        "marginTop": "20px"
       }}>
         <button style={{
           "background": "#800040",
@@ -110,7 +111,7 @@ export default function UserID() {
           "fontSize": "calc(19px + 0.1vw)",
           "padding": "4px 10px 4px 10px",
           "borderRadius": "6px"
-        }} onClick={()=> router.push("/")}>Home page</button>
+        }} onClick={() => router.push("/")}>Home page</button>
       </div>
     </div>
   )
@@ -220,16 +221,16 @@ export default function UserID() {
             <br />
             <div className={style.alignImg} onClick={userStatus}>
               {userData.profilePhoto !== undefined && <Image src={userData.profilePhoto} alt="Profile Photo" width="90%"
-              height="90%"
-              layout="fill"
-              objectFit="cover"/>}
+                height="90%"
+                layout="fill"
+                objectFit="cover" />}
               {userData.profilePhoto == undefined && <Image src={ProfilePicture} alt="Profile Photo" />}
             </div>
             <div className={style.buttonDiv} onClick={userStatus}>
               {isFriend === false && isSend === false && <button onClick={addFriend} className={style.redBut}>Add friend <FontAwesomeIcon icon={faUserPlus} /></button>}
               {isFriend === true && isSend === false && <button onClick={removeFriend} className={style.removeFriend}>Remove friend<FontAwesomeIcon icon={faUserSlash} className={style.butIcon} /></button>}
               {isSend === true && <button onClick={removeRequest} className={style.removeFriend}>Requested<FontAwesomeIcon icon={faHourglass} className={style.butIcon} /></button>}
-              <button className={style.redBut} onClick={()=> router.push(`/transfer/${userData.userTag}`)}>Send {selectedChain === "eth"
+              <button className={style.redBut} onClick={() => router.push(`/transfer/${userData.userTag}`)}>Send {selectedChain === "eth"
                 ? "ETH"
                 : selectedChain === "bsc"
                   ? "BNB"
@@ -243,8 +244,8 @@ export default function UserID() {
           </div>
           <div></div>
         </div>}
-        {internetStatus === false && <OfflineNotification /> }
-        {(chainId !== null && chainId !== "0x4" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
+      {internetStatus === false && <OfflineNotification />}
+      {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   )
 }

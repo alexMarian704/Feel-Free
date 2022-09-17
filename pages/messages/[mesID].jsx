@@ -26,7 +26,7 @@ import OfflineNotification from "../../components/OfflineNotification";
 import CheckPassword from "../../components/CheckPassword";
 
 export default function Messages() {
-  const { isAuthenticated, user, setUserData } = useMoralis();
+  const { isAuthenticated, user, setUserData, isInitialized } = useMoralis();
   const router = useRouter()
   const [message, setMessage] = useState("");
   const [friendData, setFriendData] = useState("");
@@ -413,7 +413,15 @@ export default function Messages() {
     }
   }, [isAuthenticated, router.query.mesID])
 
-  if (!isAuthenticated) {
+  if (isInitialized === false)
+    return (
+      <div>
+        <div className={style.loadingContainer}>
+          <div className={style.loader}></div>
+        </div>
+      </div>
+    )
+  else if (!isAuthenticated) {
     return <Reject />;
   } else if (
     user.get("userNameChange") === undefined ||
@@ -773,7 +781,7 @@ export default function Messages() {
                   <div>
                     <p className={style.chatDate}>{day}.{month + 1}.{year}</p>
                   </div>}
-                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} deleteForYou={deleteForYou}/>
+                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} deleteForYou={deleteForYou} />
               </div>
             )
         })}

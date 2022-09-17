@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 import UnsupportedChain from "../components/UnsupportedChain";
 
 export default function Home() {
-  const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3,chainId } = useMoralis();
+  const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3, chainId, isInitialized } = useMoralis();
   const [info, setInfo] = useState(null);
   const [page, setPage] = useState("Messages");
   const internetStatus = useInternetConnection()
@@ -32,6 +32,15 @@ export default function Home() {
       enableWeb3()
     }
   }, [])
+
+  if (isInitialized === false)
+    return (
+      <div>
+        <div className={style.loadingContainer}>
+          <div className={style.loader}></div>
+        </div>
+      </div>
+    )
 
   if (!isAuthenticated) return <SignIn />;
 
@@ -65,9 +74,10 @@ export default function Home() {
             {page === "FriendList" && <FriendList />}
             {page === "Messages" && <Chats />}
             <Notifications />
-            <button className={style.createGroup} onClick={()=>route.push("/create/group") }>
+            <button className={style.createGroup} onClick={() => route.push("/create/group")}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
+            <div className={style.bottomMargin} ></div>
           </div>
         )}
       {(user.get("userNameChange") === undefined ||
@@ -80,8 +90,8 @@ export default function Home() {
         )}
       {(user.get("info") === false ||
         info === false) && <Info setInfo={setInfo} />}
-      {internetStatus === false && <OfflineNotification /> }
-      {(chainId !== null && chainId !== "0x4" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
+      {internetStatus === false && <OfflineNotification />}
+      {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }

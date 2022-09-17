@@ -242,7 +242,15 @@ export default function swap() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (isInitialized === false)
+    return (
+      <div>
+        <div className={style.loadingContainer}>
+          <div className={style.loader}></div>
+        </div>
+      </div>
+    )
+  else if (!isAuthenticated) {
     return <Reject />;
   } else if (
     user.get("userNameChange") === undefined ||
@@ -257,7 +265,7 @@ export default function swap() {
 
   const options = {
     chain:
-    chainId === "0x4"
+      chainId === "0x4"
         ? "eth"
         : chainId === "0x61"
           ? "bsc"
@@ -500,7 +508,7 @@ export default function swap() {
       )}
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
-      {(chainId !== null && chainId !== "0x4" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
+      {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }

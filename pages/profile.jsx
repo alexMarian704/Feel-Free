@@ -21,23 +21,31 @@ import Settings from "../components/Settings";
 import UnsupportedChain from "../components/UnsupportedChain";
 
 
-export default function profile() {
-  const { isAuthenticated, user, setUserData,chainId } = useMoralis();
+export default function Profile() {
+  const { isAuthenticated, user, setUserData, chainId, isInitialized } = useMoralis();
   const fileRef = useRef();
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const internetStatus = useInternetConnection()
-  const [settings , setSettings] = useState(false);
+  const [settings, setSettings] = useState(false);
 
-  useEffect(()=>{
-    if (isAuthenticated && chainId!== null) {
-      getBalance(userETHaddress,chainId).then((result) => {
+  useEffect(() => {
+    if (isAuthenticated && chainId !== null) {
+      getBalance(userETHaddress, chainId).then((result) => {
         setBalance(result);
       });
     }
-  },[isAuthenticated , chainId])
+  }, [isAuthenticated, chainId])
 
-  if (!isAuthenticated) {
+  if (isInitialized === false)
+    return (
+      <div>
+        <div className={style.loadingContainer}>
+          <div className={style.loader}></div>
+        </div>
+      </div>
+    )
+  else if (!isAuthenticated) {
     return <Reject />;
   } else if (
     user.get("userNameChange") === undefined ||
@@ -46,7 +54,7 @@ export default function profile() {
   ) {
     return <ConfigAccount />;
   }
-  if(user.get("reCheck") === 1) return <CheckPassword />
+  if (user.get("reCheck") === 1) return <CheckPassword />
 
   const changePhoto = async (e) => {
     const file = e.target.files[0];
@@ -61,7 +69,7 @@ export default function profile() {
     const query = new Moralis.Query(UserTagData);
     query.equalTo("userTag", user.get("userTag"));
     const results = await query.first();
-    results.set("profilePhoto" , profileFile.ipfs())
+    results.set("profilePhoto", profileFile.ipfs())
     results.save();
 
     console.log(profileFile.ipfs());
@@ -141,17 +149,17 @@ export default function profile() {
             {chainId === "0x4"
               ? "ETH"
               : chainId === "0x61"
-              ? "BNB"
-              : "MATIC"}{" "}
+                ? "BNB"
+                : "MATIC"}{" "}
             Balance: {balance}
           </h2>
-          <button onClick={()=> setSettings(true)} className={style.settingButton}><FiSettings /></button>
+          <button onClick={() => setSettings(true)} className={style.settingButton}><FiSettings /></button>
         </div>
       </div>}
       {settings === true && <Settings setSettings={setSettings} />}
-      {settings === false &&<Notifications />}
-      {internetStatus === false && <OfflineNotification /> }
-      {(chainId !== null && chainId !== "0x4" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
+      {settings === false && <Notifications />}
+      {internetStatus === false && <OfflineNotification />}
+      {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }

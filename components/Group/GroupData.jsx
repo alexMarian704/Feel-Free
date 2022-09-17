@@ -106,6 +106,7 @@ const GroupData = ({ selectFriend }) => {
             originACL.setReadAccess(user.id, true)
             for (let i = 0; i < friendsData.length; i++) {
                 originACL.setReadAccess(friendsData[i].idUser, true);
+                originACL.setWriteAccess(friendsData[i].idUser, true);
             }
             groupData.setACL(originACL)
             groupData.save();

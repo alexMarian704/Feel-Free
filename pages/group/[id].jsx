@@ -23,13 +23,14 @@ import Image from "next/image";
 const Group = () => {
     const [member, setMember] = useState(true)
     const [loading, setLoading] = useState(true);
+    const [messageLoading, setMessageLoading] = useState(true);
     const [groupData, setGroupData] = useState("")
     const [message, setMessage] = useState("")
     const [localMessages, setLocalMessages] = useState([])
     const [render, setRender] = useState(100);
     const [reply, setReply] = useState("")
     const [initial, setInitial] = useState([])
-    const { isAuthenticated, user } = useMoralis();
+    const { isAuthenticated, user, isInitialized } = useMoralis();
     const router = useRouter()
     const fileRef = useRef()
     const internetStatus = useInternetConnection()
@@ -115,9 +116,9 @@ const Group = () => {
         const results = await query.first();
         if (results !== undefined) {
             results.destroy()
-            .catch((err)=>{
-                console.log(err)
-            })
+                .catch((err) => {
+                    console.log(err)
+                })
         }
     }
 
@@ -169,7 +170,7 @@ const Group = () => {
                                     messageRef.current.scrollIntoView({ behavior: 'smooth' })
                             }
                         }
-                    }).catch((err)=>{
+                    }).catch((err) => {
                         console.log(err)
                     })
                 }
@@ -263,18 +264,18 @@ const Group = () => {
     useEffect(() => {
         if (messageRef.current !== null && messageRef.current !== undefined && initial.length === localMessages.length) {
             messageRef.current.scrollIntoView({ behavior: 'instant' })
-            // setLoading(false);
+            setMessageLoading(false);
         }
-        // else if (isAuthenticated && router.query.id) {
-        //     if (localStorage.getItem(`Group${router.query.id}Messages`) === null)
-        //         setLoading(false);
-        // }
-    }, [router.query.id, isAuthenticated, messageRef.current])
+        else if (isAuthenticated && router.query.id) {
+            if (localStorage.getItem(`Group${router.query.id}Messages`) === null)
+                setMessageLoading(false);
+        }
+    }, [initial, router.query.id, isAuthenticated, messageRef.current])
 
     useEffect(() => {
-            getLocalMessages()
-            unredMessages();
-            receiveMessage();
+        getLocalMessages()
+        unredMessages();
+        receiveMessage();
     }, [isAuthenticated, router.query.id])
 
     useEffect(() => {
@@ -291,7 +292,16 @@ const Group = () => {
         }
     }, [reply])
 
-    if (!isAuthenticated) {
+
+    if (isInitialized === false)
+        return (
+            <div>
+                <div className={style.loadingContainer}>
+                    <div className={style.loader}></div>
+                </div>
+            </div>
+        )
+    else if (!isAuthenticated) {
         return <Reject />;
     } else if (
         user.get("userNameChange") === undefined ||
@@ -456,8 +466,6 @@ const Group = () => {
         messageOrder(user.get("ethAddress"), groupData.name, "Chat deleted", groupData.name, "", new Date().getTime(), "you", "message", user.get("userTag"), "group", router.query.id)
     }
 
-    console.log(groupUnreadMessageNumber)
-
     return (
         <div style={{ "position": "relative" }}>
             <Head>
@@ -509,6 +517,8 @@ const Group = () => {
                         <FontAwesomeIcon icon={faChevronDown} />
                     </button>}
             </div>
+            {messageLoading === true && <div className={style.messageLoadingContainer} >
+            </div>}
             {reply && reply.image !== true && <div className={styleChat.replyContainer}>
                 <p>{reply.message}</p>
                 <button onClick={() => setReply("")}>x</button>

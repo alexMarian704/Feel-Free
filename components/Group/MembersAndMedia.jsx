@@ -86,13 +86,13 @@ const MembersAndMedia = ({ members, setAddMember, groupData, mediaRoute }) => {
                                                 />
                                             )}
                                         </div>
-                                        <div className={style.membersInfo} onClick={() => router.push(`/users/${data.ethAddress}`)}>
+                                        <div className={style.membersInfo} onClick={() => router.push(user.get("ethAddress") !== data.ethAddress ? `/users/${data.ethAddress}` : "/profile")}>
                                             <p>{data.username}</p>
                                             <p>@{data.userTag}</p>
                                         </div>
                                     </div>
                                     <div>
-                                        <button onClick={() => router.push(`/transfer/${data.userTag}`)} className={style.sendButton}><FontAwesomeIcon icon={faArrowAltCircleRight} /></button>
+                                        {user.get("ethAddress") !== data.ethAddress && <button onClick={() => router.push(`/transfer/${data.userTag}`)} className={style.sendButton}><FontAwesomeIcon icon={faArrowAltCircleRight} /></button>}
                                     </div>
                                 </div>
                             )

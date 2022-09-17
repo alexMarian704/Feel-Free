@@ -19,7 +19,7 @@ import OfflineNotification from "../components/OfflineNotification";
 import UnsupportedChain from "../components/UnsupportedChain";
 
 export default function search() {
-  const { isAuthenticated, user, chainId, setUserData } = useMoralis();
+  const { isAuthenticated, user, chainId, setUserData, isInitialized } = useMoralis();
   const [searchHistory, setSearchHistory] = useState([]);
   const [value, setValue] = useState("");
   const [tag, setTag] = useState("");
@@ -48,7 +48,15 @@ export default function search() {
     }
   }, [isAuthenticated])
 
-  if (!isAuthenticated) {
+  if (isInitialized === false)
+    return (
+      <div>
+        <div className={style.loadingContainer}>
+          <div className={style.loader}></div>
+        </div>
+      </div>
+    )
+  else if (!isAuthenticated) {
     return <Reject />;
   } else if (
     user.get("userNameChange") === undefined ||
@@ -88,7 +96,7 @@ export default function search() {
           setError("")
         }
       } else {
-        if(results === undefined)
+        if (results === undefined)
           setError("No results found")
       }
     }
@@ -213,7 +221,7 @@ export default function search() {
               </div>
             ))}
           </div>}
-        {searchHistory.length > 0 && nameArray.length===0 && tag === "" &&
+        {searchHistory.length > 0 && nameArray.length === 0 && tag === "" &&
           <div>
             <h3 className={style.searchHistoryTitle}>Recent search:</h3>
             {searchHistory.map((name, i) => (

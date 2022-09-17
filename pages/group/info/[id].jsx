@@ -18,7 +18,7 @@ import AddMember from "../../../components/Group/AddMember";
 
 const GroupInfo = () => {
     const internetStatus = useInternetConnection()
-    const { isAuthenticated, user, setUserData } = useMoralis();
+    const { isAuthenticated, user, setUserData, isInitialized } = useMoralis();
     const [groupData, setGroupData] = useState("")
     const [notification, setNotification] = useState(true);
     const [editDescription, setEditDescription] = useState(false);
@@ -55,7 +55,15 @@ const GroupInfo = () => {
             Moralis.LiveQuery.close()
     }, [isAuthenticated])
 
-    if (!isAuthenticated) {
+    if (isInitialized === false)
+        return (
+            <div>
+                <div className={style.loadingContainer}>
+                    <div className={style.loader}></div>
+                </div>
+            </div>
+        )
+    else if (!isAuthenticated) {
         return <Reject />;
     } else if (
         user.get("userNameChange") === undefined ||

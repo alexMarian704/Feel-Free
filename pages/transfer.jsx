@@ -27,7 +27,7 @@ import UnsupportedChain from "../components/UnsupportedChain";
 export default function Transfer({ tag }) {
   const [amount, setAmount] = useState("");
   const [to, setTo] = useState("");
-  const { user, isAuthenticated, isWeb3EnableLoading, isWeb3Enabled, enableWeb3,chainId } = useMoralis();
+  const { user, isAuthenticated, isWeb3EnableLoading, isWeb3Enabled, enableWeb3, chainId, isInitialized } = useMoralis();
   const [errorSend, setErrorSend] = useState("");
   const router = useRouter();
   const [confirm, setConfirm] = useState(false);
@@ -52,7 +52,7 @@ export default function Transfer({ tag }) {
       });
       getFriend();
     }
-  }, [isAuthenticated,chainId])
+  }, [isAuthenticated, chainId])
 
   useEffect(() => {
     setAmount("");
@@ -67,7 +67,15 @@ export default function Transfer({ tag }) {
     }
   }, [tag])
 
-  if (!isAuthenticated) {
+  if (isInitialized === false)
+    return (
+      <div>
+        <div className={style.loadingContainer}>
+          <div className={style.loader}></div>
+        </div>
+      </div>
+    )
+  else if (!isAuthenticated) {
     return <Reject />;
   } else if (
     user.get("userNameChange") === undefined ||
@@ -156,14 +164,14 @@ export default function Transfer({ tag }) {
         setBalance={setBalance}
         balance={true}
       />
-      <div className="marginDiv" onClick={()=> setOpenTagList(false)}></div>
+      <div className="marginDiv" onClick={() => setOpenTagList(false)}></div>
       <div className={style.transferMode} onClick={userStatus}>
         <div onClick={() => setTransferMode("Token")}><p>Transfer Coins</p></div>
-        <div onClick={() => {setTransferMode("NFT") , setOpenTagList(false)}}><p>Transfer NFTs</p></div>
+        <div onClick={() => { setTransferMode("NFT"), setOpenTagList(false) }}><p>Transfer NFTs</p></div>
       </div>
       {transferMode === "NFT" && <TransferNFT userETH={userETHaddress} selectedChain={chainId} style={style} />}
       {transferMode === "Token" && <div className={style.transfer}>
-        <div className={style.align} onClick={()=> setOpenTagList(false)}> 
+        <div className={style.align} onClick={() => setOpenTagList(false)}>
           <p className={style.label}>
             Your{" "}
             {chainId === "0x4"
@@ -193,7 +201,7 @@ export default function Transfer({ tag }) {
           </p>
         </div>
         <br />
-        <div className={style.align} onClick={()=> setOpenTagList(false)}>
+        <div className={style.align} onClick={() => setOpenTagList(false)}>
           <label className={style.label}>Amount</label>
           <br />
           <input
@@ -230,9 +238,9 @@ export default function Transfer({ tag }) {
                 if (e.key === "Enter") {
                   setOpenTagList(false);
                 }
-              }} 
+              }}
             />
-            <button className={style.deleteBut} onClick={() => {setTo(""), setOpenTagList(false)}}>
+            <button className={style.deleteBut} onClick={() => { setTo(""), setOpenTagList(false) }}>
               <FontAwesomeIcon
                 icon={faTimes}
                 color="#800040"
@@ -242,8 +250,8 @@ export default function Transfer({ tag }) {
           </div>
           {openTagList === true && tagList.length > 0 &&
             <div className={style.listContainer}>
-              {tagList.map((friend)=>(
-                <div key={friend.userTag} className={style.listElement} onClick={()=>{ setTo(`@${friend.userTag}`), setOpenTagList(false)}}>
+              {tagList.map((friend) => (
+                <div key={friend.userTag} className={style.listElement} onClick={() => { setTo(`@${friend.userTag}`), setOpenTagList(false) }}>
                   <p>@{friend.userTag}</p>
                 </div>
               ))}
@@ -307,7 +315,7 @@ export default function Transfer({ tag }) {
       <GetTransactions chain={chainId} userETHaddress={userETHaddress} setOpenTagList={setOpenTagList} />
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
-      {(chainId !== null && chainId !== "0x4" &&  chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
+      {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
   );
 }

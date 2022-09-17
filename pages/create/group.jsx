@@ -20,7 +20,7 @@ const Group = () => {
     const [friendList, setFriendList] = useState(0);
     const [search, setSearch] = useState("")
     const [step, setStep] = useState(0)
-    const { isAuthenticated, user } = useMoralis();
+    const { isAuthenticated, user, isInitialized } = useMoralis();
     const router = useRouter()
     const internetStatus = useInternetConnection()
 
@@ -64,7 +64,15 @@ const Group = () => {
             getFriend();
     }, [isAuthenticated, user])
 
-    if (!isAuthenticated) {
+    if (isInitialized === false)
+        return (
+            <div>
+                <div className={style.loadingContainer}>
+                    <div className={style.loader}></div>
+                </div>
+            </div>
+        )
+    else if (!isAuthenticated) {
         return <Reject />;
     } else if (
         user.get("userNameChange") === undefined ||
