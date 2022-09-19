@@ -39,8 +39,10 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
               else
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
-            {openReply === number && <div className={style.messageOptionsContainer}>
+            {openReply === number && <div className={style.messageOptionsContainer} style={{top:"-158px"}}>
               <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
+              <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
+              <button onClick={() => {setOpenReply(-1) }} >Info</button>
             </div>}
           </div>
         </div>
@@ -97,7 +99,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
               else
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>}
-            {openReply === number && <div className={style.messageOptionsContainer}>
+            {openReply === number && <div className={style.messageOptionsContainer} style={{top:"-158px"}}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
               <button onClick={() => {setOpenReply(-1) }} >Info</button>
@@ -190,6 +192,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             }}><FontAwesomeIcon icon={faCaretDown} /></button>}
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
+              <button onClick={() => { deleteForYou(message.time), setOpenReply(-1) }}>Delete for you</button>
             </div>}
           </div>
         </div>

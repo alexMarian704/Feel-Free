@@ -28,6 +28,7 @@ export default function Profile() {
   const [balance, setBalance] = useState(0);
   const internetStatus = useInternetConnection()
   const [settings, setSettings] = useState(false);
+  const [error, setError] = useState("")
 
   useEffect(() => {
     if (isAuthenticated && chainId !== null) {
@@ -58,30 +59,36 @@ export default function Profile() {
 
   const changePhoto = async (e) => {
     const file = e.target.files[0];
-    console.log(e.target.files[0]);
     const type = e.target.files[0].type.replace("image/", "");
-    const name = `profile.${type}`;
-    const profileFile = new Moralis.File(name, file);
-    setLoading(true);
-    await profileFile.saveIPFS();
+    if (type === "jpeg" || type === "png" || type === "jpg" || type === "image/jpg" || type === "image/png" || type === "image/jpeg") {
+      const name = `profile.${type}`;
+      const profileFile = new Moralis.File(name, file);
+      setError("")
+      setLoading(true);
+      await profileFile.saveIPFS();
 
-    const UserTagData = Moralis.Object.extend("Tags");
-    const query = new Moralis.Query(UserTagData);
-    query.equalTo("userTag", user.get("userTag"));
-    const results = await query.first();
-    results.set("profilePhoto", profileFile.ipfs())
-    results.save();
+      const UserTagData = Moralis.Object.extend("Tags");
+      const query = new Moralis.Query(UserTagData);
+      query.equalTo("userTag", user.get("userTag"));
+      const results = await query.first();
+      results.set("profilePhoto", profileFile.ipfs())
+      results.save();
 
-    console.log(profileFile.ipfs());
-    console.log(profileFile.hash());
-    setUserData({
-      profilePhoto: profileFile.ipfs(),
-    });
-    setLoading(false);
+      // console.log(profileFile.ipfs());
+      // console.log(profileFile.hash());
+      setUserData({
+        profilePhoto: profileFile.ipfs(),
+      });
+      setLoading(false);
+    } else {
+      setError("Unsupported file type")
+      setTimeout(() => {
+        setError("")
+      }, 3000)
+    }
   };
 
   const userETHaddress = user.get("ethAddress");
-  const selectedChain = user.get("chain");
 
   return (
     <div>
@@ -96,24 +103,23 @@ export default function Profile() {
       />
       <div className="marginDiv"></div>
       {settings === false && <div className={style.main}>
-        <div className={style.imgProfile} onClick={userStatus}>
+        <div className={style.imgProfile} onClick={userStatus} style={{
+          border: error !== "" ? "4px solid rgb(244, 9, 9)" : "none"
+        }}>
           {user.get("profilePhoto") !== undefined && (
             <Image
               src={user.get("profilePhoto")}
               alt="profilePhoto"
-              width="90%"
-              height="90%"
               layout="fill"
               objectFit="cover"
               className={style.img}
+
             />
           )}
           {user.get("profilePhoto") === undefined && (
             <Image
               src={ProfilePicture}
               alt="profilePhoto"
-              width="90%"
-              height="90%"
               layout="fill"
               objectFit="cover"
               className={style.img}
@@ -153,8 +159,9 @@ export default function Profile() {
                 : "MATIC"}{" "}
             Balance: {balance}
           </h2>
-          <button onClick={() => setSettings(true)} className={style.settingButton}><FiSettings /></button>
+          <button onClick={() => { setSettings(true), setError("") }} className={style.settingButton}><FiSettings /></button>
         </div>
+        {error !== "" && <p className={style.errorFile}>{error}</p>}
       </div>}
       {settings === true && <Settings setSettings={setSettings} />}
       {settings === false && <Notifications />}

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { useMoralis } from "react-moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { detectMobile } from "../function/detectMobile";
 
 export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, deleteRequest, deleteForYou }) {
+  const optionsRef = useRef();
   const d = new Date(message.time);
   let minutes = d.getMinutes();
   let hours = d.getHours();
@@ -20,7 +22,20 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
     if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
       return (
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
-          <div className={style.myImgContainer}>
+          <div className={style.myImgContainer} onClick={
+            () => {
+              if (detectMobile() === true) {
+                optionsRef.current.style.display = "inline-block"
+              }
+            }
+          } onBlur={() => {
+            if (detectMobile() === true) {
+              setTimeout(() => {
+                optionsRef.current.style.display = "none";
+                setOpenReply(-1)
+              }, 100)
+            }
+          }}>
             <img
               src={message.message}
               alt="Image"
@@ -44,7 +59,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 setOpenReply(number)
               else
                 setOpenReply(-1)
-            }}><FontAwesomeIcon icon={faCaretDown} /></button>
+            }} ref={optionsRef}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainer}>
               <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
@@ -71,7 +86,20 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time} style={{
           background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
         }}>
-          <div className={style.myMessageContainer}>
+          <div className={style.myMessageContainer} onClick={
+            () => {
+              if (detectMobile() === true) {
+                optionsRef.current.style.display = "inline-block"
+              }
+            }
+          } onBlur={() => {
+            if (detectMobile() === true) {
+              setTimeout(() => {
+                optionsRef.current.style.display = "none";
+                setOpenReply(-1)
+              }, 100)
+            }
+          }}>
             {message.reply && <div className={style.replyMessage} onClick={() => {
               if (document.getElementById(message.reply.time).innerHTML.includes("color: rgb(170, 170, 170)") === false) {
                 document.getElementById(message.reply.time).scrollIntoView()
@@ -86,7 +114,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             <p className={style.myText} style={{
               "fontStyle": message.delete !== true ? "normal" : "italic",
               "color": message.delete !== true ? "white" : "rgb(170,170,170)"
-            }} dangerouslySetInnerHTML={{__html:detectLink(message.message) !== message.message ? detectLink(message.message) : message.message}} />
+            }} dangerouslySetInnerHTML={{ __html: detectLink(message.message) !== message.message ? detectLink(message.message) : message.message }} />
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime} style={{
               "right": message.delete !== true ? "27px" : "6px"
@@ -101,7 +129,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 setOpenReply(number)
               else
                 setOpenReply(-1)
-            }}><FontAwesomeIcon icon={faCaretDown} /></button>}
+            }} ref={optionsRef} ><FontAwesomeIcon icon={faCaretDown} /></button>}
             {openReply === number && <div className={style.messageOptionsContainer}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
@@ -167,7 +195,20 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
         <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined} id={message.time} style={{
           background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
         }}>
-          <div className={style.friendContainer}>
+          <div className={style.friendContainer} onClick={
+            () => {
+              if (detectMobile() === true) {
+                optionsRef.current.style.display = "inline-block"
+              }
+            }
+          } onBlur={() => {
+            if (detectMobile() === true) {
+              setTimeout(() => {
+                optionsRef.current.style.display = "none";
+                setOpenReply(-1)
+              }, 100)
+            }
+          }}>
             {message.reply && <div className={style.replyMessage} onClick={() => {
               document.getElementById(message.reply.time).scrollIntoView()
               setScrollIntoViewIndicator(message.reply.time)
@@ -180,7 +221,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
             <p className={style.friendText} style={{
               "fontStyle": message.delete !== true ? "normal" : "italic",
               "color": message.delete !== true ? "white" : "rgb(170,170,170)"
-            }} dangerouslySetInnerHTML={{__html:detectLink(message.message) !== message.message ? detectLink(message.message) : message.message}} />
+            }} dangerouslySetInnerHTML={{ __html: detectLink(message.message) !== message.message ? detectLink(message.message) : message.message }} />
             <p className={style.tailF}></p>
             {minutes >= 10 && <p className={style.messageTime}>{`${hours}:${minutes}`}</p>}
             {minutes < 10 && <p className={style.messageTime}>{`${hours}:0${minutes}`}</p>}
@@ -189,7 +230,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 setOpenReply(number)
               else
                 setOpenReply(-1)
-            }}><FontAwesomeIcon icon={faCaretDown} /></button>}
+            }} ref={optionsRef}><FontAwesomeIcon icon={faCaretDown} /></button>}
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteForYou(message.time), setOpenReply(-1) }}>Delete for you</button>

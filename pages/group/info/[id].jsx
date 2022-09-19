@@ -27,6 +27,7 @@ const GroupInfo = () => {
     const [image, setImage] = useState("")
     const [loadingImage, setLoadingImage] = useState(false);
     const [addMember, setAddMember] = useState(false)
+    const [errorFile, setErrorFile] = useState("")
     const fileRef = useRef();
     const router = useRouter()
     const { query: { media } } = router;
@@ -130,21 +131,29 @@ const GroupInfo = () => {
     }
 
     const changePhoto = async (e) => {
-        setLoadingImage(true);
         const file = e.target.files[0];
         const type = e.target.files[0].type.replace("image/", "");
-        const name = `profile.${type}`;
-        const groupImage = new Moralis.File(name, file);
-        await groupImage.saveIPFS();
+        if (type === "jpeg" || type === "png" || type === "jpg" || type === "image/jpg" || type === "image/png" || type === "image/jpeg") {
+            setErrorFile("")
+            setLoadingImage(true);
+            const name = `profile.${type}`;
+            const groupImage = new Moralis.File(name, file);
+            await groupImage.saveIPFS();
 
-        const GroupData = Moralis.Object.extend(`Group${router.query.id}`);
-        const query = new Moralis.Query(GroupData);
-        query.equalTo("type", "data");
-        const results = await query.first();
-        results.set("image", groupImage.ipfs());
-        results.save();
-        setImage(groupImage.ipfs())
-        setLoadingImage(false);
+            const GroupData = Moralis.Object.extend(`Group${router.query.id}`);
+            const query = new Moralis.Query(GroupData);
+            query.equalTo("type", "data");
+            const results = await query.first();
+            results.set("image", groupImage.ipfs());
+            results.save();
+            setImage(groupImage.ipfs())
+            setLoadingImage(false);
+        } else {
+            setErrorFile("Unsupported file type")
+            setTimeout(()=>{
+                setErrorFile("")
+            },3000)
+        }
     };
 
     return (
@@ -153,7 +162,11 @@ const GroupInfo = () => {
                 router.push(`/group/${router.query.id}`)
             }
             } ><FontAwesomeIcon icon={faArrowLeft} /></button>
-            {groupData !== "" && <div className={style.imageContainer}>
+            {groupData !== "" && <div className={style.imageContainer} style={{
+                border: errorFile !== "" ? "3px solid rgb(244, 9, 9)" : "none",
+                borderRadius:errorFile !== "" ? "7px" : "0px"
+            }}>
+                {errorFile !== "" && <p className={style.errorFile}>{errorFile}</p>} 
                 {loadingImage === false && <Image
                     src={image === "" ? groupData.image : image}
                     alt="groupImage"
@@ -161,6 +174,9 @@ const GroupInfo = () => {
                     height="90%"
                     layout="fill"
                     objectFit="cover"
+                    style={{
+                        borderRadius:errorFile !== "" ? "4px" : "0px"
+                    }}
                 />}
                 {loadingImage === true &&
                     <div className={style.loadingContainer}>

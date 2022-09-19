@@ -11,6 +11,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -36,11 +37,14 @@
   margin-bottom: 8px;
   border-radius: 200px;
   margin-top: 20px;
-  box-shadow: 0px 0px 4px 3px rgba(177, 177, 177, 0.28);
+  box-shadow: 0px 0px 3px 2px rgba(177, 177, 177, 0.18);
+  transition: all 100ms ease-in-out;
 }
+
 .img {
   border-radius: 200px;
 }
+
 .main {
   display: flex;
   align-items: center;
@@ -48,6 +52,7 @@
   flex-wrap: wrap;
   flex-direction: column;
 }
+
 .change {
   width: calc(50px);
   height: calc(50px);
@@ -64,47 +69,55 @@
   padding-top: 3.5px;
   padding-left: 2px;
 }
-.change:hover{
-    background-color: black;
-    border-color: black;
+
+.change:hover {
+  background-color: black;
+  border-color: black;
 }
-.dataUser{
-    width: 80%;
-    min-width: 250px;
-    max-width: 1000px;
-    box-shadow: 0px 0px 2px 2px rgba(60, 60, 60, 0.22);
-    margin-top: 20px;
-    padding: calc(5px + 0.4vw);
-    padding-left: 15px;
-    border: 1px solid rgb(98, 98, 98);
-    border-radius: 12px;
-    position: relative;
+
+.dataUser {
+  width: 80%;
+  min-width: 250px;
+  max-width: 1000px;
+  box-shadow: 0px 0px 2px 2px rgba(60, 60, 60, 0.22);
+  margin-top: 20px;
+  padding: calc(5px + 0.4vw);
+  padding-left: 15px;
+  border: 1px solid rgb(98, 98, 98);
+  border-radius: 12px;
+  position: relative;
 }
 
 @media only screen and (max-width: 560px) {
-  .dataUser{
-      width: 95%;
+  .dataUser {
+    width: 95%;
   }
 }
 
 .address {
-    white-space: nowrap;
-    width: 95%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: calc(18px + 0.2vw);
-  }
+  white-space: nowrap;
+  width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: calc(18px + 0.2vw);
+}
 
-  .settingButton{
-    position: absolute;
-    right: 5px;
-    bottom: 5px;
-    font-size: calc(27px + 0.2vw);
-    cursor: pointer;
-    border: none;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #800040;
-  }
+.settingButton {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  font-size: calc(27px + 0.2vw);
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #800040;
+}
+
+.errorFile {
+  color: rgb(244, 9, 9);
+  margin-top: 10px;
+  font-size: calc(18px + 0.1vw);
+}

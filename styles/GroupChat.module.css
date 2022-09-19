@@ -156,6 +156,7 @@
     height: calc(200px + 21vw);
     max-height: 500px;
     position: relative;
+    transition: all 200ms ease-in-out;
 }
 .imageContainer button{
     position: absolute;
@@ -529,4 +530,14 @@
     position: fixed;
     top: calc(50px + 1vh);
     background-color: rgb(22, 22, 22);
+}
+
+.errorFile{
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: calc(18px + 0.1vw);
+    z-index: 410;
+    color: rgb(244, 9, 9);
 }
