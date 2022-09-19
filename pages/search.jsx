@@ -74,8 +74,12 @@ export default function search() {
       query.equalTo("userTag", value.trim());
       const results = await query.first();
       if (results) {
-        setTag(results.attributes);
-        setError("")
+        if (results.attributes.userTag !== user.get("userTag")) {
+          setTag(results.attributes);
+          setError("")
+        } else {
+          setError("No results found")
+        }
       }
 
       const UserNameData = Moralis.Object.extend("Tags");
@@ -260,6 +264,7 @@ export default function search() {
           </div>}
         {error && <p className={style.errorSearch}>{error}</p>}
       </div>
+      <div className={style.bottomMargin} ></div>
       <Notifications />
       {internetStatus === false && <OfflineNotification />}
       {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}

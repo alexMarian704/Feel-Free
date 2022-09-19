@@ -19,6 +19,7 @@ import RenderGroupMessage from "../../components/MessageGroup";
 import GroupOptions from "../../components/Group/GroupOptions";
 import { groupUnreadMessages } from "../../function/groupUnreadMessages";
 import Image from "next/image";
+import LeaveGroup from "../../components/Group/LeaveGroup";
 
 const Group = () => {
     const [member, setMember] = useState(true)
@@ -41,6 +42,7 @@ const Group = () => {
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
     const [groupUnreadMessageNumber, setGroupUnreadMessageNumber] = useState(0);
     const [openDelete, setOpenDelete] = useState(false);
+    const [leaveGroup , setLeaveGroup] = useState(false)
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -489,7 +491,7 @@ const Group = () => {
                         <p>{groupData.members.length} members</p>
                     </div>
                 </div>}
-                <GroupOptions open={open} setOpen={setOpen} groupRef={router.query.id} setOpenDelete={setOpenDelete} />
+                <GroupOptions open={open} setOpen={setOpen} groupRef={router.query.id} setOpenDelete={setOpenDelete} setLeaveGroup={setLeaveGroup} />
             </div>
             <div className={styleChat.messageContainer} onClick={() => setOpen(false)} style={reply === "" ? { height: "calc(97.2vh - 125px)" } : { height: "calc(95.4vh - 162px)" }} onScroll={handleScroll} id="scrollID">
                 {localMessages.length > 0 && localMessages.map((message, i) => {
@@ -508,7 +510,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} />}
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null } />}
                             </div>
                         )
                 })}
@@ -569,9 +571,9 @@ const Group = () => {
                     </div>
                 </div>
             </div>}
+            {leaveGroup === true && <LeaveGroup style={style} styleChat={styleChat} setLeaveGroup={setLeaveGroup} groupRef={router.query.id} />}
             {internetStatus === false && <OfflineNotification />}
         </div>
-
     )
 }
 

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread }) {
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag }) {
   const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -100,6 +100,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             {openReply === number && <div className={style.messageOptionsContainer}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
+              <button onClick={() => {setOpenReply(-1) }} >Info</button>
             </div>}
           </div>
         </div>
@@ -162,9 +163,9 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
           background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
         }}>
           <div className={style.friendContainer}>
-            <p style={{
+            {previousTag !== message.type && <p style={{
               "color": nameColors[nameColors.indexOf(message.type) + 1]
-            }} className={style.friendTagMessage}>@{message.type}</p>
+            }} className={style.friendTagMessage}>@{message.type}</p>}
             {message.reply && <div className={style.replyMessage} onClick={() => {
               document.getElementById(message.reply.time).scrollIntoView()
               setScrollIntoViewIndicator(message.reply.time)

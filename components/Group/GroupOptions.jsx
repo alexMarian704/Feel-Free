@@ -4,7 +4,7 @@ import style from "../../styles/GroupChat.module.css"
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 
-const GroupOptions = ({ open, setOpen, groupRef, setOpenDelete }) => {
+const GroupOptions = ({ open, setOpen, groupRef, setOpenDelete, setLeaveGroup }) => {
     const router = useRouter()
 
     const goToMedia = ()=>{
@@ -22,7 +22,7 @@ const GroupOptions = ({ open, setOpen, groupRef, setOpenDelete }) => {
             <div className={style.optionsContainer} id={open === false ? style.close : style.open}>
                 <button onClick={goToMedia}>Media</button>
                 <button onClick={()=> {setOpenDelete(true) , setOpen(false)}}>Delete chat</button>
-                <button>Leave</button>
+                <button onClick={()=> {setLeaveGroup(true) , setOpen(false)}} >Leave</button>
             </div>
         </div>
     )

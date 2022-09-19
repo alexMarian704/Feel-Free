@@ -193,9 +193,6 @@ export default function swap() {
 
   const changeAmount = async (e) => {
     if (Number(e) !== 0) {
-      // console.log(e);
-      // console.log(to);
-      // console.log(from);
       const quote = await Moralis.Plugins.oneInch.quote({
         chain:
           chainId === "0x4"
