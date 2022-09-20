@@ -50,6 +50,7 @@ export default function Messages() {
   const onlineStatus = useOnlineFriend(router.query.mesID);
   const internetStatus = useInternetConnection()
   const [positionScroll, setPositionScroll] = useState(1);
+  const [errorFile, setErrorFile] = useState("")
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -696,12 +697,23 @@ export default function Messages() {
   const sendImage = async (e) => {
     const file = e.target.files[0];
     console.log(file)
-    const imageMessage = new Moralis.File(file.name, file);
-    await imageMessage.saveIPFS();
+    if (file.type === "image/jpg" || file.type === "image/png" || file.type === "image/jpeg" || file.type === "text/plain" || file.type === "application/pdf") {
+      const imageMessage = new Moralis.File(file.name, file);
+      await imageMessage.saveIPFS()
+        .catch((err) => {
+          console.log(err)
+        })
 
-    console.log(imageMessage.ipfs())
+      pushMessage(file.type, file.name, imageMessage.ipfs());
+      setReply("")
+      setErrorFile("")
+    } else {
+      setErrorFile("Unsupported file type")
+      setTimeout(() => {
+        setErrorFile("")
+      }, 3000)
+    }
 
-    pushMessage(file.type, file.name, imageMessage.ipfs());
   }
 
   const d = new Date();
@@ -842,6 +854,7 @@ export default function Messages() {
             <h4>You have blocked {friendData.name} {friendData.name2}</h4>
           </div>}
       </div>
+      {errorFile !== "" && <p className={style.errorFile}>{errorFile}</p>}
       {internetStatus === false && <OfflineNotification />}
     </div>
   );

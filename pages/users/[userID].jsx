@@ -61,6 +61,7 @@ export default function UserID() {
     const userRequest = Moralis.Object.extend("Notification");
     const query = new Moralis.Query(userRequest);
     query.equalTo("to", router.query.userID);
+    query.equalTo("type" , "Friend Request");
     const results = await query.first();
     if (results !== undefined)
       setIsSend(true);

@@ -28,12 +28,16 @@ export default function Chats() {
         }
 
         const subscription = await query.subscribe()
+        .catch((err)=>{
+            console.log(err)
+        })
         subscription.on("create", (object) => {
             if (idArray.includes(object.id) === false) {
                 setIdArray([...idArray, object.id])
                 setNotArray([...results, object])
             }
         })
+        
     }
 
     useEffect(async () => {

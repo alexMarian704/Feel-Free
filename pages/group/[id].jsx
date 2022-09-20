@@ -42,7 +42,8 @@ const Group = () => {
     const [scrollIntoViewIndicator, setScrollIntoViewIndicator] = useState("");
     const [groupUnreadMessageNumber, setGroupUnreadMessageNumber] = useState(0);
     const [openDelete, setOpenDelete] = useState(false);
-    const [leaveGroup , setLeaveGroup] = useState(false)
+    const [leaveGroup, setLeaveGroup] = useState(false)
+    const [errorFile, setErrorFile] = useState("")
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -445,12 +446,20 @@ const Group = () => {
 
     const sendImage = async (e) => {
         const file = e.target.files[0];
-        const imageMessage = new Moralis.File(file.name, file);
-        await imageMessage.saveIPFS();
+        if (file.type === "image/jpg" || file.type === "image/png" || file.type === "image/jpeg" || file.type === "text/plain" || file.type === "application/pdf") {
+            const imageMessage = new Moralis.File(file.name, file);
+            await imageMessage.saveIPFS();
+            console.log(imageMessage.ipfs())
 
-        console.log(imageMessage.ipfs())
-
-        pushMessage(file.type, file.name, imageMessage.ipfs());
+            pushMessage(file.type, file.name, imageMessage.ipfs());
+            setReply("")
+            setErrorFile("")
+        } else {
+            setErrorFile("Unsupported file type")
+            setTimeout(() => {
+                setErrorFile("")
+            }, 3000)
+        }
     }
 
     const handleScroll = (e) => {
@@ -510,7 +519,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null } />}
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} />}
                             </div>
                         )
                 })}
@@ -571,6 +580,7 @@ const Group = () => {
                     </div>
                 </div>
             </div>}
+            {errorFile !== "" && <p className={styleChat.errorFile}>{errorFile}</p>}
             {leaveGroup === true && <LeaveGroup style={style} styleChat={styleChat} setLeaveGroup={setLeaveGroup} groupRef={router.query.id} />}
             {internetStatus === false && <OfflineNotification />}
         </div>
