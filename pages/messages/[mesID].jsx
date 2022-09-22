@@ -51,6 +51,8 @@ export default function Messages() {
   const internetStatus = useInternetConnection()
   const [positionScroll, setPositionScroll] = useState(1);
   const [errorFile, setErrorFile] = useState("")
+  const [loadingImages, setLoadingImages] = useState(true);
+  const [numberOfImages, setNumberOfImages] = useState(-1);
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -88,7 +90,16 @@ export default function Messages() {
       if (JSON.parse(localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)) {
         const encryptedMessages = localStorage.getItem(router.query.mesID + user.get("ethAddress"))
         const decryptedMessages = decrypt(encryptedMessages, user.id);
-        // console.log(decryptedMessages.messages)
+
+        let nr = 0;
+        for (let i = decryptedMessages.messages.length > 100 ? decryptedMessages.messages.length - 100 : 0; i < decryptedMessages.messages.length; i++) {
+          let file = decryptedMessages.messages[i].file;
+          if (file === "image/jpg" || file === "image/png" || file === "image/jpeg") {
+            nr++;
+          }
+        }
+
+        setNumberOfImages(nr);
         setLocalMessages(decryptedMessages.messages)
         setInitial(decryptedMessages.messages)
       }
@@ -377,6 +388,16 @@ export default function Messages() {
               setMyBlock(false);
           }
         }
+      }
+    }
+  }
+
+  const after = (count, f) => {
+    let noOfCalls = 0;
+    return function (...rest) {
+      noOfCalls = noOfCalls + 1;
+      if (count === noOfCalls) {
+        f(...rest)
       }
     }
   }
@@ -733,6 +754,10 @@ export default function Messages() {
       setPositionScroll(Number(position.toPrecision(2)))
   };
 
+  const onComplete = after(numberOfImages , ()=>{
+    setLoadingImages(false)
+  })
+
   return (
     <div className={style.body}>
       <Head>
@@ -764,7 +789,7 @@ export default function Messages() {
         </div>
         <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} setOpenConfirm={setOpenConfirm} friendTag={friendData.userTag} />
       </div>
-      {loading === true && <div className={style.loadingContainer}>
+      {(loading === true || loadingImages === true) && <div className={style.loadingContainer}>
         <div className={style.loader}></div>
       </div>}
 
@@ -776,7 +801,7 @@ export default function Messages() {
         {render < localMessages.length - 1 && <div className={style.renderMoreDiv}>
           <button className={style.renderMore} onClick={() => setRender(render + 100)}>Load messages</button>
         </div>}
-        {localMessages.length > 0 && localMessages.map((message, i) => {
+        {numberOfImages !== -1 && localMessages.length > 0 && localMessages.map((message, i) => {
           const d = new Date(message.time);
           let day = d.getDate()
           let month = d.getMonth();
@@ -793,7 +818,7 @@ export default function Messages() {
                   <div>
                     <p className={style.chatDate}>{day}.{month + 1}.{year}</p>
                   </div>}
-                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} deleteForYou={deleteForYou} />
+                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} deleteForYou={deleteForYou} onComplete={onComplete}/>
               </div>
             )
         })}

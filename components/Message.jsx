@@ -5,7 +5,7 @@ import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { detectMobile } from "../function/detectMobile";
 
-export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, deleteRequest, deleteForYou }) {
+export default function RenderMessage({ message, number, total, refMes, unread, focusImage, setFocusImage, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, deleteRequest, deleteForYou, onComplete }) {
   const optionsRef = useRef();
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -45,6 +45,8 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
               objectfit="contain"
               className={style.img}
               onClick={() => setFocusImage(message.message)}
+              onLoad={onComplete}
+              onError={onComplete}
             />
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime}>{`${hours}:${minutes}`}</p>}
@@ -156,6 +158,8 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
               objectfit="contain"
               className={style.img}
               onClick={() => setFocusImage(message.message)}
+              onLoad={onComplete}
+              onError={onComplete}
             />
             <p className={style.tailF}></p>
             {minutes >= 10 && <p className={style.messageTime}>{`${hours}:${minutes}`}</p>}
