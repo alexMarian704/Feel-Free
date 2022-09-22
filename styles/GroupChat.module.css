@@ -257,8 +257,8 @@
 }
 
 .imgProfile{
-    width: calc(41px + 1vw);
-    height: calc(41px + 1vw);
+    width: calc(45px + 0.5vw);
+    height: calc(45px + 0.5vw);
     position: relative;
     border-radius: 50%;
     border: 2px solid #800040;
@@ -296,7 +296,7 @@
     border: none;
     outline: none;
     color: #800040;
-    font-size: calc(26px + 1vw);
+    font-size: calc(31px + 0.6vw);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -540,4 +540,83 @@
     font-size: calc(18px + 0.1vw);
     z-index: 410;
     color: rgb(244, 9, 9);
+}
+
+.infoMessages{
+    position: absolute;
+    z-index: 411;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(25, 25, 25);   
+}
+
+.closeInfo{
+    cursor: pointer;
+    font-size: calc(20px + 0.2vw);
+    background-color: transparent;
+    outline: none;
+    color: white;
+    border: none;
+    margin-right: 15px;
+}
+.closeInfo:hover{
+    color: rgb(214, 214, 214);
+}
+
+.infoNav{
+    position: relative;
+    width: 100%;
+    height: calc(45px + 1vh);
+    top: 0px;
+    left: 0px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #800040;
+    margin-bottom: 20px;
+}
+
+.infoNav div{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 13px;
+}
+
+.infoNav p{
+    font-size: calc(21px + 0.1vw);
+    margin-bottom: 5px;
+}
+
+.infoTitleSection{
+    font-size: calc(20px +  0.1vw);
+    color: #a20051;
+    margin-left: 13px;
+}
+
+.infoContainer{
+    margin-left: 13px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.infoMain{
+    background-color: rgb(20, 20, 20);
+    padding-bottom: calc(7px + 0.1vh);
+    margin: auto;
+    margin-bottom: 18px;
+    border-radius: 6px;
+    width: calc(98% - 40px);
+    padding-top: 6px;
+}
+
+.infoMemberData{
+    margin-left: 10px;   
+}
+.infoMemberData p{
+    font-size: calc(16px + 0.1vw);
 }

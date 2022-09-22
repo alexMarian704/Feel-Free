@@ -157,7 +157,7 @@ const GroupInfo = () => {
     };
 
     return (
-        <div style={{ "position": "relative" }}>
+        <div>
             <button className={style.backButton} onClick={() => {
                 router.push(`/group/${router.query.id}`)
             }

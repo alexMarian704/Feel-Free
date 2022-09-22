@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag }) {
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag, setMessageInfo, setFocusImage }) {
   const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -42,7 +42,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             {openReply === number && <div className={style.messageOptionsContainer} style={{top:"-158px"}}>
               <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
-              <button onClick={() => {setOpenReply(-1) }} >Info</button>
+              <button onClick={() => {setOpenReply(-1), setMessageInfo(message.time) }} >Info</button>
             </div>}
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             {openReply === number && <div className={style.messageOptionsContainer} style={{top:"-158px"}}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
-              <button onClick={() => {setOpenReply(-1) }} >Info</button>
+              <button onClick={() => {setOpenReply(-1), setMessageInfo(message.time) }} >Info</button>
             </div>}
           </div>
         </div>

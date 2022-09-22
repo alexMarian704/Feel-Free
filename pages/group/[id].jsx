@@ -10,7 +10,7 @@ import { Moralis } from "moralis";
 import style from "../../styles/GroupChat.module.css"
 import CheckPassword from "../../components/CheckPassword";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip, faChevronDown, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faHeartBroken, faHouseUser, faArrowLeft, faPaperPlane, faPaperclip, faChevronDown, faImage, faTimes } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 import { messageOrder } from "../../function/messageOrder";
@@ -20,6 +20,7 @@ import GroupOptions from "../../components/Group/GroupOptions";
 import { groupUnreadMessages } from "../../function/groupUnreadMessages";
 import Image from "next/image";
 import LeaveGroup from "../../components/Group/LeaveGroup";
+import MessageInfo from "../../components/Group/MessageInfo";
 
 const Group = () => {
     const [member, setMember] = useState(true)
@@ -44,6 +45,8 @@ const Group = () => {
     const [openDelete, setOpenDelete] = useState(false);
     const [leaveGroup, setLeaveGroup] = useState(false)
     const [errorFile, setErrorFile] = useState("")
+    const [messageInfo, setMessageInfo] = useState("")
+    const [focusImage, setFocusImage] = useState("");
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -483,6 +486,13 @@ const Group = () => {
                 {groupData !== "" && <title>{groupData.name}</title>}
                 {groupData === "" && <title>Loading...</title>}
             </Head>
+            <div className={styleChat.focusImage} style={focusImage !== "" ? { width: "100%", height: "100vh" } : { width: "0vw", height: "0vh" }}>
+                <img src={focusImage}
+                    alt="Image"
+                    className={styleChat.imgFocus} style={focusImage !== "" ? { display: "block" } : { display: "none" }} />
+                <button onClick={() => setFocusImage("")} style={focusImage !== "" ? { display: "block" } : { display: "none" }}>
+                    <FontAwesomeIcon icon={faTimes} /></button>
+            </div>
             <div className={style.nav}>
                 {groupData !== "" && <div className={style.groupInfo}>
                     <button onClick={() => router.push("/")} className={style.backBut}><FontAwesomeIcon icon={faArrowLeft} /></button>
@@ -519,7 +529,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} />}
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} setMessageInfo={setMessageInfo} setFocusImage={setFocusImage} />}
                             </div>
                         )
                 })}
@@ -580,6 +590,7 @@ const Group = () => {
                     </div>
                 </div>
             </div>}
+            {messageInfo !== "" && <MessageInfo messageInfo={messageInfo} setMessageInfo={setMessageInfo} groupRef ={router.query.id} members={groupData.members} />}
             {errorFile !== "" && <p className={styleChat.errorFile}>{errorFile}</p>}
             {leaveGroup === true && <LeaveGroup style={style} styleChat={styleChat} setLeaveGroup={setLeaveGroup} groupRef={router.query.id} />}
             {internetStatus === false && <OfflineNotification />}

@@ -738,7 +738,7 @@ export default function Messages() {
       <Head>
         <title>Messages-{router.query.mesID}</title>
       </Head>
-      <div className={style.focusImage} style={focusImage !== "" ? { width: "100vw", height: "100vh" } : { width: "0vw", height: "0vh" }}>
+      <div className={style.focusImage} style={focusImage !== "" ? { width: "100%", height: "100vh" } : { width: "0vw", height: "0vh" }}>
         <img src={focusImage}
           alt="Image"
           className={style.imgFocus} style={focusImage !== "" ? { display: "block" } : { display: "none" }} />
