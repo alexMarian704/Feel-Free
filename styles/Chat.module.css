@@ -132,11 +132,13 @@
     0% {
         background-color: rgb(90, 90, 90);
         opacity: 1;
+        color:rgb(90, 90, 90);
     }
 
     100% {
         background-color: rgb(120, 120, 120);
         opacity: 1;
+        color: rgb(120, 120, 120);
     }
 }
 
@@ -144,26 +146,31 @@
     animation: skeletonLoading 1s linear infinite alternate;
 }
 
-.titleSkeleton{
-    width: 100px;
-    height: 18px;
-    border-radius: 4px;
+#skeletonTitle{
+    animation: skeletonLoading 1s linear infinite alternate;
+    width: 120px;
+    overflow: hidden;
+    border-radius: 6px;
+    height: calc(19px + 0.1vh);
 }
 
-.textSkeleton{
-    width: 90%;
-    height: 18px;
-    border-radius: 4px;
-    margin-top: 10px;
+#skeletonText{
+    animation: skeletonLoading 1s linear infinite alternate;
+    overflow: hidden;
+    border-radius: 6px;
+    margin-top: 5px;
+    max-width: 100%;
+    height: calc(19px + 0.1vh);
 }
 
-#skeletonMain{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+#skeletonText span{
+    display: none;
 }
-#skeletonChat{
+
+#skeletonImage{
+    animation: skeletonLoading 1s linear infinite alternate;
     position: absolute;
-    background: rgb(18, 18, 18);
+    width: 100%;
+    height: 100%;
+    border-radius: 200px;
 }

@@ -94,35 +94,37 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     onLoadingComplete={onComplete}
                     onError={onComplete}
                 />}
+                {loadingImages === true && <div id={style.skeletonImage}></div>}
             </div>
             <div className={style.infoContainer} onClick={() => type === "group" ? router.push(`/group/${groupRef}`) : router.push(`/messages/${address}`)}>
                 {(file === "message") && <div className={style.mainData}>
-                    {newMaessage === false && type !== "group" && <p>{friendData.username}</p>}
-                    {newMaessage === true && type !== "group" && <p>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                    {newMaessage === false && type !== "group" && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.username}</p>}
+                    {newMaessage === true && type !== "group" && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
                     }} /></p>}
-                    {newMaessage === true && friendData.owner !== undefined && <p>{friendData.name} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                    {newMaessage === true && friendData.owner !== undefined && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.name} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
                     }} /></p>}
-                    {newMaessage === false && type === "group" && <p>{friendData.name}</p>}
+                    {newMaessage === false && type === "group" && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.name}</p>}
 
-                    {newMaessage === false && last === "you" && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
 
-                    {newMaessage === false && last === "friend" && <p className={style.lastMessage}><span>{type !== "group" ? friendData.username : `@${tag}`}:</span> {lastMessage}</p>}
-                    {newMaessage === true && <p><span>New messages</span></p>}
-                    {newMaessage === false && last === user.get("userTag") && <p className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
+                    {newMaessage === false && last === "you" && <p id={loadingImages === true ? style.skeletonText : ""} className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
+                    {newMaessage === false && last === "friend" && <p id={loadingImages === true ? style.skeletonText : ""} className={style.lastMessage}><span>{type !== "group" ? friendData.username : `@${tag}`}:</span> {lastMessage}</p>}
+                    {newMaessage === true && <p id={loadingImages === true ? style.skeletonText : ""}><span>New messages</span></p>}
+                    {newMaessage === false && last === user.get("userTag") && <p id={loadingImages === true ? style.skeletonText : ""} className={style.lastMessage}><span>You:</span> {lastMessage}</p>}
                 </div>}
                 {(file === "application/pdf" || file === "text/plain") && <div className={style.mainData}>
-                    <p>{friendData.name} {friendData.name2}</p>
-                    {newMaessage === false && last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faFile} /> </p>}
-                    {newMaessage === false && last === "friend" && <p><span>{type !== "group" ? friendData.username : `@${tag}`}: </span><FontAwesomeIcon icon={faFile} /></p>}
-                    {newMaessage === true && last === "friend" && <p><span>New messages</span></p>}
+                    <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.name} {friendData.name2}</p>
+                    {newMaessage === false && last === "you" && <p id={loadingImages === true ? style.skeletonText : ""}><span>You:</span> <FontAwesomeIcon icon={faFile} /> </p>}
+                    {newMaessage === false && last === "friend" && <p id={loadingImages === true ? style.skeletonText : ""}><span>{type !== "group" ? friendData.username : `@${tag}`}: </span><FontAwesomeIcon icon={faFile} /></p>}
+                    {newMaessage === true && last === "friend" && <p id={loadingImages === true ? style.skeletonText : ""}><span>New messages</span></p>}
                 </div>}
                 {(file === "image/jpg" || file === "image/png" || file === "image/jpeg") && <div className={style.mainData}>
-                    <p>{friendData.name} {friendData.name2}</p>
-                    {newMaessage === false && last === "you" && <p><span>You:</span> <FontAwesomeIcon icon={faImage} /> </p>}
-                    {newMaessage === false && last === "friend" && <p><span>{type !== "group" ? friendData.username : `@${tag}`}</span> <FontAwesomeIcon icon={faImage} /></p>}
-                    {newMaessage === true && last === "friend" && <p><span>New messages</span></p>}
+                    <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.name} {friendData.name2}</p>
+
+                    {newMaessage === false && last === "you" && <p id={loadingImages === true ? style.skeletonText : ""}><span>You:</span> <FontAwesomeIcon icon={faImage} /> </p>}
+                    {newMaessage === false && last === "friend" && <p id={loadingImages === true ? style.skeletonText : ""}><span>{type !== "group" ? friendData.username : `@${tag}`}</span> <FontAwesomeIcon icon={faImage} /></p>}
+                    {newMaessage === true && last === "friend" && <p id={loadingImages === true ? style.skeletonText : ""}><span>New messages</span></p>}
                 </div>}
                 <div>
                     {dataToday === data && month === monthToday && year === yearToday && minutes > 9 && <p>{hours}:{minutes}</p>}
