@@ -8,7 +8,7 @@ import ProfilePicture from "../public/profile.jpg";
 import Image from "next/image";
 import { Moralis } from "moralis";
 
-export default function ChatMain({ name, name2, address, lastMessage, time, last, file, notification, tag, type, groupRef }) {
+export default function ChatMain({ name, name2, address, lastMessage, time, last, file, notification, tag, type, groupRef, onComplete, loadingImages }) {
     const [friendData, setFriendData] = useState("");
     const [newMaessage, setNewMessage] = useState(false);
     const { user, isAuthenticated } = useMoralis();
@@ -68,22 +68,32 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
 
     return (
         <div className={style.container}>
-            <div className={style.imgContainer}>
-                {friendData.profilePhoto !== undefined && type !== "group" && <Image  
+            <div className={style.imgContainer} id={loadingImages === true ? style.skeleton : ""}>
+                {friendData.profilePhoto !== undefined && type !== "group" && <Image
                     layout="fill"
                     objectFit="cover"
                     src={friendData.profilePhoto}
-                    alt="Profile Photo" />}
-                {(friendData.profilePhoto === undefined && (friendData.image === "" || friendData.image === undefined)) && <Image  
+                    alt="Profile Photo"
+                    onLoadingComplete={onComplete}
+                    onError={onComplete}
+                />
+                }
+                {(friendData.profilePhoto === undefined && (friendData.image === "" || friendData.image === undefined)) && <Image
                     layout="fill"
                     objectFit="cover"
                     src={ProfilePicture}
-                    alt="Profile Photo" />}
+                    alt="Profile Photo"
+                    onLoadingComplete={onComplete}
+                    onError={onComplete}
+                />}
                 {friendData.image !== "" && friendData.image !== undefined && <Image
                     layout="fill"
                     objectFit="cover"
                     src={friendData.image}
-                    alt="Profile Photo" />}
+                    alt="Profile Photo"
+                    onLoadingComplete={onComplete}
+                    onError={onComplete}
+                />}
             </div>
             <div className={style.infoContainer} onClick={() => type === "group" ? router.push(`/group/${groupRef}`) : router.push(`/messages/${address}`)}>
                 {(file === "message") && <div className={style.mainData}>
@@ -91,7 +101,7 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                     {newMaessage === true && type !== "group" && <p>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
                     }} /></p>}
-                    {newMaessage === true && friendData.owner !== undefined  && <p>{friendData.name} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                    {newMaessage === true && friendData.owner !== undefined && <p>{friendData.name} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
                     }} /></p>}
                     {newMaessage === false && type === "group" && <p>{friendData.name}</p>}

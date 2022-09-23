@@ -433,6 +433,11 @@ export default function Messages() {
     if (isAuthenticated) {
       getFriendUnreadMessages(router.query.mesID, user.get("ethAddress"), setFriendUnreadMessages)
     }
+    if(isAuthenticated && router.query.mesID){
+      setTimeout(()=>{
+        setLoadingImages(false)
+      },1000)
+    }
   }, [isAuthenticated, router.query.mesID])
 
   if (isInitialized === false)

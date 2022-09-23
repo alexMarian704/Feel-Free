@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag, setMessageInfo, setFocusImage }) {
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag, setMessageInfo, setFocusImage, onComplete }) {
   const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -24,6 +24,8 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
               objectfit="contain"
               className={style.img}
               onClick={() => setFocusImage(message.message)}
+              onLoad={onComplete}
+              onError={onComplete}
             />
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime}>{`${hours}:${minutes}`}</p>}
@@ -39,10 +41,10 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
               else
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
-            {openReply === number && <div className={style.messageOptionsContainer} style={{top:"-158px"}}>
+            {openReply === number && <div className={style.messageOptionsContainer} style={{ top: "-158px" }}>
               <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
-              <button onClick={() => {setOpenReply(-1), setMessageInfo(message.time) }} >Info</button>
+              <button onClick={() => { setOpenReply(-1), setMessageInfo(message.time) }} >Info</button>
             </div>}
           </div>
         </div>
@@ -64,9 +66,9 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
     else
       return (
         <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time}
-        style={{
-          background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
-        }}
+          style={{
+            background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
+          }}
         >
           <div className={style.myMessageContainer}>
             {message.reply && <div className={style.replyMessage} onClick={() => {
@@ -99,10 +101,10 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
               else
                 setOpenReply(-1)
             }}><FontAwesomeIcon icon={faCaretDown} /></button>}
-            {openReply === number && <div className={style.messageOptionsContainer} style={{top:"-158px"}}>
+            {openReply === number && <div className={style.messageOptionsContainer} style={{ top: "-158px" }}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
               <button onClick={() => { deleteRequest(message.time), setOpenReply(-1) }}>Delete</button>
-              <button onClick={() => {setOpenReply(-1), setMessageInfo(message.time) }} >Info</button>
+              <button onClick={() => { setOpenReply(-1), setMessageInfo(message.time) }} >Info</button>
             </div>}
           </div>
         </div>
@@ -118,6 +120,8 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             marginRight: "0px"
           }}>
             <img
+              onLoad={onComplete}
+              onError={onComplete}
               src={message.message}
               alt="Image"
               width="100%"

@@ -47,6 +47,8 @@ const Group = () => {
     const [errorFile, setErrorFile] = useState("")
     const [messageInfo, setMessageInfo] = useState("")
     const [focusImage, setFocusImage] = useState("");
+    const [loadingImages, setLoadingImages] = useState(true);
+    const [numberOfImages, setNumberOfImages] = useState(-1);
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -261,8 +263,28 @@ const Group = () => {
             if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
                 const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
                 const decryptedMessages = decrypt(encryptedMessages, user.id);
+
+                let nr = 0;
+                for (let i = decryptedMessages.messages.length > 100 ? decryptedMessages.messages.length - 100 : 0; i < decryptedMessages.messages.length; i++) {
+                    let file = decryptedMessages.messages[i].file;
+                    if (file === "image/jpg" || file === "image/png" || file === "image/jpeg") {
+                        nr++;
+                    }
+                }
+
+                setNumberOfImages(nr);
                 setLocalMessages(decryptedMessages.messages)
                 setInitial(decryptedMessages.messages)
+            }
+        }
+    }
+
+    const after = (count, f) => {
+        let noOfCalls = 0;
+        return function (...rest) {
+            noOfCalls = noOfCalls + 1;
+            if (count === noOfCalls) {
+                f(...rest)
             }
         }
     }
@@ -289,6 +311,9 @@ const Group = () => {
             if (localStorage.getItem(`Group${router.query.id}Key`) !== null) {
                 groupUnreadMessages(router.query.id, user.get("ethAddress"), setGroupUnreadMessageNumber, groupUnreadMessageNumber, router.query.id, decrypt);
             }
+            setTimeout(() => {
+                setLoadingImages(false)
+            }, 1300)
         }
     }, [isAuthenticated, router.query.id])
 
@@ -480,6 +505,10 @@ const Group = () => {
         messageOrder(user.get("ethAddress"), groupData.name, "Chat deleted", groupData.name, "", new Date().getTime(), "you", "message", user.get("userTag"), "group", router.query.id)
     }
 
+    const onComplete = after(numberOfImages, () => {
+        setLoadingImages(false)
+    })
+
     return (
         <div style={{ "position": "relative" }}>
             <Head>
@@ -529,7 +558,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} setMessageInfo={setMessageInfo} setFocusImage={setFocusImage} />}
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} setMessageInfo={setMessageInfo} setFocusImage={setFocusImage} onComplete={onComplete} />}
                             </div>
                         )
                 })}
@@ -538,7 +567,7 @@ const Group = () => {
                         <FontAwesomeIcon icon={faChevronDown} />
                     </button>}
             </div>
-            {messageLoading === true && <div className={style.messageLoadingContainer} >
+            {(messageLoading === true || loadingImages === true) && <div className={style.messageLoadingContainer} >
             </div>}
             {reply && reply.image !== true && <div className={styleChat.replyContainer}>
                 <p>{reply.message}</p>
@@ -590,7 +619,7 @@ const Group = () => {
                     </div>
                 </div>
             </div>}
-            {messageInfo !== "" && <MessageInfo messageInfo={messageInfo} setMessageInfo={setMessageInfo} groupRef ={router.query.id} members={groupData.members} />}
+            {messageInfo !== "" && <MessageInfo messageInfo={messageInfo} setMessageInfo={setMessageInfo} groupRef={router.query.id} members={groupData.members} />}
             {errorFile !== "" && <p className={styleChat.errorFile}>{errorFile}</p>}
             {leaveGroup === true && <LeaveGroup style={style} styleChat={styleChat} setLeaveGroup={setLeaveGroup} groupRef={router.query.id} />}
             {internetStatus === false && <OfflineNotification />}

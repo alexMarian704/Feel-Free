@@ -150,9 +150,9 @@ const GroupInfo = () => {
             setLoadingImage(false);
         } else {
             setErrorFile("Unsupported file type")
-            setTimeout(()=>{
+            setTimeout(() => {
                 setErrorFile("")
-            },3000)
+            }, 3000)
         }
     };
 
@@ -164,9 +164,9 @@ const GroupInfo = () => {
             } ><FontAwesomeIcon icon={faArrowLeft} /></button>
             {groupData !== "" && <div className={style.imageContainer} style={{
                 border: errorFile !== "" ? "3px solid rgb(244, 9, 9)" : "none",
-                borderRadius:errorFile !== "" ? "7px" : "0px"
+                borderRadius: errorFile !== "" ? "7px" : "0px"
             }}>
-                {errorFile !== "" && <p className={style.errorFile}>{errorFile}</p>} 
+                {errorFile !== "" && <p className={style.errorFile}>{errorFile}</p>}
                 {loadingImage === false && <Image
                     src={image === "" ? groupData.image : image}
                     alt="groupImage"
@@ -175,7 +175,7 @@ const GroupInfo = () => {
                     layout="fill"
                     objectFit="cover"
                     style={{
-                        borderRadius:errorFile !== "" ? "4px" : "0px"
+                        borderRadius: errorFile !== "" ? "4px" : "0px"
                     }}
                 />}
                 {loadingImage === true &&
