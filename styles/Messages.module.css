@@ -19,6 +19,7 @@
     height: calc(37px + 1.8vh);
     background-color: rgb(29, 28, 28);
     border-radius: 10px 10px 0px 0px;
+    padding: 3px;
 }
 
 @media only screen and (max-width: 1400px) {
@@ -368,6 +369,7 @@
     min-height: 50px;
     display: flex;
     align-items: center;
+    flex-direction: column;
     position: relative;
     padding: 4px;
 }
@@ -922,4 +924,14 @@
 }
 .body{
     position: relative;
+}
+
+.replyImageMessage{
+    position: relative;
+    padding-top: 5px;
+    width: calc(90px + 2vw);
+    height: calc(80px + 1vw);
+    margin:auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }

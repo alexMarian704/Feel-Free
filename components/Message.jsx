@@ -22,7 +22,9 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
   if (message.type === 1) {
     if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
       return (
-        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
+        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time} style={{
+          background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
+        }}>
           <div className={style.myImgContainer} onClick={
             () => {
               if (detectMobile() === true) {
@@ -37,6 +39,29 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
               }, 100)
             }
           }}>
+            {message.reply && <div className={style.replyMessage} onClick={() => {
+              if (document.getElementById(message.reply.time).innerHTML.includes("color: rgb(170, 170, 170)") === false) {
+                document.getElementById(message.reply.time).scrollIntoView()
+                setScrollIntoViewIndicator(message.reply.time)
+                setTimeout(() => {
+                  setScrollIntoViewIndicator("")
+                }, 2000)
+              }
+            }}>
+              {message.reply.image === true &&
+                <div className={style.replyImageMessage}>
+                  <Image
+                    src={message.reply.message}
+                    alt="Image"
+                    width="100%"
+                    height="100%"
+                    layout="fill"
+                    objectFit="cover"
+                    className={style.img}
+                  />
+                </div>}
+              {message.reply.image !== true && <p>{message.reply.message}</p>}
+            </div>}
             <img
               onLoad={onComplete}
               onError={onComplete}
@@ -48,6 +73,7 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
               objectfit="contain"
               className={style.img}
               onClick={() => setFocusImage(message.message)}
+              style={{ "marginTop":"5px" }}
             />
             <p className={style.tailM}></p>
             {minutes >= 10 && <p className={style.myMessageTime}>{`${hours}:${minutes}`}</p>}
@@ -72,13 +98,13 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
       );
     else if (message.file === "text/plain")
       return (
-        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
+        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time}>
           <a className={style.painTextFile} href={message.message} download><span>{message.fileName}</span></a>
         </div>
       )
     else if (message.file === "application/pdf")
       return (
-        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
+        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} id={message.time}>
           <div className={style.myPDFContainer}>
             <iframe src={message.message} frameBorder="0" className={style.filePDF}></iframe>
           </div>
@@ -112,7 +138,19 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 }, 2000)
               }
             }}>
-              <p>{message.reply.message}</p>
+              {message.reply.image === true &&
+                <div className={style.replyImageMessage}>
+                  <Image
+                    src={message.reply.message}
+                    alt="Image"
+                    width="100%"
+                    height="100%"
+                    layout="fill"
+                    objectFit="cover"
+                    className={style.img}
+                  />
+                </div>}
+              {message.reply.image !== true && <p>{message.reply.message}</p>}
             </div>}
             <p className={style.myText} style={{
               "fontStyle": message.delete !== true ? "normal" : "italic",
@@ -143,7 +181,9 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
   } else if (message.type === 2) {
     if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
       return (
-        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
+        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined} id={message.time} style={{
+          background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
+        }}>
           <div className={style.myImgContainer} style={{
             background: "rgb(48, 48, 48)",
             borderRadius: "8px 8px 8px 0px",
@@ -183,13 +223,13 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
       );
     else if (message.file === "text/plain")
       return (
-        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
+        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined} id={message.time}>
           <a className={style.painTextFileFriend} href={message.message} download><span>{message.fileName}</span></a>
         </div>
       )
     else if (message.file === "application/pdf")
       return (
-        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
+        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined} id={message.time}>
           <div className={style.friendPDFContainer}>
             <iframe src={message.message} frameBorder="0" className={style.filePDF}></iframe>
           </div>
@@ -221,7 +261,19 @@ export default function RenderMessage({ message, number, total, refMes, unread, 
                 setScrollIntoViewIndicator("")
               }, 2000)
             }}>
-              <p>{message.reply.message}</p>
+              {message.reply.image === true &&
+                <div className={style.replyImageMessage}>
+                  <Image
+                    src={message.reply.message}
+                    alt="Image"
+                    width="100%"
+                    height="100%"
+                    layout="fill"
+                    objectFit="cover"
+                    className={style.img}
+                  />
+                </div>}
+              {message.reply.image !== true && <p>{message.reply.message}</p>}
             </div>}
             <p className={style.friendText} style={{
               "fontStyle": message.delete !== true ? "normal" : "italic",

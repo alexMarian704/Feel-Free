@@ -68,7 +68,7 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
 
     return (
         <div className={style.container}>
-            <div className={style.imgContainer} id={loadingImages === true ? style.skeleton : ""}>
+            <div className={style.imgContainer} id={loadingImages === false ? "" : style.skeleton}>
                 {friendData.profilePhoto !== undefined && type !== "group" && <Image
                     layout="fill"
                     objectFit="cover"

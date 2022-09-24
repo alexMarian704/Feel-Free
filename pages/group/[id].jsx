@@ -505,6 +505,35 @@ const Group = () => {
         messageOrder(user.get("ethAddress"), groupData.name, "Chat deleted", groupData.name, "", new Date().getTime(), "you", "message", user.get("userTag"), "group", router.query.id)
     }
 
+    const deleteForYou = (time) => {
+        let messageList = []
+        let main = {
+            userAddress: user.get("ethAddress"),
+            messages: messageList
+        }
+        const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+        const decryptedMessages = decrypt(encryptedMessages, user.id);
+        main.messages = decryptedMessages.messages
+        let poz;
+        main.messages.map((x, i) => {
+            if (x.time === time) {
+                x.message = "This message was deleted"
+                x.file = ""
+                x.fileName = ""
+                x.delete = true
+                poz = i
+            }
+        })
+        if (poz === main.messages.length - 1) {
+            let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
+            messageOrder(user.get("ethAddress"), groupData.name, "Deleted message", groupData.name, "", time, "you", "message", user.get("userTag"), "group", router.query.id)
+        }
+
+        setLocalMessages(main.messages)
+        const encryptedMessagesList = encrypt(main, user.id)
+        localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
+    }
+
     const onComplete = after(numberOfImages, () => {
         setLoadingImages(false)
     })
@@ -558,7 +587,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} setMessageInfo={setMessageInfo} setFocusImage={setFocusImage} onComplete={onComplete} />}
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} setMessageInfo={setMessageInfo} setFocusImage={setFocusImage} onComplete={onComplete} deleteForYou={deleteForYou} />}
                             </div>
                         )
                 })}

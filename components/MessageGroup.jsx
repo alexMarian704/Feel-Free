@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag, setMessageInfo, setFocusImage, onComplete }) {
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag, setMessageInfo, setFocusImage, onComplete, deleteForYou }) {
   const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -13,7 +13,9 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
   if (message.type === user.get("userTag")) {
     if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
       return (
-        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined}>
+        <div className={style.myMessage} ref={number === total - 1 ? refMes : undefined} style={{
+          background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
+        }}>
           <div className={style.myImgContainer}>
             <img
               src={message.message}
@@ -112,7 +114,9 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
   } else if (message.type !== user.get("userTag")) {
     if (message.file === "image/jpg" || message.file === "image/png" || message.file === "image/jpeg")
       return (
-        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined}>
+        <div className={style.friendMessage} ref={number === total - 1 ? refMes : undefined} style={{
+          background: scrollIntoViewIndicator === message.time ? "rgba(128, 0, 64, 0.5)" : "transparent"
+        }}>
           <div className={style.myImgContainer} style={{
             background: "rgb(48, 48, 48)",
             borderRadius: "8px 8px 8px 0px",
@@ -145,6 +149,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
               <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
+              <button onClick={() => { deleteForYou(message.time), setOpenReply(-1) }}>Delete for you</button>
             </div>}
           </div>
         </div>
