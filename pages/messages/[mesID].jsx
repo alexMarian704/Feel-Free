@@ -433,10 +433,10 @@ export default function Messages() {
     if (isAuthenticated) {
       getFriendUnreadMessages(router.query.mesID, user.get("ethAddress"), setFriendUnreadMessages)
     }
-    if(isAuthenticated && router.query.mesID){
-      setTimeout(()=>{
+    if (isAuthenticated && router.query.mesID) {
+      setTimeout(() => {
         setLoadingImages(false)
-      },1000)
+      }, 1000)
     }
   }, [isAuthenticated, router.query.mesID])
 
@@ -759,8 +759,11 @@ export default function Messages() {
       setPositionScroll(Number(position.toPrecision(2)))
   };
 
-  const onComplete = after(numberOfImages , ()=>{
+  const onComplete = after(numberOfImages, () => {
     setLoadingImages(false)
+    if (messageRef.current !== undefined) {
+      messageRef.current.scrollIntoView({ behavior: 'instant' })
+    }
   })
 
   return (
@@ -823,7 +826,7 @@ export default function Messages() {
                   <div>
                     <p className={style.chatDate}>{day}.{month + 1}.{year}</p>
                   </div>}
-                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} deleteForYou={deleteForYou} onComplete={onComplete}/>
+                <RenderMessage message={message} refMes={messageRef} number={i} total={localMessages.length} unread={friednUnreadMessages} focusImage={focusImage} setFocusImage={setFocusImage} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} deleteRequest={deleteRequest} deleteForYou={deleteForYou} onComplete={onComplete} />
               </div>
             )
         })}

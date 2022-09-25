@@ -34,16 +34,16 @@ export default function Chats() {
             setNotArray(results)
         }
 
-        const subscription = await query.subscribe()
-            .catch((err) => {
-                console.log(err)
-            })
-        subscription.on("create", (object) => {
-            if (idArray.includes(object.id) === false) {
-                setIdArray([...idArray, object.id])
-                setNotArray([...results, object])
-            }
-        })
+        // const subscription = await query.subscribe()
+        //     .catch((err) => {
+        //         console.log(err)
+        //     })
+        // subscription.on("create", (object) => {
+        //     if (idArray.includes(object.id) === false) {
+        //         setIdArray([...idArray, object.id])
+        //         setNotArray([...results, object])
+        //     }
+        // })
 
     }
 
@@ -62,6 +62,7 @@ export default function Chats() {
         setTimeout(() => {
             setLoadingImages(false);
         }, 1000)
+
     }, [])
 
     const onComplete = after(numberOfImages, () => {
@@ -70,7 +71,7 @@ export default function Chats() {
 
     return (
         <div>
-           
+
             {chatsArray.length > 0 &&
                 <div className={style.chatsContainer} onClick={userStatus}>
                     {chatsArray.map((chat, i) => (

@@ -433,7 +433,6 @@ const Group = () => {
                 const userNotification = Moralis.Object.extend("Notification");
                 const query = new Moralis.Query(userNotification);
                 query.equalTo("to", groupData.members[i]);
-                //query.equalTo("tag", user.get("userTag"));
                 query.equalTo("type", "Group message");
                 query.equalTo("url", router.query.id);
                 const results = await query.first();
@@ -444,29 +443,31 @@ const Group = () => {
                     _query.equalTo("ethAddress", groupData.members[i]);
                     const _results = await _query.first();
 
-                    const d = new Date();
-                    let time = d.getTime();
+                    if (!_results.attributes.muteGroupNotification.includes(router.query.id)) {
+                        const d = new Date();
+                        let time = d.getTime();
 
-                    const Notification = Moralis.Object.extend("Notification");
-                    const noti = new Notification();
-                    noti.save({
-                        from: user.get("ethAddress"),
-                        to: groupData.members[i],
-                        type: "Group message",
-                        tag: user.get("userTag"),
-                        url: router.query.id,
-                        time: time,
-                        name: groupData.name,
-                        groupRef: router.query.id
-                    });
+                        const Notification = Moralis.Object.extend("Notification");
+                        const noti = new Notification();
+                        noti.save({
+                            from: user.get("ethAddress"),
+                            to: groupData.members[i],
+                            type: "Group message",
+                            tag: user.get("userTag"),
+                            url: router.query.id,
+                            time: time,
+                            name: groupData.name,
+                            groupRef: router.query.id
+                        });
 
-                    const notificationsACL = new Moralis.ACL();
-                    notificationsACL.setWriteAccess(user.id, true);
-                    notificationsACL.setReadAccess(user.id, true)
-                    notificationsACL.setWriteAccess(_results.attributes.idUser, true);
-                    notificationsACL.setReadAccess(_results.attributes.idUser, true);
-                    noti.setACL(notificationsACL)
-                    noti.save();
+                        const notificationsACL = new Moralis.ACL();
+                        notificationsACL.setWriteAccess(user.id, true);
+                        notificationsACL.setReadAccess(user.id, true)
+                        notificationsACL.setWriteAccess(_results.attributes.idUser, true);
+                        notificationsACL.setReadAccess(_results.attributes.idUser, true);
+                        noti.setACL(notificationsACL)
+                        noti.save();
+                    }
                 }
             }
         }

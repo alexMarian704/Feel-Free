@@ -11,7 +11,6 @@ export default function Notifications() {
     const { user } = useMoralis();
     const [open, setOpen] = useState(false);
     const [notArray, setNotArray] = useState([]);
-    const [idArray, setIdArray] = useState([])
     const route = useRouter()
 
     const queryNotifications = async () => {
@@ -23,11 +22,10 @@ export default function Notifications() {
             setNotArray(results)
 
         const subscription = await query.subscribe()
-        subscription.on("create", (object) => {
-            if (idArray.includes(object.id) === false) {
-                setIdArray([...idArray, object.id])
-                setNotArray([...results, object])
-            }
+        subscription.on("create", async (object) => {
+            const results_ = await query.find();
+            if (results_ !== undefined)
+                setNotArray(results_)
         })
     }
 
@@ -134,7 +132,7 @@ export default function Notifications() {
                                     )
                                 } else if (data.type === "Group message") {
                                     return (
-                                        <div key={i} className={style.groupMessage} onClick={()=>route.push(`/group/${data.url}`)}>
+                                        <div key={i} className={style.groupMessage} onClick={() => route.push(`/group/${data.url}`)}>
                                             <p><FontAwesomeIcon icon={faCircle} className={style.dot} /> New message in <span>{data.name}</span> from <span>@{data.tag}</span></p>
                                         </div>
                                     )
