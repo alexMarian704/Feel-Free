@@ -21,12 +21,12 @@ export default function Notifications() {
         if (results !== undefined)
             setNotArray(results)
 
-        const subscription = await query.subscribe()
-        subscription.on("create", async (object) => {
-            const results_ = await query.find();
-            if (results_ !== undefined)
-                setNotArray(results_)
-        })
+        // const subscription = await query.subscribe()
+        // subscription.on("create", async (object) => {
+        //     const results_ = await query.find();
+        //     if (results_ !== undefined)
+        //         setNotArray(results_)
+        // })
     }
 
     useEffect(async () => {

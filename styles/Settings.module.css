@@ -190,3 +190,14 @@
         font-size: calc(70px + 1vw);
     }
 }
+
+.lastSeenContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-right: 10px;
+}
+.lastSeenInfo{
+    font-style: italic;
+    color: rgb(150, 150, 150);
+}

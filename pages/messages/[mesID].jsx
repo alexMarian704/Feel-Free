@@ -53,6 +53,8 @@ export default function Messages() {
   const [errorFile, setErrorFile] = useState("")
   const [loadingImages, setLoadingImages] = useState(true);
   const [numberOfImages, setNumberOfImages] = useState(-1);
+  const [lastSeen , setLastSeen] = useState(true)
+  const [loadingLastSeen , setLoadingLastSeen] = useState(true)
 
   function _base64ToArrayBuffer(base64) {
     let binary_string = window.atob(base64);
@@ -418,6 +420,20 @@ export default function Messages() {
         setLoading(false);
     }
   }, [initial, router.query.mesID, isAuthenticated])
+
+  useEffect(async ()=>{
+    if(isAuthenticated && router.query.mesID){
+      const addressToTag = Moralis.Object.extend("Tags");
+      const query = new Moralis.Query(addressToTag);
+      query.equalTo("ethAddress", router.query.mesID);
+      const results = await query.first();
+
+      if(user.get("lastSeen") === false || results.attributes.lastSeen === false){
+        setLastSeen(false);
+      }
+      setLoadingLastSeen(false)
+    }
+  },[isAuthenticated, router.query.mesID])
 
   useEffect(() => {
     if (isAuthenticated && localStorage.getItem(router.query.mesID + user.get("ethAddress")) !== null)
@@ -791,8 +807,8 @@ export default function Messages() {
             {friendData !== "" && <Link href={`/users/${router.query.mesID}`}>
               <h2>{friendData.username}</h2>
             </Link>}
-            {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 <= 1 && <p>connected</p>}
-            {onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 > 1 && <p>{lastConnected}</p>}
+            {loadingLastSeen === false && lastSeen === true && onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 <= 1 && <p>connected</p>}
+            {loadingLastSeen === false && lastSeen === true && onlineStatus.time !== undefined && onlineStatus.time !== "" && (time - onlineStatus.time) / 1000 / 60 > 1 && <p>{lastConnected}</p>}
           </div>
         </div>
         <Options open={open} setOpen={setOpen} userAddress={user.get("ethAddress")} friendAddress={router.query.mesID} getBlock={getBlock} setOpenMedia={setOpenMedia} setOpenConfirm={setOpenConfirm} friendTag={friendData.userTag} />

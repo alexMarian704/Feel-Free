@@ -255,6 +255,9 @@ export default function Transfer({ tag }) {
                   <p>@{friend.userTag}</p>
                 </div>
               ))}
+              <div className={style.closeListContainer}><button onClick={()=> setOpenTagList(false)}><FontAwesomeIcon
+                icon={faTimes}
+              /></button></div>
             </div>}
         </div>
         <div className={style.alignButton}>

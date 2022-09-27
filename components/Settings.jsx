@@ -20,6 +20,7 @@ const Settings = ({ setSettings }) => {
     const [newTag, setNewTag] = useState("")
     const [name, setName] = useState("");
     const [animate, setAnimate] = useState(false);
+    const [lastSeen, setLastSeen] = useState(user.get("lastSeen") === false ? false : true);
 
     const chnagePassword = () => {
         const hashDigest = SHA256(password.trim() + user.id);
@@ -108,6 +109,29 @@ const Settings = ({ setSettings }) => {
                 setAnimate(false)
             }, 1100)
             setName("");
+        }
+    }
+
+    const changeLastSeen = async () => {
+        const d = new Date();
+        let time = d.getTime();
+
+        if (user.get("lastSeen") === undefined || (time-user.get("lastSeenChange"))/1000/60/60/24 >= 2 ) {
+            setUserData({
+                lastSeen: !lastSeen,
+                lastSeenChange: time
+            })
+            const userTag = Moralis.Object.extend("Tags");
+            const queryUser = new Moralis.Query(userTag);
+            queryUser.equalTo("ethAddress", user.get("ethAddress"));
+            const resultTag = await queryUser.first();
+            resultTag.set({
+                lastSeen: !lastSeen,
+                lastSeenChange: time
+            })
+            resultTag.save();
+
+            setLastSeen(!lastSeen)
         }
     }
 
@@ -207,6 +231,26 @@ const Settings = ({ setSettings }) => {
                         </div>
                         <div className={style.changeDiv}>
                             <button className={style.change} onClick={chnageName}>Change name</button>
+                        </div>
+                    </section>
+                </div>
+                <div className={style.category}>
+                    <h2 className={style.sectionTitle}>Privacy</h2>
+                    <section>
+                        <div className={style.lastSeenContainer}>
+                            <h2 style={{
+                                "width": "100%",
+                                "marginBottom": "10px",
+                                "textAlign": "left",
+                                "marginTop": "10px"
+                            }}>Last seen</h2>
+                            <label className="switch">
+                                <input type="checkbox" className="switch-input" onChange={changeLastSeen} checked={lastSeen} />
+                                <span className="slider round"></span>
+                            </label>
+                        </div>
+                        <div className={style.inputContainer}>
+                            <p className={style.lastSeenInfo}>You can change this setting once every 2 days</p>
                         </div>
                     </section>
                 </div>

@@ -373,6 +373,28 @@
   font-size: calc(17px + 0.1vw);
 }
 
+.closeListContainer{
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  height: 14px;
+}
+
+.closeListContainer button{
+  border: none;
+  color: white;
+  background-color: transparent;
+  font-size: calc(17px + 0.1vw);
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+}
+
+.closeListContainer button:hover{
+  color: rgb(160, 160, 160);
+}
+
 @media only screen and (max-width: 790px) {
   .transfer{
     width: 85vw;
