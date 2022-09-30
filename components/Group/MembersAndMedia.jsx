@@ -91,7 +91,10 @@ const MembersAndMedia = ({ members, setAddMember, groupData, mediaRoute }) => {
                                             <p>@{data.userTag}</p>
                                         </div>
                                     </div>
-                                    <div>
+                                    <div className={style.leftSection}>
+                                        {groupData.owner === data.ethAddress && <div>
+                                            <p>Owner</p>
+                                        </div>}
                                         {user.get("ethAddress") !== data.ethAddress && <button onClick={() => router.push(`/transfer/${data.userTag}`)} className={style.sendButton}><FontAwesomeIcon icon={faArrowAltCircleRight} /></button>}
                                     </div>
                                 </div>

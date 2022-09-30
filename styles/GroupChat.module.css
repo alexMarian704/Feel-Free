@@ -312,8 +312,8 @@
     left: calc((90vw - 1200px)/2 + 20px);
     z-index: 405;
     cursor: pointer;
-    width: calc(25px + 1vw);
-    height: calc(25px + 1vw);
+    width: calc(30px + 0.5vw);
+    height: calc(30px + 0.5vw);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -619,4 +619,17 @@
 }
 .infoMemberData p{
     font-size: calc(16px + 0.1vw);
+}
+
+.leftSection{
+    display: flex;
+    align-items: center;
+}
+.leftSection div{
+    border: 2px solid #800040;
+    margin-right: 8px;
+    padding: 1px 5px 1px 5px;
+    border-radius: 4px;
+    font-size: calc(15px + 0.1vw);
+    color: #a20051;
 }

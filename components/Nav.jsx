@@ -59,43 +59,47 @@ export default function Nav({
   };
 
   const changeChain = (x) => {
-    if (x === "eth") {
-      document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
-      setChainOption(false);
-      setUserData({
-        chain: "eth",
-      });
-      enableWeb3({ onComplete: () => switchNetwork("0x4") });
-      if (balance === true)
-        getBalance(userETHaddress).then((result) => {
-          setBalance(result);
+    if (chainId !== null && chainId !== undefined) {
+      if (x === "eth") {
+        document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
+        setChainOption(false);
+        setUserData({
+          chain: "eth",
         });
-    } else if (x === "bsc") {
-      //setChain("bsc");
-      document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
-      setChainOption(false);
-      setUserData({
-        chain: "bsc",
-      });
-      //0x38 bsc mainnet
-      enableWeb3({ onComplete: () => switchNetwork("0x61") });
-      if (balance === true)
-        getBalance(userETHaddress).then((result) => {
-          setBalance(result);
+        enableWeb3({ onComplete: () => switchNetwork("0x4") });
+        if (balance === true)
+          getBalance(userETHaddress).then((result) => {
+            setBalance(result);
+          });
+      } else if (x === "bsc") {
+        //setChain("bsc");
+        document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
+        setChainOption(false);
+        setUserData({
+          chain: "bsc",
         });
-    } else {
-      //setChain("polygon");
-      document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
-      setChainOption(false);
-      setUserData({
-        chain: "polygon",
-      });
-      //0x89 polygon mainnet
-      enableWeb3({ onComplete: () => switchNetwork("0x13881") });
-      if (balance === true)
-        getBalance(userETHaddress).then((result) => {
-          setBalance(result);
+        //0x38 bsc mainnet
+        enableWeb3({ onComplete: () => switchNetwork("0x61") });
+        if (balance === true)
+          getBalance(userETHaddress).then((result) => {
+            setBalance(result);
+          });
+      } else {
+        //setChain("polygon");
+        document.getElementsByClassName("dropdown-content")[0].id = "in-dropdown";
+        setChainOption(false);
+        setUserData({
+          chain: "polygon",
         });
+        //0x89 polygon mainnet
+        enableWeb3({ onComplete: () => switchNetwork("0x13881") });
+        if (balance === true)
+          getBalance(userETHaddress).then((result) => {
+            setBalance(result);
+          });
+      }
+    }else{
+      console.log("chain error")
     }
   };
 

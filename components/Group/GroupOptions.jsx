@@ -21,7 +21,7 @@ const GroupOptions = ({ open, setOpen, groupRef, setOpenDelete, setLeaveGroup })
             <button className={style.options} onClick={() => setOpen(!open)} ><FontAwesomeIcon icon={faEllipsisV} /></button>
             <div className={style.optionsContainer} id={open === false ? style.close : style.open}>
                 <button onClick={goToMedia}>Media</button>
-                <button onClick={()=> {setOpenDelete(true) , setOpen(false)}}>Delete chat</button>
+                <button onClick={()=> {setOpenDelete(true) , setOpen(false)}}>Clear chat</button>
                 <button onClick={()=> {setLeaveGroup(true) , setOpen(false)}} >Leave</button>
             </div>
         </div>

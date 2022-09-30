@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import style from "../styles/Messages.module.css"
 import { faCheckDouble, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag, setMessageInfo, setFocusImage, onComplete, deleteForYou }) {
+export default function RenderGroupMessage({ message, number, total, refMes, setReply, openReply, setOpenReply, scrollIntoViewIndicator, setScrollIntoViewIndicator, nameColors, unread, previousTag, setMessageInfo, setFocusImage, onComplete, deleteForYou, deleteRequest }) {
   const { user } = useMoralis()
   const d = new Date(message.time);
   let minutes = d.getMinutes();
@@ -80,7 +80,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
           }}
         >
           <div className={style.myMessageContainer}>
-            {message.reply && <div className={style.replyMessage} onClick={() => {
+            {message.delete !== true && message.reply && <div className={style.replyMessage} onClick={() => {
               if (document.getElementById(message.reply.time).innerHTML.includes("color: rgb(170, 170, 170)") === false) {
                 document.getElementById(message.reply.time).scrollIntoView()
                 setScrollIntoViewIndicator(message.reply.time)
@@ -102,8 +102,8 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             {minutes < 10 && <p className={style.myMessageTime} style={{
               "right": message.delete !== true ? "27px" : "6px"
             }}>{`${hours}:0${minutes}`}</p>}
-            {number > total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>}
-            {number <= total - 1 - unread && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} color="#00e600" /></p>}
+            {number > total - 1 - unread && message.delete !== true && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} /></p>}
+            {number <= total - 1 - unread && message.delete !== true && <p className={style.checkMessage}><FontAwesomeIcon icon={faCheckDouble} color="#00e600" /></p>}
             {message.delete !== true && <button className={style.messageOptions} onClick={() => {
               if (openReply !== number)
                 setOpenReply(number)
@@ -156,7 +156,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             }}><FontAwesomeIcon icon={faCaretDown} /></button>
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
               <button onClick={() => { setReply({ message: message.message, time: message.time, image: true }), setOpenReply(-1) }}>Reply</button>
-              <button onClick={() => { deleteForYou(message.time), setOpenReply(-1) }}>Delete for you</button>
+              <button onClick={() => { deleteForYou(message.time , "you" , user.get("userTag")), setOpenReply(-1) }}>Delete for you</button>
             </div>}
           </div>
         </div>
@@ -184,7 +184,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             {previousTag !== message.type && <p style={{
               "color": nameColors[nameColors.indexOf(message.type) + 1]
             }} className={style.friendTagMessage}>@{message.type}</p>}
-            {message.reply && <div className={style.replyMessage} onClick={() => {
+            {message.delete !== true && message.reply && <div className={style.replyMessage} onClick={() => {
               document.getElementById(message.reply.time).scrollIntoView()
               setScrollIntoViewIndicator(message.reply.time)
               setTimeout(() => {
@@ -208,7 +208,7 @@ export default function RenderGroupMessage({ message, number, total, refMes, set
             }}><FontAwesomeIcon icon={faCaretDown} /></button>}
             {openReply === number && <div className={style.messageOptionsContainerFriend}>
               <button onClick={() => { setReply({ message: message.message, time: message.time }), setOpenReply(-1) }}>Reply</button>
-              <button onClick={() => { deleteForYou(message.time), setOpenReply(-1) }}>Delete for you</button>
+              <button onClick={() => { deleteForYou(message.time, "you" , user.get("userTag")), setOpenReply(-1) }}>Delete for you</button>
             </div>}
           </div>
         </div>

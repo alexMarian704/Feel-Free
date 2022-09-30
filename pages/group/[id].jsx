@@ -63,6 +63,34 @@ const Group = () => {
     const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
     const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
 
+    const deleteForYou = (time, type, tag) => {
+        let messageList = []
+        let main = {
+            userAddress: user.get("ethAddress"),
+            messages: messageList
+        }
+        const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+        const decryptedMessages = decrypt(encryptedMessages, user.id);
+        main.messages = decryptedMessages.messages
+        let poz;
+        main.messages.map((x, i) => {
+            if (x.time === time) {
+                x.message = "This message was deleted"
+                x.file = ""
+                x.fileName = ""
+                x.delete = true
+                poz = i
+            }
+        })
+        if (poz === main.messages.length - 1) {
+            messageOrder(user.get("ethAddress"), groupData.name, "Deleted message", groupData.name, "", time, type, "message", tag, "group", router.query.id)
+        }
+
+        setLocalMessages(main.messages)
+        const encryptedMessagesList = encrypt(main, user.id)
+        localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
+    }
+
     const unredMessages = async () => {
         if (isAuthenticated && router.query.id) {
             let messageList = []
@@ -100,7 +128,7 @@ const Group = () => {
                     query1.equalTo("time", results[i].attributes.time);
                     query1.equalTo("type", "Message")
                     query1.equalTo("tag", results[i].attributes.tag)
-                    query.equalTo("to", user.get("ethAddress"));
+                    query1.equalTo("to", user.get("ethAddress"));
                     const results1 = await query1.first();
                     if (results1 !== undefined) {
                         results1.destroy()
@@ -110,6 +138,31 @@ const Group = () => {
                     messageOrder(user.get("ethAddress"), results[results.length - 1].attributes.name, main.messages[main.messages.length - 1].message, results[results.length - 1].attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
                     setLocalMessages(main.messages)
                     messageRef.current.scrollIntoView({ behavior: 'instant' })
+                }
+            }
+
+            const queryDelete = new Moralis.Query(GroupMessage);
+            queryDelete.equalTo("type", "Delete");
+            queryDelete.notEqualTo("from", user.get("ethAddress"));
+            queryDelete.equalTo("to", user.get("ethAddress"));
+            const resultsDelete = await queryDelete.find();
+
+            if (resultsDelete !== undefined) {
+                for (let i = 0; i < resultsDelete.length; i++) {
+                    const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
+                    const decryptTime = decrypt(resultsDelete[i].attributes.timeDelete, encryptKey)
+                    deleteForYou(decryptTime, "friend", resultsDelete[i].attributes.tag)
+                }
+                for (let i = 0; i < results.length; i++) {
+                    const query1_ = new Moralis.Query(GroupMessage);
+                    query1_.equalTo("time", resultsDelete[i].attributes.timeDelete);
+                    query1_.equalTo("type", "Delete")
+                    query1_.equalTo("tag", resultsDelete[i].attributes.tag)
+                    query1_.equalTo("to", user.get("ethAddress"));
+                    const results1_ = await query1_.first();
+                    if (results1_ !== undefined) {
+                        results1_.destroy()
+                    }
                 }
             }
         }
@@ -143,6 +196,12 @@ const Group = () => {
             query.notEqualTo("from", user.get("ethAddress"));
             query.equalTo("to", user.get("ethAddress"));
             const subscription = await query.subscribe()
+
+            const queryDelete = new Moralis.Query(`Group${router.query.id}`)
+            queryDelete.equalTo("type", "Delete");
+            queryDelete.notEqualTo("from", user.get("ethAddress"));
+            queryDelete.equalTo("to", user.get("ethAddress"));
+            const subscriptionDelete = await queryDelete.subscribe()
 
             subscription.on("create", async (object) => {
                 const deleteMessage = Moralis.Object.extend(`Group${router.query.id}`);
@@ -180,6 +239,22 @@ const Group = () => {
                         }
                     }).catch((err) => {
                         console.log(err)
+                    })
+                }
+            })
+
+            subscriptionDelete.on("create", async (object) => {
+                const deleteMessage = Moralis.Object.extend(`Group${router.query.id}`);
+                const query1 = new Moralis.Query(deleteMessage);
+                query1.equalTo("timeDelete", object.attributes.timeDelete);
+                query1.equalTo("to", user.get("ethAddress"));
+                const results1 = await query1.first();
+
+                if (results1 !== undefined) {
+                    results1.destroy().then(() => {
+                        const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
+                        const decryptTime = decrypt(object.attributes.timeDelete, encryptKey)
+                        deleteForYou(decryptTime, "friend", object.attributes.tag)
                     })
                 }
             })
@@ -443,7 +518,7 @@ const Group = () => {
                     _query.equalTo("ethAddress", groupData.members[i]);
                     const _results = await _query.first();
 
-                    if (!_results.attributes.muteGroupNotification.includes(router.query.id)) {
+                    if (_results.attributes.muteGroupNotification === undefined ||  !_results.attributes.muteGroupNotification.includes(router.query.id)) {
                         const d = new Date();
                         let time = d.getTime();
 
@@ -506,40 +581,56 @@ const Group = () => {
         messageOrder(user.get("ethAddress"), groupData.name, "Chat deleted", groupData.name, "", new Date().getTime(), "you", "message", user.get("userTag"), "group", router.query.id)
     }
 
-    const deleteForYou = (time) => {
-        let messageList = []
-        let main = {
-            userAddress: user.get("ethAddress"),
-            messages: messageList
-        }
-        const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
-        const decryptedMessages = decrypt(encryptedMessages, user.id);
-        main.messages = decryptedMessages.messages
-        let poz;
-        main.messages.map((x, i) => {
-            if (x.time === time) {
-                x.message = "This message was deleted"
-                x.file = ""
-                x.fileName = ""
-                x.delete = true
-                poz = i
-            }
-        })
-        if (poz === main.messages.length - 1) {
-            let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
-            messageOrder(user.get("ethAddress"), groupData.name, "Deleted message", groupData.name, "", time, "you", "message", user.get("userTag"), "group", router.query.id)
-        }
-
-        setLocalMessages(main.messages)
-        const encryptedMessagesList = encrypt(main, user.id)
-        localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
-    }
-
     const onComplete = after(numberOfImages, () => {
         setLoadingImages(false)
     })
 
-    
+    const deleteRequest = async (time) => {
+        const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
+        const encryptMessage = encrypt("Delete", encryptKey)
+        const encryptReply = encrypt("", encryptKey)
+        const encryptTime = encrypt(time, encryptKey)
+
+        const messageACL = new Moralis.ACL();
+        messageACL.setWriteAccess(user.id, true);
+        messageACL.setReadAccess(user.id, true)
+        for (let i = 0; i < groupData.members.length; i++) {
+            const addressToTag = Moralis.Object.extend("Tags");
+            const query = new Moralis.Query(addressToTag);
+            query.equalTo("ethAddress", groupData.members[i]);
+            const results = await query.first();
+            if (results !== undefined) {
+                messageACL.setWriteAccess(results.attributes.idUser, true);
+                messageACL.setReadAccess(results.attributes.idUser, true);
+            }
+        }
+
+        const MessageOrigin = Moralis.Object.extend(`Group${router.query.id}`);
+        for (let i = 0; i < groupData.members.length; i++) {
+            if (groupData.members[i] !== user.get("ethAddress")) {
+                const messageOriginPush = new MessageOrigin();
+                messageOriginPush.setACL(messageACL)
+                messageOriginPush.save();
+                messageOriginPush.save({
+                    from: user.get("ethAddress"),
+                    message: encryptMessage,
+                    timeDelete: encryptTime,
+                    file: "message",
+                    fileName: "message",
+                    tag: user.get("userTag"),
+                    reply: encryptReply,
+                    membersNumber: groupData.members.length,
+                    name: groupData.name,
+                    to: groupData.members[i],
+                    type: "Delete"
+                });
+            }
+        }
+
+        deleteForYou(time, "you", user.get("userTag"))
+    }
+
+
 
     return (
         <div style={{ "position": "relative" }}>
@@ -590,7 +681,7 @@ const Group = () => {
                                     <div>
                                         <p className={styleChat.chatDate}>{day}.{month + 1}.{year}</p>
                                     </div>}
-                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} setMessageInfo={setMessageInfo} setFocusImage={setFocusImage} onComplete={onComplete} deleteForYou={deleteForYou} />}
+                                {groupData !== "" && <RenderGroupMessage message={message} refMes={messageRef} number={i} total={localMessages.length} setReply={setReply} openReply={openReply} setOpenReply={setOpenReply} scrollIntoViewIndicator={scrollIntoViewIndicator} setScrollIntoViewIndicator={setScrollIntoViewIndicator} nameColors={groupData.colors} unread={groupUnreadMessageNumber} previousTag={i > 0 ? localMessages[i - 1].type : null} setMessageInfo={setMessageInfo} setFocusImage={setFocusImage} onComplete={onComplete} deleteForYou={deleteForYou} deleteRequest={deleteRequest} />}
                             </div>
                         )
                 })}

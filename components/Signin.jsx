@@ -29,10 +29,12 @@ export default function SignIn() {
   };
 
   const walletConnectSignIn = () => {
-    const user = authenticate({
+    authenticate({
       provider: "walletconnect",
       signingMessage: "Welcome !",
-    });
+    }).catch((err)=>{
+      setError(err)
+    })
   };
 
   const changeSignIn = () => {
