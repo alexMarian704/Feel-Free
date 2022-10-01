@@ -6,7 +6,7 @@ import Image from "next/image";
 import ProfilePicture from "../../public/profile.jpg";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowAltCircleRight, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowAltCircleRight, faUserPlus, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 
@@ -56,7 +56,7 @@ const MembersAndMedia = ({ members, setAddMember, groupData, mediaRoute }) => {
             {nav === "members" && <div>
                 {membersData.length > 0 &&
                     <div>
-                        {user.get("ethAddress") === groupData.owner && <button className={style.addMembersPageButton} onClick={()=> setAddMember(true)}><FontAwesomeIcon icon={faUserPlus} /> Add members</button>}
+                        {user.get("ethAddress") === groupData.owner && <button className={style.addMembersPageButton} onClick={() => setAddMember(true)}><FontAwesomeIcon icon={faUserPlus} /> Add members</button>}
                         {membersData.map((member, i) => {
                             const data = member.attributes;
                             return (
@@ -92,9 +92,13 @@ const MembersAndMedia = ({ members, setAddMember, groupData, mediaRoute }) => {
                                         </div>
                                     </div>
                                     <div className={style.leftSection}>
-                                        {groupData.owner === data.ethAddress && <div>
+                                        {groupData.owner === data.ethAddress && <div className={style.ownerTag}>
                                             <p>Owner</p>
                                         </div>}
+                                        {groupData.owner === user.get("ethAddress") && user.get("ethAddress") !== data.ethAddress && <div className={style.memberOptions}>
+                                            <button className={style.memberOptionsDots}><FontAwesomeIcon icon={faEllipsisV} /></button>
+                                        </div>
+                                        }
                                         {user.get("ethAddress") !== data.ethAddress && <button onClick={() => router.push(`/transfer/${data.userTag}`)} className={style.sendButton}><FontAwesomeIcon icon={faArrowAltCircleRight} /></button>}
                                     </div>
                                 </div>
@@ -105,9 +109,9 @@ const MembersAndMedia = ({ members, setAddMember, groupData, mediaRoute }) => {
             {nav === "media" && <div>
                 {media.length === 0 && <div>
                     <h3 style={{
-                        "width":"100%",
-                        "textAlign":"center",
-                        "marginTop":"30px"
+                        "width": "100%",
+                        "textAlign": "center",
+                        "marginTop": "30px"
                     }}>No media content</h3>
                 </div>}
                 {media.length > 0 && <div className={style.mediaContent}>

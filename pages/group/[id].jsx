@@ -153,7 +153,7 @@ const Group = () => {
                     const decryptTime = decrypt(resultsDelete[i].attributes.timeDelete, encryptKey)
                     deleteForYou(decryptTime, "friend", resultsDelete[i].attributes.tag)
                 }
-                for (let i = 0; i < results.length; i++) {
+                for (let i = 0; i < resultsDelete.length; i++) {
                     const query1_ = new Moralis.Query(GroupMessage);
                     query1_.equalTo("time", resultsDelete[i].attributes.timeDelete);
                     query1_.equalTo("type", "Delete")

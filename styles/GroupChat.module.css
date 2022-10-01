@@ -625,11 +625,29 @@
     display: flex;
     align-items: center;
 }
-.leftSection div{
+.ownerTag{
     border: 2px solid #800040;
     margin-right: 8px;
     padding: 1px 5px 1px 5px;
     border-radius: 4px;
     font-size: calc(15px + 0.1vw);
     color: #a20051;
+}
+.memberOptionsDots{
+    font-size: calc(19px + 0.1vw);
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    width: calc(31px + 0.5vw);
+    height: calc(31px + 0.5vw);
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 200ms ease-in-out;
+}
+.memberOptionsDots:hover{
+    background-color: black;
 }

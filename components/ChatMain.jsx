@@ -58,7 +58,7 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
                         setNewMessage(true);
                     }
                 } else {
-                    if (notification[i].attributes.groupRef === groupRef && friendData.name === notification[i].attributes.name && notification[i].attributes.name !== undefined && notification[i].attributes.name === address) {
+                    if (notification[i].attributes.groupRef === groupRef) {
                         setNewMessage(true);
                     }
                 }
@@ -99,12 +99,12 @@ export default function ChatMain({ name, name2, address, lastMessage, time, last
             <div className={style.infoContainer} onClick={() => type === "group" ? router.push(`/group/${groupRef}`) : router.push(`/messages/${address}`)}>
                 {(file === "message") && <div className={style.mainData}>
                     {newMaessage === false && type !== "group" && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.username}</p>}
-                    {newMaessage === true && type !== "group" && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.username} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                    {newMaessage === true && type !== "group" && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.username} {loadingImages !== true &&  <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
-                    }} /></p>}
-                    {newMaessage === true && friendData.owner !== undefined && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.name} <FontAwesomeIcon icon={faCircle} color="#800040" style={{
+                    }} />} </p>}
+                    {newMaessage === true && friendData.owner !== undefined && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.name} {loadingImages !== true && <FontAwesomeIcon icon={faCircle} color="#800040" style={{
                         "fontSize": "14px"
-                    }} /></p>}
+                    }} />}</p>}
                     {newMaessage === false && type === "group" && <p id={loadingImages === true ? style.skeletonTitle : ""}>{friendData.name}</p>}
 
 

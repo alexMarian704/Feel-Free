@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMoralis } from "react-moralis";
 import { Moralis } from "moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faTimes, faCheck, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faTimes, faCheck, faCircle, faRedo } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Notifications.module.css"
 import { useRouter } from "next/router";
 import { userStatus } from '../function/userStatus';
@@ -101,6 +101,9 @@ export default function Notifications() {
         <div className={style.main}>
             {open === true &&
                 <div className={style.container} onClick={userStatus}>
+                    <button className={style.reloadButton} style={notArray.length === 0 ? {
+                        "position":"absolute"
+                    } : {}} ><FontAwesomeIcon icon={faRedo} className={style.reload} onClick={queryNotifications} /></button>
                     {notArray.length === 0 && <p style={{
                         marginTop: "8px"
                     }}>0 notifications</p>}
