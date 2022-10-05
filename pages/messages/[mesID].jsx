@@ -186,7 +186,8 @@ export default function Messages() {
         }
         if (main.messages.length > 0) {
           setLocalMessages(main.messages)
-          messageRef.current.scrollIntoView({ behavior: 'instant' })
+          if(messageRef.current !== undefined)
+            messageRef.current.scrollIntoView({ behavior: 'instant' })
           let data = JSON.parse(localStorage.getItem(user.get("ethAddress") + router.query.mesID + "data"))
           messageOrder(user.get("ethAddress"), router.query.mesID, main.messages[main.messages.length - 1].message, data.name, data.name2, main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].tag);
         }
@@ -644,7 +645,8 @@ export default function Messages() {
         setMessage("");
         setFriendUnreadMessages(++friednUnreadMessages)
         setRender(++render);
-        messageRef.current.scrollIntoView({ behavior: 'smooth' })
+        if(messageRef.current !== undefined)
+          messageRef.current.scrollIntoView({ behavior: 'smooth' })
       }
     }
   }

@@ -8,7 +8,7 @@ import { Moralis } from "moralis";
 import Image from "next/image";
 import style from "../styles/Profile.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faArrowCircleDown } from "@fortawesome/free-solid-svg-icons";
 import { getBalance } from "../function/balance";
 import ProfilePicture from "../public/profile.jpg";
 import CheckPassword from "../components/CheckPassword";
@@ -19,6 +19,7 @@ import OfflineNotification from "../components/OfflineNotification";
 import { FiSettings } from 'react-icons/fi';
 import Settings from "../components/Settings";
 import UnsupportedChain from "../components/UnsupportedChain";
+import BackUp from "../components/BackUp";
 
 
 export default function Profile() {
@@ -29,6 +30,7 @@ export default function Profile() {
   const internetStatus = useInternetConnection()
   const [settings, setSettings] = useState(false);
   const [error, setError] = useState("")
+  const [openBackUp , setOpenBackUp] = useState(false)
 
   useEffect(() => {
     if (isAuthenticated && chainId !== null) {
@@ -147,7 +149,7 @@ export default function Profile() {
             display: "none",
           }}
         />
-        <div className={style.dataUser} onClick={userStatus}>
+        {openBackUp === false && <div className={style.dataUser} onClick={userStatus}>
           <h2 className={style.address}>Username: {user.get("username")}</h2>
           <h2 className={style.address}>Tag: @{user.get("userTag")}</h2>
           <h2 className={style.address}>Address: {userETHaddress}</h2>
@@ -160,7 +162,9 @@ export default function Profile() {
             Balance: {balance}
           </h2>
           <button onClick={() => { setSettings(true), setError("") }} className={style.settingButton}><FiSettings /></button>
-        </div>
+          <button className={style.openBackUp} onClick={()=> setOpenBackUp(true)}>Back up <FontAwesomeIcon icon={faArrowCircleDown} className={style.backUpIcon} /></button>
+        </div>}
+        {openBackUp === true && <BackUp style={style} />}
         {error !== "" && <p className={style.errorFile}>{error}</p>}
       </div>}
       {settings === true && <Settings setSettings={setSettings} />}

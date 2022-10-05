@@ -121,3 +121,21 @@
   margin-top: 10px;
   font-size: calc(18px + 0.1vw);
 }
+.openBackUp{
+  border: 2px solid #800040;
+  background-color: transparent;
+  padding: 1px 10px 1px 10px;
+  color: white;
+  font-size: calc(17px + 0.1vw);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 200ms ease-in-out;
+}
+.openBackUp:hover{
+  background-color: #800040;
+}
+.backUpIcon{
+  margin-left: 5px;
+}
