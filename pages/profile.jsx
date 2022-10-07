@@ -19,7 +19,8 @@ import OfflineNotification from "../components/OfflineNotification";
 import { FiSettings } from 'react-icons/fi';
 import Settings from "../components/Settings";
 import UnsupportedChain from "../components/UnsupportedChain";
-import BackUp from "../components/BackUp";
+import BackUpInfo from "../components/BackUp/BackUpInfo";
+import BackUp from "../components/BackUp/BackUp";
 
 
 export default function Profile() {
@@ -31,6 +32,7 @@ export default function Profile() {
   const [settings, setSettings] = useState(false);
   const [error, setError] = useState("")
   const [openBackUp , setOpenBackUp] = useState(false)
+  const [openBackUpModal , setOpenBackUpModal] = useState(false)
 
   useEffect(() => {
     if (isAuthenticated && chainId !== null) {
@@ -164,9 +166,10 @@ export default function Profile() {
           <button onClick={() => { setSettings(true), setError("") }} className={style.settingButton}><FiSettings /></button>
           <button className={style.openBackUp} onClick={()=> setOpenBackUp(true)}>Back up <FontAwesomeIcon icon={faArrowCircleDown} className={style.backUpIcon} /></button>
         </div>}
-        {openBackUp === true && <BackUp style={style} />}
+        {openBackUp === true && <BackUpInfo style={style} setOpenBackUp={setOpenBackUp} setOpenBackUpModal={setOpenBackUpModal} />}
         {error !== "" && <p className={style.errorFile}>{error}</p>}
       </div>}
+      {openBackUpModal === true && <BackUp style={style} setOpenBackUpModal={setOpenBackUpModal} />}
       {settings === true && <Settings setSettings={setSettings} />}
       {settings === false && <Notifications />}
       {internetStatus === false && <OfflineNotification />}
