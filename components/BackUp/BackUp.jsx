@@ -9,6 +9,7 @@ const BackUp = ({ style, setOpenBackUpModal }) => {
     const { user, setUserData } = useMoralis();
     const [see, setSee] = useState(false);
     const [password, setPassword] = useState("");
+    const [error , setError] = useState("");
 
     const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
     const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
@@ -40,6 +41,10 @@ const BackUp = ({ style, setOpenBackUpModal }) => {
                 backup:JSON.stringify(encryptData),
                 backupdate:time
             })
+            setOpenBackUpModal(false)
+            setError("")
+        }else{
+            setError("Password needs to be at least 8 characters")
         }
     }
 
@@ -51,7 +56,7 @@ const BackUp = ({ style, setOpenBackUpModal }) => {
                     <div className="checkDiv">
                         <input type={see === false ? "password" : "text"} value={password} onChange={(e) => setPassword(e.target.value)} className="setUpInput" onKeyPress={e => {
                             if (e.key === "Enter") {
-                                confirmPassword();
+                                getLocalStorageKey()
                             }
                         }} />
                         <button className="checkBut" onClick={() => setSee(!see)}>
