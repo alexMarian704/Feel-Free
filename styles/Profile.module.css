@@ -160,3 +160,12 @@
   background-color: rgba(91, 91, 91, 0.28);
   z-index: 400;
 }
+.completeDiv p{
+  width: calc(130px + 2.5vw);
+  height: calc(130px + 2.5vw);
+  background-color: #50042a;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  font-size: calc(55px + 1vw);
+}
