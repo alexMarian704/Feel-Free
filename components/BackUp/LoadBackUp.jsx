@@ -7,7 +7,7 @@ import { faTimes, faEye, faEyeSlash, faCheck, faUpload } from "@fortawesome/free
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 
-const LoadBackUp = ({ setImportBackUp }) => {
+const LoadBackUp = ({ setImportBackUp, setBackUpView }) => {
   const { user, setUserData } = useMoralis();
   const [phase, setPhase] = useState(1);
   const [password, setPassword] = useState("");
@@ -26,6 +26,10 @@ const LoadBackUp = ({ setImportBackUp }) => {
         }
         setImportBackUp(true)
         setError("")
+        setPhase(3)
+        setTimeout(()=>{
+          setBackUpView(false)
+        },1500)
       } catch (err) {
         setError("Incorrect password")
       }
@@ -44,7 +48,7 @@ const LoadBackUp = ({ setImportBackUp }) => {
           <button onClick={() => setPhase(2)} className={styleBackup.continue}>Continue</button>
         </>}
         {phase === 2 && <>
-          {user.get("backup") !== undefined && <>
+          {user.get("backup") !== undefined && user.get("backup") !== "" && <>
             <h2 className={styleBackup.title}>Backup found</h2>
             <p className={styleBackup.text}>Backup date: {new Date(user.get("backupdate")).toLocaleString()}</p>
             <div className="setUpContainer">
@@ -68,9 +72,17 @@ const LoadBackUp = ({ setImportBackUp }) => {
             <button style={{ "marginTop": "0px" }} className={styleBackup.continue} onClick={importBackup}>Import backup</button>
             {error && <p className="checkError">{error}</p>}
           </>}
-          {user.get("backup") === undefined && <>
+          {(user.get("backup") === undefined || user.get("backup") === "") && <>
             <h2 className={styleBackup.title}>No backup found</h2>
+            <p className={styleBackup.text}>If you have access to your old device make a backup on it and then import it hear</p>
+            <p className={styleBackup.text}>If you have access this page will auto refresh when the back up is ready, you don't need to click anything</p>
+            <button style={{ "marginTop": "30px", "width":"calc(240px + 2vw)" }} className={styleBackup.continue}>I can't access my old device</button>
           </>}
+        </>}
+        {phase === 3 && <>
+          <div className={style.completeDiv}>
+            <p><FontAwesomeIcon icon={faCheck} /></p>
+          </div>
         </>}
       </div>
     </div>

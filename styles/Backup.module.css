@@ -8,6 +8,8 @@
 }
 .text{
     font-size: calc(18px + 0.2vw);
+    text-align: center;
+    padding: 0px 15px 0px 15px;
 }
 .continue{
     width: calc(140px + 1vw);
