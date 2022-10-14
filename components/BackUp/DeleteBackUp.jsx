@@ -18,7 +18,7 @@ const DeleteBackUp = ({ style, setOpenBackUpDelete }) => {
     const deleteBackUp = () => {
         if (password.length > 7) {
             try {
-                let data = JSON.parse(user.get("backup"))
+                const data = JSON.parse(user.get("backup"))
                 decrypt(data, password)
                 setError("")
                 setUserData({

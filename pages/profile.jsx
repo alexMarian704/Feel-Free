@@ -80,8 +80,6 @@ export default function Profile() {
       results.set("profilePhoto", profileFile.ipfs())
       results.save();
 
-      // console.log(profileFile.ipfs());
-      // console.log(profileFile.hash());
       setUserData({
         profilePhoto: profileFile.ipfs(),
       });

@@ -5,7 +5,7 @@ import style from "../styles/Chat.module.css"
 import { userStatus } from "../function/userStatus";
 import { Moralis } from "moralis";
 
-export default function Chats() {
+export default function Chats({ importBackUp }) {
     const { user } = useMoralis();
     const [chatsArray, setChatsArray] = useState([]);
     const [notArray, setNotArray] = useState([]);
@@ -21,7 +21,7 @@ export default function Chats() {
         } else {
             setNumberOfImages(0);
         }
-    }, [])
+    }, [importBackUp])
 
     const queryNotifications = async () => {
         const userNotification = Moralis.Object.extend("Notification");

@@ -19,11 +19,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 import UnsupportedChain from "../components/UnsupportedChain";
+import LoadBackUp from "../components/BackUp/LoadBackUp";
 
 export default function Home() {
   const { isAuthenticated, user, isWeb3EnableLoading, isWeb3Enabled, enableWeb3, chainId, isInitialized } = useMoralis();
   const [info, setInfo] = useState(null);
   const [page, setPage] = useState("Messages");
+  const [importBackUp , setImportBackUp] = useState(false)
   const internetStatus = useInternetConnection()
   const route = useRouter()
 
@@ -72,7 +74,7 @@ export default function Home() {
               </div>
             </div>
             {page === "FriendList" && <FriendList />}
-            {page === "Messages" && <Chats />}
+            {page === "Messages" && <Chats importBackUp={importBackUp} />}
             <Notifications />
             <button className={style.createGroup} onClick={() => route.push("/create/group")}>
               <FontAwesomeIcon icon={faPlus} />
@@ -90,6 +92,7 @@ export default function Home() {
         )}
       {(user.get("info") === false ||
         info === false) && <Info setInfo={setInfo} />}
+      {user.get("userNameChange") === true && user.get("passwordConfig") === true && (info === true || user.get("info") === true) && localStorage.getItem(`privateKeyUser${user.get("ethAddress")}`) !== null && <LoadBackUp setImportBackUp={setImportBackUp} />}
       {internetStatus === false && <OfflineNotification />}
       {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
