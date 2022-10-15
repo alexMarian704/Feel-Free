@@ -169,3 +169,61 @@
   place-content: center;
   font-size: calc(55px + 1vw);
 }
+.backupType{
+  margin-bottom: 20px;
+  background-color: #3a031f;
+  padding: 4px 4px 4px 4px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.backupType button{
+  width: calc(120px + 0.5vw);
+  height: calc(26px + 0.2vw);
+  border-radius: 100px;
+  cursor: pointer;
+  font-size: calc(14px + 0.1vw);
+  border: none;
+  transition: all 250ms ease-in-out;
+}
+.paperDiv{
+  position: relative;
+  width: 90%;
+  height: 90%;
+}
+.paperDiv p{
+  position: relative;
+  width: 100%;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  height: 100%;
+  background-color: #3a031f;
+  border-radius: 7px;
+  padding: 10px;
+  padding-top: 32px;
+}
+.text{
+  font-size: calc(16px + 0.1vw);
+  margin-bottom: 10px;
+  text-align: center;
+}
+.paperDiv button{
+  position: absolute;
+  cursor: pointer;
+  top: 5px;
+  left: 5px;
+  background-color: #800040;
+  color: white;
+  width: calc(25px + 0.2vw);
+  height:calc(25px + 0.2vw);
+  border-radius: 5px;
+  border: none;
+  transition: all 200ms ease-in-out;
+}
+.paperDiv button:hover{
+  background-color: #50042a;
+  color: grey;
+}

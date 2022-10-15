@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useMoralis } from "react-moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faEye, faEyeSlash, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faEye, faEyeSlash, faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
 
@@ -12,6 +12,8 @@ const BackUp = ({ style, setOpenBackUpModal }) => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [complete, setComplete] = useState(false);
+    const [backupType, setBackUpType] = useState("cloud");
+    const [paper, setPaper] = useState("")
 
     const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
     const decrypt = (crypted, password) => JSON.parse(AES.decrypt(crypted, password).toString(ENC)).content
@@ -40,25 +42,49 @@ const BackUp = ({ style, setOpenBackUpModal }) => {
             }
             const encryptData = encrypt(arr, password);
             console.log(JSON.stringify(encryptData))
-            setUserData({
-                backup: JSON.stringify(encryptData),
-                backupdate: time
-            })
-            setError("")
-            setLoading(false);
-            setComplete(true)
-            setTimeout(()=>{
-                setOpenBackUpModal(false)
-            },1500)
+            if (backupType === "cloud") {
+                setUserData({
+                    backup: JSON.stringify(encryptData),
+                    backupdate: time
+                })
+                setError("")
+                setLoading(false);
+                setComplete(true)
+                setTimeout(() => {
+                    setOpenBackUpModal(false)
+                }, 1500)
+            } else {
+                setUserData({
+                    paperBackUp: true,
+                    paperDate: time
+                })
+                setPaper(JSON.stringify(encryptData));
+                setLoading(false);
+                setComplete(true)
+            }
         } else {
             setError("Password needs to be at least 8 characters")
         }
     }
 
+    const copyFunction = () => {
+        navigator.clipboard.writeText(paper);
+      };
+
     return (
         <div className={style.backUpModal}>
             <div className="setUp">
                 {loading === false && complete === false && <>
+                    <div className={style.backupType}>
+                        <button style={{
+                            "background": backupType === "paper" ? "transparent" : "white",
+                            "color": backupType === "paper" ? "grey" : "black"
+                        }} onClick={() => setBackUpType("cloud")}>Cloud backup</button>
+                        <button style={{
+                            "background": backupType === "cloud" ? "transparent" : "white",
+                            "color": backupType === "cloud" ? "grey" : "black"
+                        }} onClick={() => setBackUpType("paper")}>Paper backup</button>
+                    </div>
                     <h3 className="setUpTitle">Backup Password</h3>
                     <div className="setUpContainer">
                         <div className="checkDiv">
@@ -81,16 +107,24 @@ const BackUp = ({ style, setOpenBackUpModal }) => {
                     <p className="passwordWarning">You cannot access you backup if you forgot your password</p>
                 </>}
                 {loading === true && complete === false && <div className={style.loadingContainer} style={{
-                    "background":"transparent",
+                    "background": "transparent",
                 }}>
                     <div className={style.loader} style={{
-                        "borderTop":"15px solid #610433"
+                        "borderTop": "15px solid #610433"
                     }}></div>
                 </div>}
-                {loading === false && complete === true && <div className={style.completeDiv}>
+                {loading === false && complete === true && paper === "" && <div className={style.completeDiv}>
                     <p><FontAwesomeIcon icon={faCheck} /></p>
                     <button onClick={() => setOpenBackUpModal(false)} className={style.closeBackUp}><FontAwesomeIcon icon={faTimes} /></button>
                 </div>}
+                {loading === false && complete === true && paper !== "" && <>
+                    <p className={style.text}>Copy the backup and store it somewhere safe</p>
+                    <div className={style.paperDiv}>
+                        <p>{paper}</p>
+                        <button onClick={copyFunction}><FontAwesomeIcon icon={faCopy} /></button>
+                    </div>
+                    <button onClick={() => setOpenBackUpModal(false)} className={style.closeBackUp}><FontAwesomeIcon icon={faTimes} /></button>
+                </>}
             </div>
         </div>
     )
