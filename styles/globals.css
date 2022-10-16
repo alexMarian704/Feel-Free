@@ -190,7 +190,7 @@ button {
   .setUp {
     height: calc(300px + 25vh);
     position: relative;
-    transform: translate(-50%, 8%);
+    transform: translate(-50%, -40%);
     padding-bottom: 20px;
   }
 

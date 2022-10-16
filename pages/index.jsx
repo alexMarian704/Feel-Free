@@ -93,7 +93,7 @@ export default function Home() {
         )}
       {(user.get("info") === false ||
         info === false) && <Info setInfo={setInfo} />}
-      {user.get("userNameChange") === true && user.get("passwordConfig") === true && (info === true || user.get("info") === true) && localStorage.getItem(`privateKeyUser${user.get("ethAddress")}`) === null && backUpView === true && <LoadBackUp setImportBackUp={setImportBackUp} setBackUpView={setBackUpView} />}
+      {user.get("userNameChange") === true && user.get("passwordConfig") === true && (info === true || user.get("info") === true) && localStorage.getItem(`privateKeyUser${user.get("ethAddress")}`) !== null && backUpView === true && <LoadBackUp setImportBackUp={setImportBackUp} setBackUpView={setBackUpView} />}
       {internetStatus === false && <OfflineNotification />}
       {(chainId !== null && chainId !== "0x4" && chainId !== "0x61" && chainId !== "0x13881") && <UnsupportedChain />}
     </div>
