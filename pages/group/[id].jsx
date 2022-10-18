@@ -49,6 +49,7 @@ const Group = () => {
     const [focusImage, setFocusImage] = useState("");
     const [loadingImages, setLoadingImages] = useState(true);
     const [numberOfImages, setNumberOfImages] = useState(-1);
+    const [requestKey, setRequestKey] = useState(false)
 
     function _base64ToArrayBuffer(base64) {
         let binary_string = window.atob(base64);
@@ -211,30 +212,69 @@ const Group = () => {
                 const results1 = await query1.first();
 
                 if (results1 !== undefined) {
-                    results1.destroy().then(() => {
-                        const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
-                        const decryptMessage = decrypt(object.attributes.message, encryptKey)
-                        const decryptReply = decrypt(object.attributes.reply, encryptKey)
-                        if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
-                            const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
-                            const decryptedMessages = decrypt(encryptedMessages, user.id);
-                            main.messages = decryptedMessages.messages
-                        }
+                    results1.destroy().then(async () => {
+                        if (localStorage.getItem(`Group${router.query.id}Key`) !== null) {
+                            const encryptKey = decrypt(localStorage.getItem(`Group${router.query.id}Key`), user.id)
+                            const decryptMessage = decrypt(object.attributes.message, encryptKey)
+                            const decryptReply = decrypt(object.attributes.reply, encryptKey)
+                            if (JSON.parse(localStorage.getItem(`Group${router.query.id}Messages`) !== null)) {
+                                const encryptedMessages = localStorage.getItem(`Group${router.query.id}Messages`)
+                                const decryptedMessages = decrypt(encryptedMessages, user.id);
+                                main.messages = decryptedMessages.messages
+                            }
 
-                        if (main.messages.filter((e) => { return e.type === object.attributes.tag && e.time === object.attributes.time }).length === 0) {
-                            main.messages.push({ type: object.attributes.tag, message: decryptMessage, time: object.attributes.time, file: object.attributes.file, fileName: object.attributes.fileName, reply: decryptReply })
+                            if (main.messages.filter((e) => { return e.type === object.attributes.tag && e.time === object.attributes.time }).length === 0) {
+                                main.messages.push({ type: object.attributes.tag, message: decryptMessage, time: object.attributes.time, file: object.attributes.file, fileName: object.attributes.fileName, reply: decryptReply })
 
-                            const encryptedMessagesList = encrypt(main, user.id)
-                            localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
-                            deleteNotification()
+                                const encryptedMessagesList = encrypt(main, user.id)
+                                localStorage.setItem(`Group${router.query.id}Messages`, encryptedMessagesList);
+                                deleteNotification()
 
-                            messageOrder(user.get("ethAddress"), object.attributes.name, main.messages[main.messages.length - 1].message, object.attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
+                                messageOrder(user.get("ethAddress"), object.attributes.name, main.messages[main.messages.length - 1].message, object.attributes.name, "", main.messages[main.messages.length - 1].time, "friend", main.messages[main.messages.length - 1].file, main.messages[main.messages.length - 1].type, "group", router.query.id)
 
-                            if (main.messages.length > 0) {
-                                setRender(++render);
-                                setLocalMessages(main.messages)
-                                if (messageRef.current !== null)
-                                    messageRef.current.scrollIntoView({ behavior: 'smooth' })
+                                if (main.messages.length > 0) {
+                                    setRender(++render);
+                                    setLocalMessages(main.messages)
+                                    if (messageRef.current !== null)
+                                        messageRef.current.scrollIntoView({ behavior: 'smooth' })
+                                }
+                            }
+                        } else {
+                            const keyRequestCheck = Moralis.Object.extend(`Group${router.query.id}`);
+                            const queryCheck = new Moralis.Query(keyRequestCheck);
+                            queryCheck.equalTo("from", user.get("ethAddress"));
+                            queryCheck.equalTo("type", "KeyRequest");
+                            const resultsKeyCheck = await queryCheck.first();
+
+                            if (resultsKeyCheck === undefined && requestKey === false) {
+                                const messageACL = new Moralis.ACL();
+                                messageACL.setWriteAccess(user.id, true);
+                                messageACL.setReadAccess(user.id, true)
+                                for (let i = 0; i < groupData.members.length; i++) {
+                                    const addressToTag = Moralis.Object.extend("Tags");
+                                    const query = new Moralis.Query(addressToTag);
+                                    query.equalTo("ethAddress", groupData.members[i]);
+                                    const resultsKey = await query.first();
+                                    if (resultsKey !== undefined) {
+                                        messageACL.setWriteAccess(resultsKey.attributes.idUser, true);
+                                        messageACL.setReadAccess(resultsKey.attributes.idUser, true);
+                                    }
+                                }
+                                const KeyOrigin = Moralis.Object.extend(`Group${router.query.id}`);
+                                const keyOriginPush = new KeyOrigin();
+                                keyOriginPush.setACL(messageACL)
+                                keyOriginPush.save();
+                                keyOriginPush.save({
+                                    from: user.get("ethAddress"),
+                                    message: "KeyRequest",
+                                    tag: user.get("userTag"),
+                                    type: "KeyRequest",
+                                    membersNumber: groupData.members.length,
+                                    name: groupData.name,
+                                });
+                                setRequestKey(true)
+                            } else {
+                                setRequestKey(true)
                             }
                         }
                     }).catch((err) => {
@@ -518,7 +558,7 @@ const Group = () => {
                     _query.equalTo("ethAddress", groupData.members[i]);
                     const _results = await _query.first();
 
-                    if (_results.attributes.muteGroupNotification === undefined ||  !_results.attributes.muteGroupNotification.includes(router.query.id)) {
+                    if (_results.attributes.muteGroupNotification === undefined || !_results.attributes.muteGroupNotification.includes(router.query.id)) {
                         const d = new Date();
                         let time = d.getTime();
 

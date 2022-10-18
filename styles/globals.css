@@ -186,7 +186,7 @@ button {
   padding-right: 45px;
 }
 
-@media only screen and (max-height: 840px) {
+@media only screen and (max-height: 890px) {
   .setUp {
     height: calc(300px + 25vh);
     position: relative;

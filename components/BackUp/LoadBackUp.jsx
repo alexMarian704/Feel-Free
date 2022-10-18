@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faEye, faEyeSlash, faCheck, faUpload } from "@fortawesome/free-solid-svg-icons";
 import AES from 'crypto-js/aes';
 import ENC from 'crypto-js/enc-utf8'
+import { Moralis } from "moralis";
 
 const LoadBackUp = ({ setImportBackUp, setBackUpView }) => {
   const { user, setUserData } = useMoralis();
@@ -22,10 +23,10 @@ const LoadBackUp = ({ setImportBackUp, setBackUpView }) => {
     if (password.length > 7) {
       try {
         let paperData = paper;
-        if(backupType === "paper"){
-          if(paper[0] !==`"`){
+        if (backupType === "paper") {
+          if (paper[0] !== `"`) {
             paperData = JSON.stringify(paper);
-          }else if(paper[paper.length-1] !== `"`){
+          } else if (paper[paper.length - 1] !== `"`) {
             paperData = paperData + `"`;
           }
         }
@@ -41,11 +42,49 @@ const LoadBackUp = ({ setImportBackUp, setBackUpView }) => {
           setBackUpView(false)
         }, 1500)
       } catch (err) {
-        setError("Incorrect password")
+        setError("Incorrect password or backup")
       }
     } else {
       setError("Password needs to be at least 8 characters")
     }
+  }
+
+  const genereteKeyPair = async () => {
+    const keyPair = window.crypto.subtle.generateKey({
+      name: "RSA-OAEP",
+      modulusLength: 4096,
+      publicExponent: new Uint8Array([1, 0, 1]),
+      hash: "SHA-256"
+    },
+      true,
+      ["encrypt", "decrypt"]
+    );
+    const { privateKey, publicKey } = await keyPair;
+
+    const publicKeyJwk = await window.crypto.subtle.exportKey(
+      "jwk",
+      publicKey
+    );
+    const privateKeyJwk = await window.crypto.subtle.exportKey(
+      "jwk",
+      privateKey
+    );
+    const encrypt = (content, password) => AES.encrypt(JSON.stringify({ content }), password).toString()
+    const encryptedPrivateKey = encrypt(privateKeyJwk, user.id);
+    localStorage.setItem(`privateKeyUser${user.get("ethAddress")}`, encryptedPrivateKey)
+    const formatPublicKey = JSON.stringify(publicKeyJwk)
+    localStorage.setItem(`publicKeyUser${user.get("ethAddress")}`, formatPublicKey)
+    setUserData({
+      formatPublicKey: formatPublicKey
+    })
+
+    const userTag = Moralis.Object.extend("Tags");
+    const queryUser = new Moralis.Query(userTag);
+    queryUser.equalTo("ethAddress", user.get("ethAddress"));
+    const resultTag = await queryUser.first();
+    resultTag.save({
+      formatPublicKey: formatPublicKey,
+    })
   }
 
   return (
@@ -120,7 +159,7 @@ const LoadBackUp = ({ setImportBackUp, setBackUpView }) => {
             <h2 className={styleBackup.title}>No backup found</h2>
             <p className={styleBackup.text}>If you have access to your old device make a backup on it and then import it hear</p>
             <p className={styleBackup.text}>This page will auto refresh when the back up is ready, you don't need to click anything</p>
-            <button style={{ "marginTop": "30px", "width": "calc(240px + 2vw)" }} className={styleBackup.continue}>I can't access my old device</button>
+            <button style={{ "marginTop": "30px", "width": "calc(240px + 2vw)" }} className={styleBackup.continue} onClick={genereteKeyPair}>I can't access my old device</button>
           </>}
           {backupType === "paper" && (user.get("paperBackUp") === undefined) && <>
             <h2 className={styleBackup.title}>No backup found</h2>
